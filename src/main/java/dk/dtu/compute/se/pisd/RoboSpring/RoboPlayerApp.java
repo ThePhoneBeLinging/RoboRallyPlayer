@@ -4,10 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class RoboSpringApplication {
+public class RoboPlayerApp
+{
 
 	public static void main(String[] args) {
-		SpringApplication.run(RoboSpringApplication.class, args);
+		SpringApplication.run(RoboPlayerApp.class, args);
 	}
 
 }
