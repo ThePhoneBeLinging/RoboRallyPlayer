@@ -72,7 +72,6 @@ public class PlayerView extends Tab implements ViewObserver
     public PlayerView(@NotNull GameController gameController, @NotNull Player player)
     {
         super(player.getName());
-        this.setStyle("-fx-text-base-color: " + player.getColor() + ";");
 
         top = new VBox();
         top.setSpacing(3.0);
