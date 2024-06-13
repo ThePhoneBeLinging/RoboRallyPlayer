@@ -16,27 +16,32 @@ public class JoinedLobbyView extends HBox {
     RestTemplate restTemplate = new RestTemplate();
     TextArea lobbyContent;
     AppController appController;
+    Lobby lobby;
 
-    public JoinedLobbyView(AppController appController) {
+    public JoinedLobbyView(AppController appController,Lobby lobby) {
         this.appController = appController;
+        this.lobby = lobby;
         startButton = new Button("Start Game");
-        startButton.setMinSize(100,100);
+        startButton.setOnAction(e -> this.startGame());
+        startButton.setMinSize(500,100);
         lobbyContent = new TextArea();
+        lobbyContent.setEditable(false);
+        lobbyContent.setMinWidth(500);
+        lobbyContent.setMinHeight(100);
         this.getChildren().addAll(startButton, lobbyContent);
     }
 
-    private void joinGame(Long lobbyID) {
-        String lobbyUrl = "http://localhost:8080/lobby/startGame?gameID=" + lobbyID;
+    private void startGame() {
+        String lobbyUrl = "http://localhost:8080/lobby/startGame?gameID=" + this.lobby.getGameID();
 
         new Thread(() -> {
             try {
-                ResponseEntity<Lobby> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null, new ParameterizedTypeReference<Lobby>() {
+                var response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null, new ParameterizedTypeReference<Boolean>() {
                 });
-                Lobby lobbies = response.getBody();
 
 
             } catch (Exception e) {
-                Platform.runLater(() -> lobbyContent.setText("Failed to join game: " + e.getMessage()));
+                Platform.runLater(() -> lobbyContent.appendText("Failed to join game: " + e.getMessage() + "\n"));
             }
         }).start();
     }

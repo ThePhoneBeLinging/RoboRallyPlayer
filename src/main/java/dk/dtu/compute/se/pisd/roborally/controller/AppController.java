@@ -26,10 +26,9 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadSaveGameState;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.model.Lobby;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.SpawnPoint;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
 import dk.dtu.compute.se.pisd.roborally.view.JoinedLobbyView;
 import dk.dtu.compute.se.pisd.roborally.view.LobbyView;
 import javafx.application.Platform;
@@ -39,7 +38,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import javafx.scene.control.Dialog;
@@ -210,8 +208,8 @@ public class AppController implements Observer
         roboRally.createLobbyView(lobbyView);
     }
 
-    public void joinLobby() {
-        roboRally.createJoinedLobbyView(new JoinedLobbyView(this));
+    public void joinLobby(Lobby lobby) {
+        roboRally.createJoinedLobbyView(new JoinedLobbyView(this,lobby));
     }
 
 

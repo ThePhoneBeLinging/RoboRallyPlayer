@@ -22,6 +22,7 @@ public class LobbyView extends VBox {
     private VBox lobbyList;
     private HBox hBox;
     private AppController appController;
+    private Lobby joinedLobby;
 
     RestTemplate restTemplate = new RestTemplate();
     String url = "http://localhost:8080/lobby/getAll";
@@ -41,20 +42,25 @@ public class LobbyView extends VBox {
         chatArea.setEditable(true);
         hBox.getChildren().addAll(lobbyList, chatArea);
         this.getChildren().addAll(searchBar, hBox);
+        joinedLobby = null;
         fetchLobbies();
     }
 
-    public TextField getSearchBar() {
-        return searchBar;
-    }
-
-    public TextArea getChatArea() {
-        return chatArea;
-    }
 
     public void joinLobbyView() {
         System.out.println("Joined Lobby View");
-        this.appController.joinLobby();
+        while (this.joinedLobby == null)
+        {
+            try
+            {
+                Thread.currentThread().sleep(1000);
+            }
+            catch (InterruptedException e)
+            {
+                throw new RuntimeException(e);
+            }
+        }
+        this.appController.joinLobby(joinedLobby);
     }
 
     private void fetchLobbies() {
@@ -79,8 +85,8 @@ public class LobbyView extends VBox {
             try {
                 ResponseEntity<Lobby> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null, new ParameterizedTypeReference<Lobby>() {
                 });
-                Lobby lobbies = response.getBody();
-                chatArea.appendText("Joined Lobby: " + lobbies.getGameID() + "\n");
+                this.joinedLobby = response.getBody();
+                chatArea.appendText("Joined Lobby: " + this.joinedLobby.getGameID() + "\n");
 
             } catch (Exception e) {
                 Platform.runLater(() -> chatArea.setText("Failed to join lobbies: " + e.getMessage()));
