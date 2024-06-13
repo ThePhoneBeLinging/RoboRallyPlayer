@@ -37,6 +37,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
 
@@ -581,11 +582,14 @@ public class Board extends Subject
         {
             for (Player player1 : boardToCopyFrom.players)
             {
-                if (player.getPlayerID() == player1.getPlayerID())
+                if (Objects.equals(player.getPlayerID(), player1.getPlayerID()))
                 {
-                    int x = player1.getSpace().x;
-                    int y = player1.getSpace().y;
-                    player.setSpace(this.getSpace(x, y));
+                    if (player1.getSpace() != null)
+                    {
+                        int x = player1.getSpace().x;
+                        int y = player1.getSpace().y;
+                        player.setSpace(this.getSpace(x, y));
+                    }
                     player.setHeading(player1.getHeading());
                 }
             }
