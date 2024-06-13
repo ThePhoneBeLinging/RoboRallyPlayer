@@ -108,9 +108,9 @@ public class BoardView extends VBox implements ViewObserver
     private void updateGameBoard()
     {
         String gameID = "gameID=" + this.board.getGameID();
-        String turnID = "TurnID=" + this.board.getTurnID();
-        String playerID = "&playerID" + this.board.getPlayerID();
-        String lobbyUrl = "http://localhost:8080/lobby/get/boards/single?" + gameID + turnID + playerID;
+        String turnID = "&TurnID=" + this.board.getTurnID();
+        String playerID = "&playerID=" + this.board.getPlayerID();
+        String lobbyUrl = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
 
         new Thread(() -> {
             try

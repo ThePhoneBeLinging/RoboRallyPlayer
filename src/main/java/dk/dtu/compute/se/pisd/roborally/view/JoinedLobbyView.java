@@ -2,6 +2,8 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.roborally.APITypes.Lobby;
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
+import dk.dtu.compute.se.pisd.roborally.model.Board;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -58,6 +60,10 @@ public class JoinedLobbyView extends HBox
     {
         //TODO Change line below...
         this.boardName = "dizzyHighway";
-        this.appController.startGameFromBoard(boardName);
+        Board board = LoadBoard.loadBoard(this.boardName);
+        board.setGameID(this.lobby.getGameID());
+        board.setTurnID(0);
+        board.setPlayerID(lobby.getPlayerID());
+        this.appController.startGameFromBoard(board);
     }
 }

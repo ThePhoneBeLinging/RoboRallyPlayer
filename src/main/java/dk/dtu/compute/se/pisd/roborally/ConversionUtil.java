@@ -22,7 +22,7 @@ public class ConversionUtil
         for (Player player : serverBoard.getPlayerList())
         {
             dk.dtu.compute.se.pisd.roborally.model.Player gameBoardPlayer =
-                    new dk.dtu.compute.se.pisd.roborally.model.Player(gameBoard, player.getName(),
+                    new dk.dtu.compute.se.pisd.roborally.model.Player(gameBoard, "player.getName()",
                             gameController.moveController);
             gameBoard.addPlayer(gameBoardPlayer);
             gameBoardPlayer.setSpace(gameBoard.getSpace(player.getX(), player.getY()));
