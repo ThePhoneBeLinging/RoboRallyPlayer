@@ -31,6 +31,7 @@ public class ConversionUtil
             gameBoardPlayer.setMovedByConveyorThisTurn(player.isMovedByConveyorThisTurn());
             gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
             gameBoardPlayer.setThisPlayerTurn(player.isPlayersTurn());
+            gameBoardPlayer.setTabNumber(Math.toIntExact(player.getPlayerID()));
         }
 
         for (Card card : serverBoard.getCards())
