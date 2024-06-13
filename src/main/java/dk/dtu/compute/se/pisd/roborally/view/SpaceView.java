@@ -107,11 +107,16 @@ public class SpaceView extends StackPane implements ViewObserver
     {
         this.getChildren().add(imageView);
         imageView.setImage(this.space.getBoardElement().getImage());
-        if(this.space.getBoardElement().getHeading()==Heading.NORTH){
+        if (this.space.getBoardElement().getHeading() == Heading.NORTH)
+        {
             imageView.setRotate(90);
-        }if(this.space.getBoardElement().getHeading()==Heading.EAST){
+        }
+        if (this.space.getBoardElement().getHeading() == Heading.EAST)
+        {
             imageView.setRotate(180);
-        }if(this.space.getBoardElement().getHeading()==Heading.SOUTH){
+        }
+        if (this.space.getBoardElement().getHeading() == Heading.SOUTH)
+        {
             imageView.setRotate(270);
         }
     }
@@ -125,7 +130,7 @@ public class SpaceView extends StackPane implements ViewObserver
         Player player = space.getPlayer();
         if (player != null)
         {
-            int tabNumber = player.getTabNumber() + 1;
+            int tabNumber = (int) (player.getPlayerID() + 1);
             playerImageView.setImage(new Image("file:src/main/Resources/Images/r" + tabNumber + ".png"));
             playerImageView.setRotate(90 * player.getHeading().ordinal() % 360);
             this.getChildren().add(playerImageView);

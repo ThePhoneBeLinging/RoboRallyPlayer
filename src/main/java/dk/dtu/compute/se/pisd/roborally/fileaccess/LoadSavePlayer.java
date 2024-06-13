@@ -61,7 +61,7 @@ public class LoadSavePlayer
         }
         playerTemplate.energyCubes = player.getEnergyCubes();
         playerTemplate.movedByConveyorThisTurn = player.getMovedByConveyorThisTurn();
-        playerTemplate.tabNumber = player.getTabNumber();
+        playerTemplate.tabNumber = Math.toIntExact(player.getPlayerID());
 
         playerTemplate.lastVisitedCheckpoint = player.getLastVisitedCheckPoint();
 
@@ -166,7 +166,7 @@ public class LoadSavePlayer
                 cardFieldToModify++;
             }
             result.setHeading(playerTemplate.heading);
-            result.setTabNumber(playerTemplate.tabNumber);
+            result.setPlayerID((long) playerTemplate.tabNumber);
             result.setEnergyCubes(playerTemplate.energyCubes);
             result.setMovedByConveyorThisTurn(playerTemplate.movedByConveyorThisTurn);
             result.setSpace(gameController.board.getSpace(playerTemplate.spaceTemplate.x,

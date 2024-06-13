@@ -56,7 +56,7 @@ public class Player extends Subject
     private String color;
     private Space space;
     private Heading heading = SOUTH;
-    private int tabNumber;
+    private Long playerID;
     private boolean movedByConveyorThisTurn;
     private int energyCubes;
     private boolean thisPlayerTurn = false;
@@ -268,18 +268,18 @@ public class Player extends Subject
      * @return
      * @author Elias
      */
-    public int getTabNumber()
+    public Long getPlayerID()
     {
-        return tabNumber;
+        return playerID;
     }
 
     /**
-     * @param tabNumber
+     * @param playerID
      * @author Elias
      */
-    public void setTabNumber(int tabNumber)
+    public void setPlayerID(Long playerID)
     {
-        this.tabNumber = tabNumber;
+        this.playerID = playerID;
     }
 
     /**

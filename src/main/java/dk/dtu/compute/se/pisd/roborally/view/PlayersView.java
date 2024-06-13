@@ -47,16 +47,14 @@ public class PlayersView extends TabPane implements ViewObserver
         this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
         playerViews = new PlayerView[board.getPlayersNumber()];
-        int tabNumberToCreate = 0;
         for (int k = 0; k < board.getPlayersNumber(); k++)
         {
             for (int i = 0; i < board.getPlayersNumber(); i++)
             {
-                if (board.getPlayer(i).getTabNumber() == tabNumberToCreate)
+                if (board.getPlayer(i).getPlayerID() == board.getPlayerID())
                 {
                     playerViews[k] = new PlayerView(gameController, board.getPlayer(i));
                     this.getTabs().add(playerViews[k]);
-                    tabNumberToCreate++;
                 }
             }
         }

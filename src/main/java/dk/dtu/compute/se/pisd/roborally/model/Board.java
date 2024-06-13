@@ -257,7 +257,7 @@ public class Board extends Subject
     {
         for (int i = 0; i < players.size(); i++)
         {
-            players.get(i).setTabNumber(i);
+            players.get(i).setPlayerID((long) i);
         }
     }
 
@@ -581,7 +581,7 @@ public class Board extends Subject
         {
             for (Player player1 : boardToCopyFrom.players)
             {
-                if (player.getTabNumber() == player1.getTabNumber())
+                if (player.getPlayerID() == player1.getPlayerID())
                 {
                     int x = player1.getSpace().x;
                     int y = player1.getSpace().y;
