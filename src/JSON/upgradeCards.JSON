@@ -1,0 +1,173 @@
+{
+"cardType": "Permanent Upgrade Cards",
+"cards": [
+    {
+        "cardName": "ADMIN PRIVLEGE",
+        "cost": "3",
+        "effect": "Once per round, you may give your robot priority for one register."
+
+    },
+    {
+        "cardName": "CORRUPTION WAVE",
+        "cost": "4",
+        "effect": "You may put SPAM damage cards you deal on top of opponents' decks."
+
+    },
+
+    {
+        "cardName": "BLUE SCREEN OF DEATH",
+        "cost": "4",
+        "effect": "When you shoot or push an adjacent robot, you may give that player one worm damage card instead of one SPAM damage card."
+
+    },
+
+    {
+        "cardName": "CRAB LEGS",
+        "cost": "5",
+        "effect": "When executing a Move 1 card, you may move one space forward then one space right or left, without rotating and regardless of the direction you are facing. Then move forward one additional space in the direction you are facing."
+
+    },
+
+    {
+        "cardName": "BRAKES",
+        "cost": "3",
+        "effect": "You may treat your Move 1's as Move 0's."
+
+    },
+
+    {
+        "cardName": "DEFLECTOR SHIELD",
+        "cost": "2",
+        "effect": "At the beginning of a register, you may spend one energy to negate any robot lasers that would hit you that register."
+
+    },
+
+    {
+        "cardName": "CACHE MEMORY",
+        "cost": "4",
+        "effect": "You may discard cards from your hand and place them on the top of your deck. Do not draw replacement cards."
+
+    },
+
+    {
+        "cardName": "DEFRAG GIZMO",
+        "cost": "5",
+        "effect": "Once during each round, you may permanently discard one damage card from your hand. Draw a placement card from the top of your deck." 
+
+    },
+
+    {
+        "cardName": "DOUBLE BARREL LASER",
+        "cost": "2",
+        "effect": "Deal one additional SPAM damage card to any robot you shoot."
+
+    },
+
+    {
+        "cardName": "MODULAR CHASSIS",
+        "cost": "1",
+        "effect": "When you push another robot, give that player this card, and take one of their installed upgrades. That player keeps this card until they use it."
+
+    },
+
+    {
+        "cardName": "FIREWALL",
+        "cost": "3",
+        "effect": "Take no SPAM damage cards when rebooting."
+
+    },
+
+    {
+        "cardName": "PRESSOR BEAM",
+        "cost": "3",
+        "effect": "You may push any robot you shoot one space in the direction you are shooting."
+
+    },
+
+    {
+        "cardName": "HOVER UNIT",
+        "cost": "1",
+        "effect": "Your robot can pass over, but not land on a pit, you fall in. You can't turn off Hover Unit, and you can't hover above another robot."
+
+    },
+
+    {
+        "cardName": "RAIL GUN",
+        "cost": "2",
+        "effect": "You may shoot through any number of walls and/or robots. Robots in the line of fore take one SPAM damage card."
+
+    },
+
+    {
+        "cardName": "MEMORY STICK",
+        "cost": "3",
+        "effect": "Draw one additional programming card at the start of each round."
+
+    },
+
+    {
+        "cardName": "RAMMING GEAR",
+        "cost": "2",
+        "effect": "Deal one SPAM damage card when you push a robot."
+
+    },
+
+    {
+        "cardName": "MINI HOWITZER",
+        "cost": "2",
+        "effect": "Once per register, when you shoot, you may pay one energy to deal two additional SPAM damage cards and push the attacked robot one space in the direction you are shooting."
+
+    },
+
+    {
+        "cardName": "RAER LASER",
+        "cost": "2",
+        "effect": "Your robot may shoot backward as well as forward."
+
+    },
+
+    {
+        "cardName": "SCRAMBLER",
+        "cost": "3",
+        "effect": "If you attack a robot, that player replaces the card in their next register with the top card of their deck, unless it is the final register."
+
+    },
+
+    {
+        "cardName": "TRACTOR BEAM",
+        "cost": "3",
+        "effect": "When you shoot a robot, you may pull it toward you one space. Tractor beam may not be used on adjacent robots."
+
+    },
+
+    {
+        "cardName": "SIDE ARMS",
+        "cost": "3",
+        "effect": "When you push a robot, you may choose to push it to the left or right instead of the direction you are facing."
+
+    },
+
+    {
+        "cardName": "TROJAN NEEDLER",
+        "cost": "3",
+        "effect": "When you shoot or push a robot, target robot receives damage in the form of one Trojan horse damage card instead of one SPAM damage card."
+
+    },
+
+    {
+        "cardName": "TELEPORTER",
+        "cost": "3",
+        "effect": "You may pay one energy to ignore obstacles when moving. This includes walls, pits, the priority antenna. If you move to a space with another robot, swap places with that robot."
+
+    },
+
+    {
+        "cardName": "VIRUS MODULE",
+        "cost": "2",
+        "effect": "When you push a robot, give that player a virus damage card."
+
+    }
+
+    ]
+
+}

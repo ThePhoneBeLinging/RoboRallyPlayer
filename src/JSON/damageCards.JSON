@@ -1,0 +1,29 @@
+{
+    "cardType": "Damage Cards",
+    "cards": [
+        {
+            "cardName": "SPAM",
+            "desc": "This is the simplest form of damage. Robots must take a SPAM damage card when they are shot by a board or robot laser."
+    
+        },
+
+        {
+            "cardName": "TROJAN HORSE",
+            "desc": "When you program a Trojan horse damage card, you must immediately take two SPAM damage cards."
+
+        },
+
+        {
+            "cardName": "WORM",
+            "desc": "When you program a worm damage card, you must immediately reboot your robot."
+
+        },
+
+        {
+            "cardName": "VIRUS",
+            "desc": "When you program a virus damage card, any robot on the board within a six-space radius of you must immediately take a virus card from the draw pile."
+        }
+
+    ]
+
+}
