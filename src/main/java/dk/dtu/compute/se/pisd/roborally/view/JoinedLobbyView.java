@@ -102,7 +102,7 @@ public class JoinedLobbyView extends HBox
         GameController gameController = new GameController(board);
         for (int i = 0; i < this.listOfPlayers.size(); i++)
         {
-            board.addPlayer(new Player(board, "Player" + i, gameController.moveController));
+            board.addPlayer(new Player(board, "Player", gameController.moveController));
             board.getPlayer(i).setPlayerID(this.listOfPlayers.get(i));
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
