@@ -238,6 +238,7 @@ public class AppController implements Observer
             {
                 return; // return without exiting the application
             }
+            gameController.board.keepUpdatingBoard = false;
         }
 
         // If the user did not cancel, the RoboRally application will exit

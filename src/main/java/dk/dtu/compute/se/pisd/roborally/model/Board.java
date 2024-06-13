@@ -65,6 +65,8 @@ public class Board extends Subject
     private final Space[][] spaces;
     private final List<Player> players = new ArrayList<>();
     private final RestTemplate restTemplate = new RestTemplate();
+    public boolean keepUpdatingBoard = true;
+    public Thread updateBoard;
     private RebootToken[] rebootToken;
     private Phase phase = INITIALISATION;
     private int step = 0;
@@ -121,12 +123,18 @@ public class Board extends Subject
         this.activateBoardElements();
 
         this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
-        int i = 0;
-        while (i < 10)
-        {
-            notifyChange();
-            i++;
-        }
+        this.updateBoard = new Thread(() -> {
+            try
+            {
+                this.updateGameBoard();
+            }
+            catch (Exception e)
+            {
+                //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
+            }
+
+        });
+        this.updateBoard.start();
     }
 
     /**
@@ -153,6 +161,106 @@ public class Board extends Subject
         {
             player.setMovedByConveyorThisTurn(false);
         }
+    }
+
+    public void updateGameBoard()
+    {
+        while (keepUpdatingBoard)
+        {
+
+            String gameID = "gameID=" + this.getGameID();
+            String turnID = "&TurnID=" + this.getTurnID();
+            String playerID = "&playerID=" + this.getPlayerID();
+            if (this.getGameID() == null || this.getPlayerID() == null)
+            {
+                continue;
+            }
+            String lobbyUrl = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
+            try
+            {
+                ResponseEntity<CompleteGame> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<CompleteGame>()
+                {
+                });
+                CompleteGame serverBoard = response.getBody();
+                Thread.sleep(2500);
+                Platform.runLater(() -> copyData(serverBoard));
+            }
+            catch (Exception e)
+            {
+                //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
+            }
+        }
+    }
+
+    public Long getGameID()
+    {
+        return gameID;
+    }
+
+    public void setGameID(Long gameID)
+    {
+        this.gameID = gameID;
+    }
+
+    public int getTurnID()
+    {
+        return turnID;
+    }
+
+    public void setTurnID(int turnID)
+    {
+        this.turnID = turnID;
+    }
+
+    public Long getPlayerID()
+    {
+        return playerID;
+    }
+
+    private void copyData(CompleteGame completeGame)
+    {
+        Board boardToCopyFrom = ConversionUtil.fromServerBoardToGameBoard(completeGame);
+        for (Player player : this.players)
+        {
+            for (Player player1 : boardToCopyFrom.players)
+            {
+                if (Objects.equals(player.getPlayerID(), player1.getPlayerID()))
+                {
+                    if (player1.getSpace() != null)
+                    {
+                        int x = player1.getSpace().x;
+                        int y = player1.getSpace().y;
+                        player.setSpace(this.getSpace(x, y));
+                    }
+                    player.setHeading(player1.getHeading());
+                }
+            }
+        }
+        notifyChange();
+    }
+
+    /**
+     * @param x the x-coordinate of the space
+     * @param y the y-coordinate of the space
+     * @return the space at the given coordinates; null if the coordinates are out of bounds
+     * @author Elias
+     */
+    public Space getSpace(int x, int y)
+    {
+        if (x >= 0 && x < width && y >= 0 && y < height)
+        {
+            return spaces[x][y];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public void setPlayerID(Long playerID)
+    {
+        this.playerID = playerID;
     }
 
     public ArrayList<UpgradeCard> getUpgradeCards()
@@ -263,6 +371,17 @@ public class Board extends Subject
     }
 
     /**
+     * @return the current player
+     * @author Elias
+     */
+
+
+    /**
+     * @param player the player to be set as the current player
+     * @author Elias
+     */
+
+    /**
      * @param player the player to be added to the board
      * @author Elias
      */
@@ -303,6 +422,10 @@ public class Board extends Subject
     }
 
     /**
+     * @author Elias
+     */
+
+    /**
      * @param stepMode the step mode to be set
      * @author Elias
      */
@@ -314,6 +437,11 @@ public class Board extends Subject
             notifyChange();
         }
     }
+
+    /**
+     * @return
+     * @author Elias
+     */
 
     /**
      * @param player the player for which the number should be returned
@@ -368,24 +496,6 @@ public class Board extends Subject
     }
 
     /**
-     * @param x the x-coordinate of the space
-     * @param y the y-coordinate of the space
-     * @return the space at the given coordinates; null if the coordinates are out of bounds
-     * @author Elias
-     */
-    public Space getSpace(int x, int y)
-    {
-        if (x >= 0 && x < width && y >= 0 && y < height)
-        {
-            return spaces[x][y];
-        }
-        else
-        {
-            return null;
-        }
-    }
-
-    /**
      * @return the list of players on the board
      * @author Elias
      */
@@ -407,17 +517,6 @@ public class Board extends Subject
     {
         return phase;
     }
-
-    /**
-     * @return the current player
-     * @author Elias
-     */
-
-
-    /**
-     * @param player the player to be set as the current player
-     * @author Elias
-     */
 
     /**
      * @return the list of players on the board
@@ -455,10 +554,6 @@ public class Board extends Subject
     }
 
     /**
-     * @author Elias
-     */
-
-    /**
      * @param checkpoint
      * @return
      * @author Elias
@@ -467,11 +562,6 @@ public class Board extends Subject
     {
         return this.boardElements[CHECKPOINTS_INDEX].indexOf(checkpoint);
     }
-
-    /**
-     * @return
-     * @author Elias
-     */
 
     /**
      * @return
@@ -522,83 +612,5 @@ public class Board extends Subject
     public ArrayList<BoardElement> getBoardElementsWithIndex(int index)
     {
         return boardElements[index];
-    }
-
-    public void updateGameBoard()
-    {
-        String gameID = "gameID=" + this.getGameID();
-        String turnID = "&TurnID=" + this.getTurnID();
-        String playerID = "&playerID=" + this.getPlayerID();
-        String lobbyUrl = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
-
-        new Thread(() -> {
-            try
-            {
-                ResponseEntity<CompleteGame> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<CompleteGame>()
-                {
-                });
-                CompleteGame serverBoard = response.getBody();
-
-                Platform.runLater(() -> copyData(serverBoard));
-            }
-            catch (Exception e)
-            {
-                //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
-            }
-
-        }).start();
-    }
-
-    public Long getGameID()
-    {
-        return gameID;
-    }
-
-    public void setGameID(Long gameID)
-    {
-        this.gameID = gameID;
-    }
-
-    public int getTurnID()
-    {
-        return turnID;
-    }
-
-    public void setTurnID(int turnID)
-    {
-        this.turnID = turnID;
-    }
-
-    public Long getPlayerID()
-    {
-        return playerID;
-    }
-
-    private void copyData(CompleteGame completeGame)
-    {
-        Board boardToCopyFrom = ConversionUtil.fromServerBoardToGameBoard(completeGame);
-        for (Player player : this.players)
-        {
-            for (Player player1 : boardToCopyFrom.players)
-            {
-                if (Objects.equals(player.getPlayerID(), player1.getPlayerID()))
-                {
-                    if (player1.getSpace() != null)
-                    {
-                        int x = player1.getSpace().x;
-                        int y = player1.getSpace().y;
-                        player.setSpace(this.getSpace(x, y));
-                    }
-                    player.setHeading(player1.getHeading());
-                }
-            }
-        }
-        notifyChange();
-    }
-
-    public void setPlayerID(Long playerID)
-    {
-        this.playerID = playerID;
     }
 }

@@ -98,7 +98,6 @@ public class JoinedLobbyView extends HBox
         board.setGameID(this.lobby.getGameID());
         board.setTurnID(0);
         board.setPlayerID(lobby.getPlayerID());
-        board.updateGameBoard();
         GameController gameController = new GameController(board);
         for (int i = 0; i < this.listOfPlayers.size(); i++)
         {
