@@ -103,6 +103,7 @@ public class JoinedLobbyView extends HBox
         for (int i = 0; i < this.listOfPlayers.size(); i++)
         {
             board.addPlayer(new Player(board, "Player" + i, gameController.moveController));
+            board.getPlayer(i).setPlayerID(this.listOfPlayers.get(i));
         }
         this.appController.startGameFromBoard(gameController);
     }
