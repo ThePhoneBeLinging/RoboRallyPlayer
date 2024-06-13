@@ -17,6 +17,7 @@ public class JoinedLobbyView extends HBox
     TextArea lobbyContent;
     AppController appController;
     Lobby lobby;
+    String boardName;
 
     public JoinedLobbyView(AppController appController, Lobby lobby)
     {
@@ -55,6 +56,7 @@ public class JoinedLobbyView extends HBox
 
     private void switchToBoardView()
     {
-        this.appController.startGameFromBoard();
+        this.boardName = "dizzyHighway";
+        this.appController.startGameFromBoard(boardName);
     }
 }

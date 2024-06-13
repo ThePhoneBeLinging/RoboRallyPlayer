@@ -27,6 +27,7 @@ import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.RebootToken;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.SpawnPoint;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class Board extends Subject
     private final ArrayList<BoardElement>[] boardElements = new ArrayList[10];
     private final Space[][] spaces;
     private final List<Player> players = new ArrayList<>();
+    private final RestTemplate restTemplate = new RestTemplate();
     private RebootToken[] rebootToken;
     private Phase phase = INITIALISATION;
     private int step = 0;
@@ -72,7 +74,7 @@ public class Board extends Subject
      */
     public Board(int width, int height)
     {
-        this(width, height, "defaultboard");
+        this(width, height, "default");
     }
 
     /**
@@ -112,7 +114,7 @@ public class Board extends Subject
         this.activateBoardElements();
 
         this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
-        this.notifyChange();
+        notifyChange();
     }
 
     /**
@@ -139,6 +141,36 @@ public class Board extends Subject
         {
             player.setMovedByConveyorThisTurn(false);
         }
+    }
+
+    public Long getGameID()
+    {
+        return gameID;
+    }
+
+    public void setGameID(Long gameID)
+    {
+        this.gameID = gameID;
+    }
+
+    public int getTurnID()
+    {
+        return turnID;
+    }
+
+    public void setTurnID(int turnID)
+    {
+        this.turnID = turnID;
+    }
+
+    public Long getPlayerID()
+    {
+        return playerID;
+    }
+
+    public void setPlayerID(Long playerID)
+    {
+        this.playerID = playerID;
     }
 
     public ArrayList<UpgradeCard> getUpgradeCards()
@@ -218,7 +250,6 @@ public class Board extends Subject
         return null;
     }
 
-
     /**
      * @param playersArr, can contain null elements, these are ignored.
      * @author Elias
@@ -290,6 +321,17 @@ public class Board extends Subject
     }
 
     /**
+     * @return the current player
+     * @author Elias
+     */
+
+
+    /**
+     * @param player the player to be set as the current player
+     * @author Elias
+     */
+
+    /**
      * @param stepMode the step mode to be set
      * @author Elias
      */
@@ -355,6 +397,10 @@ public class Board extends Subject
     }
 
     /**
+     * @author Elias
+     */
+
+    /**
      * @param x the x-coordinate of the space
      * @param y the y-coordinate of the space
      * @return the space at the given coordinates; null if the coordinates are out of bounds
@@ -371,6 +417,11 @@ public class Board extends Subject
             return null;
         }
     }
+
+    /**
+     * @return
+     * @author Elias
+     */
 
     /**
      * @return the list of players on the board
@@ -394,18 +445,6 @@ public class Board extends Subject
     {
         return phase;
     }
-
-    /**
-     * @return the current player
-     * @author Elias
-     */
-
-
-    /**
-     * @param player the player to be set as the current player
-     * @author Elias
-     */
-
 
     /**
      * @return the list of players on the board
@@ -443,11 +482,6 @@ public class Board extends Subject
     }
 
     /**
-     * @author Elias
-     */
-
-
-    /**
      * @param checkpoint
      * @return
      * @author Elias
@@ -456,12 +490,6 @@ public class Board extends Subject
     {
         return this.boardElements[CHECKPOINTS_INDEX].indexOf(checkpoint);
     }
-
-    /**
-     * @return
-     * @author Elias
-     */
-
 
     /**
      * @return
@@ -512,35 +540,5 @@ public class Board extends Subject
     public ArrayList<BoardElement> getBoardElementsWithIndex(int index)
     {
         return boardElements[index];
-    }
-
-    public Long getPlayerID()
-    {
-        return playerID;
-    }
-
-    public void setPlayerID(Long playerID)
-    {
-        this.playerID = playerID;
-    }
-
-    public Long getGameID()
-    {
-        return gameID;
-    }
-
-    public void setGameID(Long gameID)
-    {
-        this.gameID = gameID;
-    }
-
-    public int getTurnID()
-    {
-        return turnID;
-    }
-
-    public void setTurnID(int turnID)
-    {
-        this.turnID = turnID;
     }
 }
