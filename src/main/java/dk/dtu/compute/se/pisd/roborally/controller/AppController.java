@@ -26,7 +26,6 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.APITypes.Lobby;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadSaveGameState;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.view.JoinedLobbyView;
@@ -67,8 +66,8 @@ public class AppController implements Observer
     {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
-        this.gameController = LoadSaveGameState.loadGameState("default");
-        roboRally.createBoardView(gameController);
+        //this.gameController = LoadSaveGameState.loadGameState("default");
+        //roboRally.createBoardView(gameController);
     }
 
     /**
@@ -200,7 +199,7 @@ public class AppController implements Observer
     public void saveGame()
     {
         // XXX needs to be implemented eventually
-        LoadSaveGameState.saveGameState(gameController, "default");
+        //LoadSaveGameState.saveGameState(gameController, "default");
     }
 
     public void startGameFromBoard(GameController gameController)
