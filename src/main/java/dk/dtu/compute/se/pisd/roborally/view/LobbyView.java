@@ -1,8 +1,10 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.model.Lobby;
 import javafx.application.Platform;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -17,6 +19,7 @@ public class LobbyView extends VBox {
     private TextField searchBar;
     private TextArea chatArea;
     private VBox lobbyList;
+    private HBox hBox;
 
     RestTemplate restTemplate = new RestTemplate();
     String url = "http://localhost:8080/lobby/getAll";
@@ -24,19 +27,17 @@ public class LobbyView extends VBox {
     //List response = restTemplate.getForObject(url, List.class);
 
     public LobbyView() {
-
+        hBox = new HBox();
         searchBar = new TextField();
         searchBar.setPromptText("Search lobbies...");
         searchBar.setMinSize(300,20);
         lobbyList = new VBox();
         lobbyList.setMinSize(300, 500);
-        lobbyList.setTranslateY(searchBar.getTranslateY() + 20);
         chatArea = new TextArea();
         chatArea.setMinSize(300, 700);
-        chatArea.setTranslateX(400);
-        chatArea.setTranslateY(0);
         chatArea.setEditable(true);
-        this.getChildren().addAll(searchBar, chatArea, lobbyList);
+        hBox.getChildren().addAll(lobbyList, chatArea);
+        this.getChildren().addAll(searchBar, hBox);
         fetchLobbies();
     }
 
@@ -63,11 +64,31 @@ public class LobbyView extends VBox {
         }).start();
     }
 
+    private void joinLobbies(Long lobbyID) {
+        String lobbyUrl = "http://localhost:8080/lobby/join?gameID=" + lobbyID;
+
+        new Thread(() -> {
+            try {
+                ResponseEntity<Lobby> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null, new ParameterizedTypeReference<Lobby>() {
+                });
+                Lobby lobbies = response.getBody();
+
+            } catch (Exception e) {
+                Platform.runLater(() -> chatArea.setText("Failed to join lobbies: " + e.getMessage()));
+            }
+
+        }).start();
+    }
+
     private void populateVBox(List<Long> lobbies) {
         lobbyList.getChildren().clear();
 
         for(Long lobbyID: lobbies) {
             Button label = new Button("Lobby ID: " + lobbyID);
+            label.setMinSize(300,20);
+            label.setOnAction(e -> {
+                joinLobbies(lobbyID);
+            });
             lobbyList.getChildren().add(label);
         }
     }
