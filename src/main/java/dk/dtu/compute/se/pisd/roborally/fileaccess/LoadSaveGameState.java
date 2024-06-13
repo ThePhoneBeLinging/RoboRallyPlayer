@@ -109,7 +109,6 @@ public class LoadSaveGameState
             }
         }
         gameController.board.setPlayers(players);
-        gameController.board.setCurrentPlayer(playerTurn);
         return gameController;
 
     }

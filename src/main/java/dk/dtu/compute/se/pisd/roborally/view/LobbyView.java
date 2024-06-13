@@ -1,8 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
-import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.model.Lobby;
+import dk.dtu.compute.se.pisd.roborally.APITypes.Lobby;
 import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;

@@ -23,33 +23,24 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Observer;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.APITypes.Lobby;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadSaveGameState;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.model.Lobby;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.view.JoinedLobbyView;
 import dk.dtu.compute.se.pisd.roborally.view.LobbyView;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.layout.HBox;
-import javafx.scene.image.ImageView;
-import java.util.Map;
-import java.util.HashMap;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Ekkart Kindler, ekki@dtu.dk
@@ -125,7 +116,8 @@ public class AppController implements Observer
             HBox box = new HBox();
             box.setSpacing(10);
 
-            for (Map.Entry<String, Image> entry : mapImages.entrySet()) {
+            for (Map.Entry<String, Image> entry : mapImages.entrySet())
+            {
                 ImageView imageView = new ImageView(entry.getValue());
                 imageView.setFitHeight(200);
                 imageView.setPreserveRatio(true);
@@ -137,7 +129,8 @@ public class AppController implements Observer
 
             Optional<String> mapResult = mapDialog.showAndWait();
             Board board = null;
-            if (mapResult.isPresent()) {
+            if (mapResult.isPresent())
+            {
                 board = LoadBoard.loadBoard(mapResult.get());
                 gameController = new GameController(board, roboRally);
 
@@ -147,8 +140,7 @@ public class AppController implements Observer
             List<String> namesChosen = Arrays.asList(new String[no]);
             for (int i = 0; i < no; i++)
             {
-                Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1),
-                        gameController.moveController);
+                Player player = new Player(board, "Player " + (i + 1), gameController.moveController);
                 board.addPlayer(player);
                 player.setSpace(board.getAvailableSpawnPoint());
 
@@ -173,7 +165,6 @@ public class AppController implements Observer
             }
             board.setTabNumbersOnPlayers();
             // XXX: the line below is commented out in the current version
-            gameController.startProgrammingPhase();
             roboRally.createBoardView(gameController);
         }
     }
@@ -202,17 +193,6 @@ public class AppController implements Observer
         return false;
     }
 
-    public void joinGame() {
-        System.out.println("Join Pressed");
-        LobbyView lobbyView = new LobbyView(this);
-        roboRally.createLobbyView(lobbyView);
-    }
-
-    public void joinLobby(Lobby lobby) {
-        roboRally.createJoinedLobbyView(new JoinedLobbyView(this,lobby));
-    }
-
-
     /**
      * Saves the game
      *
@@ -222,6 +202,24 @@ public class AppController implements Observer
     {
         // XXX needs to be implemented eventually
         LoadSaveGameState.saveGameState(gameController, "default");
+    }
+
+    public void startGameFromBoard()
+    {
+        this.gameController = new GameController(new Board(5, 5));
+        roboRally.createBoardView(gameController);
+    }
+
+    public void joinGame()
+    {
+        System.out.println("Join Pressed");
+        LobbyView lobbyView = new LobbyView(this);
+        roboRally.createLobbyView(lobbyView);
+    }
+
+    public void joinLobby(Lobby lobby)
+    {
+        roboRally.createJoinedLobbyView(new JoinedLobbyView(this, lobby));
     }
 
     /**

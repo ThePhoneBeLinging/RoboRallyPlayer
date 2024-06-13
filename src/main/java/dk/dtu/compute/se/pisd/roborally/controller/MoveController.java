@@ -324,8 +324,6 @@ public class MoveController
      */
     public void moveCurrentPlayerToSpace(Space space)
     {
-        Player currentPlayer = gameController.board.getCurrentPlayer();
-        currentPlayer.setSpace(space);
     }
 
     /**

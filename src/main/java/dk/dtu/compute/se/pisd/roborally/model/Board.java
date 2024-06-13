@@ -57,12 +57,13 @@ public class Board extends Subject
     private final Space[][] spaces;
     private final List<Player> players = new ArrayList<>();
     private RebootToken[] rebootToken;
-    private Integer gameId;
-    private Player current;
     private Phase phase = INITIALISATION;
     private int step = 0;
     private boolean stepMode;
     private ArrayList<UpgradeCard> upgradeCards = new ArrayList<>();
+    private int turnID;
+    private Long playerID;
+    private Long gameID;
 
     /**
      * @param width  the width of the board
@@ -111,7 +112,7 @@ public class Board extends Subject
         this.activateBoardElements();
 
         this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
-
+        this.notifyChange();
     }
 
     /**
@@ -217,33 +218,6 @@ public class Board extends Subject
         return null;
     }
 
-    /**
-     * @return the name of the board
-     * @author Elias
-     */
-    public Integer getGameId()
-    {
-        return gameId;
-    }
-
-    /**
-     * @param gameId the id of the game to which this board belongs
-     * @author Elias
-     */
-    public void setGameId(int gameId)
-    {
-        if (this.gameId == null)
-        {
-            this.gameId = gameId;
-        }
-        else
-        {
-            if (!this.gameId.equals(gameId))
-            {
-                throw new IllegalStateException("A game with a set id may not be assigned a new id!");
-            }
-        }
-    }
 
     /**
      * @param playersArr, can contain null elements, these are ignored.
@@ -261,9 +235,7 @@ public class Board extends Subject
         }
         if (this.players.isEmpty())
         {
-            return;
         }
-        this.setCurrentPlayer(players.get(0));
     }
 
     /**
@@ -328,11 +300,6 @@ public class Board extends Subject
             this.stepMode = stepMode;
             notifyChange();
         }
-    }
-
-    public ArrayList<BoardElement> getBoardElementsWithIndex(int index)
-    {
-        return boardElements[index];
     }
 
     /**
@@ -415,7 +382,7 @@ public class Board extends Subject
         // the students, this method gives a string representation of the current
         // status of the game (specifically, it shows the phase, the player and the step)
 
-        return "Phase: " + getPhase().name() + ", Player = " + getCurrentPlayer().getName() + ", Step: " + getStep();
+        return "Phase: " + getPhase().name() + "Step: " + getStep();
 
     }
 
@@ -432,31 +399,13 @@ public class Board extends Subject
      * @return the current player
      * @author Elias
      */
-    public Player getCurrentPlayer()
-    {
-        return current;
-    }
+
 
     /**
      * @param player the player to be set as the current player
      * @author Elias
      */
-    public void setCurrentPlayer(Player player)
-    {
-        if (player != this.current && players.contains(player))
-        {
-            if (this.current != null)
-            {
-                this.current.setThisPlayerTurn(false);
-            }
-            this.current = player;
-            if (player != null)
-            {
-                player.setThisPlayerTurn(true);
-            }
-            notifyChange();
-        }
-    }
+
 
     /**
      * @return the list of players on the board
@@ -496,28 +445,7 @@ public class Board extends Subject
     /**
      * @author Elias
      */
-    public void nextPlayerTurn()
-    {
-        boolean nextPlayerToBe = false;
-        for (Player player : players)
-        {
-            if (nextPlayerToBe)
-            {
-                this.setCurrentPlayer(player);
-                nextPlayerToBe = false;
-                break;
-            }
-            if (player.equals(current))
-            {
-                nextPlayerToBe = true;
-            }
-        }
-        if (nextPlayerToBe)
-        {
-            setCurrentPlayer(players.get(0));
-        }
 
-    }
 
     /**
      * @param checkpoint
@@ -533,10 +461,7 @@ public class Board extends Subject
      * @return
      * @author Elias
      */
-    public boolean playerIsLast()
-    {
-        return players.get(players.size() - 1).equals(current);
-    }
+
 
     /**
      * @return
@@ -564,19 +489,58 @@ public class Board extends Subject
         }
     }
 
-    public Space getAvailableSpawnPoint() {
+    public Space getAvailableSpawnPoint()
+    {
         ArrayList<BoardElement> notactivateables = this.getBoardElementsWithIndex(Board.NOT_ACTIVATE_ABLE_INDEX);
         Space lowestYSpace = null;
-        for (BoardElement element : notactivateables) {
-            if (element instanceof SpawnPoint) {
-                SpawnPoint spawnPoint = (SpawnPoint) element;
-                if (spawnPoint.getSpace().getPlayer() == null) {
-                    if (lowestYSpace == null || spawnPoint.getSpace().y < lowestYSpace.y) {
+        for (BoardElement element : notactivateables)
+        {
+            if (element instanceof SpawnPoint spawnPoint)
+            {
+                if (spawnPoint.getSpace().getPlayer() == null)
+                {
+                    if (lowestYSpace == null || spawnPoint.getSpace().y < lowestYSpace.y)
+                    {
                         lowestYSpace = spawnPoint.getSpace();
                     }
                 }
             }
         }
         return lowestYSpace;
+    }
+
+    public ArrayList<BoardElement> getBoardElementsWithIndex(int index)
+    {
+        return boardElements[index];
+    }
+
+    public Long getPlayerID()
+    {
+        return playerID;
+    }
+
+    public void setPlayerID(Long playerID)
+    {
+        this.playerID = playerID;
+    }
+
+    public Long getGameID()
+    {
+        return gameID;
+    }
+
+    public void setGameID(Long gameID)
+    {
+        this.gameID = gameID;
+    }
+
+    public int getTurnID()
+    {
+        return turnID;
+    }
+
+    public void setTurnID(int turnID)
+    {
+        this.turnID = turnID;
     }
 }

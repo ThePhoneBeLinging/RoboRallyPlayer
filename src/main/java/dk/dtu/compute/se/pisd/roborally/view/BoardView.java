@@ -22,16 +22,24 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
+import dk.dtu.compute.se.pisd.roborally.ConversionUtil;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * ...
@@ -42,13 +50,12 @@ public class BoardView extends VBox implements ViewObserver
 {
 
     private final Board board;
-
     private final GridPane mainBoardPane;
     private final SpaceView[][] spaces;
-
     private final PlayersView playersView;
-
     private final Label statusLabel;
+    RestTemplate restTemplate = new RestTemplate();
+    TextArea lobbyContent;
 
 
     /**
@@ -94,7 +101,40 @@ public class BoardView extends VBox implements ViewObserver
         {
             Phase phase = board.getPhase();
             statusLabel.setText(board.getStatusMessage());
+            updateGameBoard();
         }
+    }
+
+    private void updateGameBoard()
+    {
+        String gameID = "gameID=" + this.board.getGameID();
+        String turnID = "TurnID=" + this.board.getTurnID();
+        String playerID = "&playerID" + this.board.getPlayerID();
+        String lobbyUrl = "http://localhost:8080/lobby/get/boards/single?" + gameID + turnID + playerID;
+
+        new Thread(() -> {
+            try
+            {
+                ResponseEntity<CompleteGame> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<CompleteGame>()
+                {
+                });
+                CompleteGame serverBoard = response.getBody();
+
+                Platform.runLater(() -> setBoardToServerBoard(serverBoard));
+            }
+            catch (Exception e)
+            {
+                //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
+            }
+
+        }).start();
+    }
+
+    private void setBoardToServerBoard(dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame serverBoard)
+    {
+        Board board = ConversionUtil.fromServerBoardToGameBoard(serverBoard);
+        System.out.println("DEAN");
     }
 
     // XXX this handler and its uses should eventually be deleted! This is just to help test the
@@ -104,7 +144,8 @@ public class BoardView extends VBox implements ViewObserver
      * @author Frederik
      */
     // one line is currently commented out as our moveCurrentPlayerToSpace is in MoveController
-    private class SpaceEventHandler implements EventHandler<MouseEvent> {
+    private class SpaceEventHandler implements EventHandler<MouseEvent>
+    {
 
         final public GameController gameController;
 
@@ -112,7 +153,8 @@ public class BoardView extends VBox implements ViewObserver
          * @param gameController
          * @author
          */
-        public SpaceEventHandler(@NotNull GameController gameController) {
+        public SpaceEventHandler(@NotNull GameController gameController)
+        {
             this.gameController = gameController;
         }
 
@@ -121,14 +163,16 @@ public class BoardView extends VBox implements ViewObserver
          * @author Frederik
          */
         @Override
-        public void handle(MouseEvent event) {
+        public void handle(MouseEvent event)
+        {
             Object source = event.getSource();
-            if (source instanceof SpaceView) {
-                SpaceView spaceView = (SpaceView) source;
+            if (source instanceof SpaceView spaceView)
+            {
                 Space space = spaceView.space;
                 Board board = space.board;
 
-                if (board == gameController.board) {
+                if (board == gameController.board)
+                {
                     // gameController.moveCurrentPlayerToSpace(space);
                     event.consume();
                 }

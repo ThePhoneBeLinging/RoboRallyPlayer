@@ -23,9 +23,11 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.model.CardField;
+import dk.dtu.compute.se.pisd.roborally.model.Player;
+import dk.dtu.compute.se.pisd.roborally.model.UpgradeCard;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
@@ -57,12 +59,6 @@ public class PlayerView extends Tab implements ViewObserver
     private final CardFieldView[] programCardViews;
     private final CardFieldView[] cardViews;
 
-    private final VBox buttonPanel;
-
-    private final Button finishButton;
-    private final Button executeButton;
-    private final Button stepButton;
-    private final Button shopButton;
 
     private final VBox playerInteractionPanel;
 
@@ -91,7 +87,7 @@ public class PlayerView extends Tab implements ViewObserver
 
         energyCubesLabel = new Label("Energy Cubes: " + player.getEnergyCubes());
         rightPanel.getChildren().addAll(energyCubesLabel, upgradeCardsLabel);
-        horizontal.getChildren().addAll(top ,rightPanel);
+        horizontal.getChildren().addAll(top, rightPanel);
 
         this.setContent(horizontal);
 
@@ -118,21 +114,7 @@ public class PlayerView extends Tab implements ViewObserver
         //      players, but on the PlayersView (view for all players). This should be
         //      refactored.
 
-        finishButton = new Button("Finish Programming");
-        finishButton.setOnAction(e -> gameController.finishProgrammingPhase());
 
-        executeButton = new Button("Execute Program");
-        executeButton.setOnAction(e -> gameController.executePrograms());
-
-        stepButton = new Button("Execute Current Register");
-        stepButton.setOnAction(e -> gameController.executeStep());
-
-        shopButton = new Button("Upgrade Shop");
-        shopButton.setOnAction(e -> gameController.openShop());
-
-        buttonPanel = new VBox(finishButton, executeButton, stepButton, shopButton);
-        buttonPanel.setAlignment(Pos.CENTER_LEFT);
-        buttonPanel.setSpacing(3.0);
         // programPane.add(buttonPanel, Player.NO_REGISTERS, 0); done in update now
 
         playerInteractionPanel = new VBox();
@@ -166,131 +148,6 @@ public class PlayerView extends Tab implements ViewObserver
         }
     }
 
-    /**
-     * @param subject
-     * @author Elias, Mads & Emil
-     */
-    @Override
-    public void updateView(Subject subject)
-    {
-        if (subject == player.board)
-        {
-            for (int i = 0; i < Player.NO_REGISTERS; i++)
-            {
-                CardFieldView cardFieldView = programCardViews[i];
-                if (cardFieldView != null)
-                {
-                    if (player.board.getPhase() == Phase.PROGRAMMING)
-                    {
-                        cardFieldView.setBackground(CardFieldView.BG_DEFAULT);
-                        cardFieldView.setBorder(CardFieldView.BORDER_DEFAULT);
-                    }
-                    else
-                    {
-                        if (i < player.board.getStep())
-                        {
-                            cardFieldView.setBackground(CardFieldView.BG_DONE);
-                            cardFieldView.setBorder(CardFieldView.BORDER_DONE);
-                        }
-                        else if (i == player.board.getStep())
-                        {
-                            if (player.board.getCurrentPlayer() == player)
-                            {
-                                cardFieldView.setBackground(CardFieldView.BG_ACTIVE);
-                                cardFieldView.setBorder(CardFieldView.BORDER_ACTIVE);
-                            }
-                            else if (player.board.getPlayerNumber(player.board.getCurrentPlayer()) > player.board.getPlayerNumber(player))
-                            {
-                                cardFieldView.setBackground(CardFieldView.BG_DONE);
-                                cardFieldView.setBorder(CardFieldView.BORDER_DONE);
-                            }
-                            else
-                            {
-                                cardFieldView.setBackground(CardFieldView.BG_DEFAULT);
-                                cardFieldView.setBorder(CardFieldView.BORDER_DEFAULT);
-                            }
-                        }
-                        else
-                        {
-                            cardFieldView.setBackground(CardFieldView.BG_DEFAULT);
-                        }
-                    }
-                }
-            }
-
-            updateUpgradeCardsLabel();
-            updateEnergyCubesLabel();
-
-            if (player.board.getPhase() != Phase.PLAYER_INTERACTION)
-            {
-                if (!programPane.getChildren().contains(buttonPanel))
-                {
-                    programPane.getChildren().remove(playerInteractionPanel);
-                    programPane.add(buttonPanel, Player.NO_REGISTERS, 0);
-                }
-                switch (player.board.getPhase())
-                {
-                    case INITIALISATION:
-                        finishButton.setDisable(true);
-                        // XXX just to make sure that there is a way for the player to get
-                        //     from the initialization phase to the programming phase somehow!
-                        executeButton.setDisable(false);
-                        stepButton.setDisable(true);
-                        break;
-
-                    case PROGRAMMING:
-                        finishButton.setDisable(false);
-                        executeButton.setDisable(true);
-                        stepButton.setDisable(true);
-                        shopButton.setDisable(false);
-
-                        break;
-
-                    case ACTIVATION:
-                        finishButton.setDisable(true);
-                        executeButton.setDisable(false);
-                        stepButton.setDisable(false);
-                        shopButton.setDisable(true);
-                        break;
-
-                    default:
-                        finishButton.setDisable(true);
-                        executeButton.setDisable(true);
-                        stepButton.setDisable(true);
-                        shopButton.setDisable(true);
-                }
-
-
-            }
-            else
-            {
-                if (!programPane.getChildren().contains(playerInteractionPanel))
-                {
-                    programPane.getChildren().remove(buttonPanel);
-                    programPane.add(playerInteractionPanel, Player.NO_REGISTERS, 0);
-                }
-                playerInteractionPanel.getChildren().clear();
-
-                if (player.board.getCurrentPlayer() == player)
-                {
-                    if (player.getProgramField(player.board.getStep()).getCard().command.isInteractive())
-                    {
-                        for (int i = 0; i < player.getProgramField(player.board.getStep()).getCard().command.getOptions().size(); i++)
-                        {
-                            Command oneCommandToChoseBetween =
-                                    player.getProgramField(player.board.getStep()).getCard().command.getOptions().get(i);
-                            Button optionButton = new Button(oneCommandToChoseBetween.displayName);
-                            optionButton.setOnAction(e -> gameController.executeCommandOptionAndContinue(oneCommandToChoseBetween));
-                            playerInteractionPanel.getChildren().add(optionButton);
-                            optionButton.setDisable(false);
-                        }
-
-                    }
-
-                }
-            }
-        }
-    }
 
     private void updateUpgradeCardsLabel()
     {
@@ -306,5 +163,23 @@ public class PlayerView extends Tab implements ViewObserver
     private void updateEnergyCubesLabel()
     {
         energyCubesLabel.setText("Energy Cubes: " + player.getEnergyCubes());
+    }
+
+    @Override
+    public void updateView(Subject subject)
+    {
+
+    }
+
+    @Override
+    public void update(Subject subject)
+    {
+        ViewObserver.super.update(subject);
+    }
+
+    @Override
+    public Node getStyleableNode()
+    {
+        return super.getStyleableNode();
     }
 }

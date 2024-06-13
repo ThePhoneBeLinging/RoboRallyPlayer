@@ -1,4 +1,4 @@
-package dk.dtu.compute.se.pisd.roborally.fileaccess.model;
+package dk.dtu.compute.se.pisd.roborally.APITypes;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

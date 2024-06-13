@@ -23,9 +23,8 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import dk.dtu.compute.se.pisd.roborally.view.UpgradeShopView;
-import org.jetbrains.annotations.NotNull;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Ekkart Kindler, ekki@dtu.dk
@@ -47,7 +46,8 @@ public class GameController
 
     }
 
-    public GameController(@NotNull Board board, RoboRally roboRally) {
+    public GameController(@NotNull Board board, RoboRally roboRally)
+    {
         this.board = board;
         this.moveController = new MoveController(this);
         this.roboRally = roboRally;
@@ -64,9 +64,6 @@ public class GameController
     {
         Stage primStage = roboRally.getStage();
 
-        UpgradeShopView upgradeShopView = new UpgradeShopView(board.getCurrentPlayer());
-        upgradeShopView.initOwner(primStage);
-        upgradeShopView.showAndWait();
     }
 
     /**
@@ -130,11 +127,7 @@ public class GameController
      * @author Elias
      */
     // XXX: implemented in the current version
-    public void executePrograms()
-    {
-        board.setStepMode(false);
-        continuePrograms();
-    }
+
 
     /**
      * Continues the execution of the programs of the players. This method should be called when the
@@ -142,14 +135,7 @@ public class GameController
      * @author Elias
      */
     // XXX: implemented in the current version
-    public void continuePrograms()
-    {
-        do
-        {
-            executeNextStep();
-        }
-        while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
-    }
+
 
     /**
      * Executes the next step in the programming deck. Used for single steps or executing the whole deck
@@ -157,58 +143,7 @@ public class GameController
      * @author Elias, Frederik, Emil & Adel
      */
     // XXX: implemented in the current version
-    private void executeNextStep()
-    {
-        Player currentPlayer = board.getCurrentPlayer();
-        if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null)
-        {
-            int step = board.getStep();
-            if (step >= 0 && step < Player.NO_REGISTERS)
-            {
-                Card card = currentPlayer.getProgramField(step).getCard();
-                if (card != null)
-                {
-                    if (card.command.isInteractive())
-                    {
-                        board.setPhase(Phase.PLAYER_INTERACTION);
-                        return;
-                    }
-                    Command command = card.command;
-                    moveController.executeCommand(currentPlayer, command);
-                }
-                int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
-                if (nextPlayerNumber < board.getPlayersNumber())
-                {
-                    board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
-                }
-                else
-                {
-                    step++;
-                    board.activateBoardElements();
-                    if (step < Player.NO_REGISTERS)
-                    {
-                        makeProgramFieldsVisible(step);
-                        board.setStep(step);
-                        board.setCurrentPlayer(board.getPlayer(0));
-                    }
-                    else
-                    {
-                        startProgrammingPhase();
-                    }
-                }
-            }
-            else
-            {
-                // this should not happen
-                assert false;
-            }
-        }
-        else
-        {
-            // this should not happen
-            assert false;
-        }
-    }
+
 
     /**
      * Starts the programming phase of the game. This method should be called when the game has begun
@@ -216,38 +151,7 @@ public class GameController
      * @author Elias, Adel & Frederik
      */
     // XXX: implemented in the current version
-    public void startProgrammingPhase()
-    {
-        board.setPhase(Phase.PROGRAMMING);
-        board.getPhase();
-        board.setCurrentPlayer(board.getPlayer(0));
-        board.setStep(0);
 
-        for (int i = 0; i < board.getPlayersNumber(); i++)
-        {
-            Player player = board.getPlayer(i);
-            if (player != null)
-            {
-                for (int j = 0; j < Player.NO_REGISTERS; j++)
-                {
-                    CardField field = player.getProgramField(j);
-                    player.addCardToDiscardPile(field.getCard());
-                    field.setCard(null);
-                    field.setVisible(true);
-                }
-                for (int j = 0; j < Player.NO_CARDS; j++)
-                {
-                    CardField field = player.getCardField(j);
-                    if (player.getCardField(j).getCard() != null)
-                    {
-                        player.addDamageCardToPile(player.getCardField(j).getCard().command, 1);
-                    }
-                    field.setCard(player.drawTopCard());
-                    field.setVisible(true);
-                }
-            }
-        }
-    }
 
     /**
      * Executes the command option and continues the program. This method should be called when the player has chosen
@@ -257,33 +161,6 @@ public class GameController
      * @author Emil
      */
 
-    public void executeCommandOptionAndContinue(Command commandOption)
-    {
-        Player currentPlayer = board.getCurrentPlayer();
-        moveController.executeCommand(currentPlayer, commandOption);
-        board.setPhase(Phase.ACTIVATION);
-        int step = board.getStep();
-        int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
-        if (nextPlayerNumber < board.getPlayersNumber())
-        {
-            board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
-        }
-        else
-        {
-            step++;
-            board.activateBoardElements();
-            if (step < Player.NO_REGISTERS)
-            {
-                makeProgramFieldsVisible(step);
-                board.setStep(step);
-                board.setCurrentPlayer(board.getPlayer(0));
-            }
-            else
-            {
-                startProgrammingPhase();
-            }
-        }
-    }
 
     /**
      * @return new Card with random commands
@@ -303,11 +180,6 @@ public class GameController
      * @author Elias
      */
     // XXX: implemented in the current version
-    public void executeStep()
-    {
-        board.setStepMode(true);
-        continuePrograms();
-    }
 
     /**
      * @param source
