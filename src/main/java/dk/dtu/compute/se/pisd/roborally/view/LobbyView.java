@@ -1,6 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.model.Lobby;
 import javafx.application.Platform;
 import javafx.scene.control.*;
@@ -20,13 +21,15 @@ public class LobbyView extends VBox {
     private TextArea chatArea;
     private VBox lobbyList;
     private HBox hBox;
+    private AppController appController;
 
     RestTemplate restTemplate = new RestTemplate();
     String url = "http://localhost:8080/lobby/getAll";
 
     //List response = restTemplate.getForObject(url, List.class);
 
-    public LobbyView() {
+    public LobbyView(AppController appController) {
+        this.appController = appController;
         hBox = new HBox();
         searchBar = new TextField();
         searchBar.setPromptText("Search lobbies...");
@@ -47,6 +50,11 @@ public class LobbyView extends VBox {
 
     public TextArea getChatArea() {
         return chatArea;
+    }
+
+    public void joinLobbyView() {
+        System.out.println("Joined Lobby View");
+        this.appController.joinLobby();
     }
 
     private void fetchLobbies() {
@@ -72,12 +80,14 @@ public class LobbyView extends VBox {
                 ResponseEntity<Lobby> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null, new ParameterizedTypeReference<Lobby>() {
                 });
                 Lobby lobbies = response.getBody();
+                chatArea.appendText("Joined Lobby: " + lobbies.getGameID() + "\n");
 
             } catch (Exception e) {
                 Platform.runLater(() -> chatArea.setText("Failed to join lobbies: " + e.getMessage()));
             }
 
         }).start();
+        joinLobbyView();
     }
 
     private void populateVBox(List<Long> lobbies) {

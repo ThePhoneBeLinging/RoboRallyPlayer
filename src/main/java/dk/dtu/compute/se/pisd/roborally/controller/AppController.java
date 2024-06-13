@@ -30,6 +30,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.SpawnPoint;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.view.JoinedLobbyView;
 import dk.dtu.compute.se.pisd.roborally.view.LobbyView;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -205,8 +206,12 @@ public class AppController implements Observer
 
     public void joinGame() {
         System.out.println("Join Pressed");
-        LobbyView lobbyView = new LobbyView();
+        LobbyView lobbyView = new LobbyView(this);
         roboRally.createLobbyView(lobbyView);
+    }
+
+    public void joinLobby() {
+        roboRally.createJoinedLobbyView(new JoinedLobbyView(this));
     }
 
 
