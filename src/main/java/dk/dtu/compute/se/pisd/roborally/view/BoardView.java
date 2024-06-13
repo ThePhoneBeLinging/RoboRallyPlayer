@@ -49,13 +49,13 @@ import org.springframework.web.client.RestTemplate;
 public class BoardView extends VBox implements ViewObserver
 {
 
-    private final Board board;
     private final GridPane mainBoardPane;
     private final SpaceView[][] spaces;
     private final PlayersView playersView;
     private final Label statusLabel;
     RestTemplate restTemplate = new RestTemplate();
     TextArea lobbyContent;
+    private Board board;
 
 
     /**
@@ -134,7 +134,7 @@ public class BoardView extends VBox implements ViewObserver
     private void setBoardToServerBoard(dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame serverBoard)
     {
         Board board = ConversionUtil.fromServerBoardToGameBoard(serverBoard);
-        System.out.println("DEAN");
+        this.board = board;
     }
 
     // XXX this handler and its uses should eventually be deleted! This is just to help test the

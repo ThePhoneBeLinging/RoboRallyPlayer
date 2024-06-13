@@ -56,6 +56,7 @@ public class JoinedLobbyView extends HBox
 
     private void switchToBoardView()
     {
+        //TODO Change line below...
         this.boardName = "dizzyHighway";
         this.appController.startGameFromBoard(boardName);
     }

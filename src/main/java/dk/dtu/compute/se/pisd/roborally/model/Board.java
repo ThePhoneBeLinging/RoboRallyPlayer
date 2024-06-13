@@ -114,7 +114,12 @@ public class Board extends Subject
         this.activateBoardElements();
 
         this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
-        notifyChange();
+        int i = 0;
+        while (i < 10)
+        {
+            notifyChange();
+            i++;
+        }
     }
 
     /**
