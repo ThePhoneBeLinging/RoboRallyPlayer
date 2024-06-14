@@ -77,6 +77,16 @@ public class Board extends Subject
     private Long playerID;
     private Long gameID;
 
+    private String URL;
+
+    public void updateURL()
+    {
+        String playerID = "&playerID=" + this.getPlayerID();
+        String gameID = "gameID=" + this.getGameID();
+        String turnID = "&TurnID=" + this.getTurnID();
+        this.URL = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
+    }
+
     /**
      * @param width  the width of the board
      * @param height the height of the board
@@ -166,20 +176,21 @@ public class Board extends Subject
 
     public void updateGameBoard()
     {
+
         while (keepUpdatingBoard)
         {
 
-            String gameID = "gameID=" + this.getGameID();
-            String turnID = "&TurnID=" + this.getTurnID();
-            String playerID = "&playerID=" + this.getPlayerID();
+
+
+
             if (this.getGameID() == null || this.getPlayerID() == null)
             {
                 continue;
             }
-            String lobbyUrl = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
+
             try
             {
-                ResponseEntity<CompleteGame> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
+                ResponseEntity<CompleteGame> response = restTemplate.exchange(this.URL, HttpMethod.GET, null,
                         new ParameterizedTypeReference<CompleteGame>()
                 {
                 });
