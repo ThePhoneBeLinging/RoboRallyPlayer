@@ -23,6 +23,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
+import dk.dtu.compute.se.pisd.roborally.APITypes.Player.Card;
 import dk.dtu.compute.se.pisd.roborally.ConversionUtil;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.BoardElement;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
@@ -234,6 +235,18 @@ public class Board extends Subject
                         player.setSpace(this.getSpace(x, y));
                     }
                     player.setHeading(player1.getHeading());
+
+                    int i = 0;
+                    while (player1.getProgramField(i).getCard() != null) {
+                        player.getProgramField(i).setCard(player1.getProgramField(i).getCard());
+                        i++;
+                    }
+
+                    i = 0;
+                    while (player1.getCardField(i).getCard() != null) {
+                        player.getCardField(i).setCard(player1.getCardField(i).getCard());
+                        i++;
+                    }
                 }
             }
         }
