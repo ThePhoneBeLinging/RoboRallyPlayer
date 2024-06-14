@@ -101,41 +101,10 @@ public class BoardView extends VBox implements ViewObserver
         {
             Phase phase = board.getPhase();
             statusLabel.setText(board.getStatusMessage());
-            updateGameBoard();
         }
     }
 
-    private void updateGameBoard()
-    {
-        String gameID = "gameID=" + this.board.getGameID();
-        String turnID = "&TurnID=" + this.board.getTurnID();
-        String playerID = "&playerID=" + this.board.getPlayerID();
-        String lobbyUrl = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
 
-        new Thread(() -> {
-            try
-            {
-                ResponseEntity<CompleteGame> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<CompleteGame>()
-                {
-                });
-                CompleteGame serverBoard = response.getBody();
-
-                Platform.runLater(() -> setBoardToServerBoard(serverBoard));
-            }
-            catch (Exception e)
-            {
-                //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
-            }
-
-        }).start();
-    }
-
-    private void setBoardToServerBoard(dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame serverBoard)
-    {
-        Board board = ConversionUtil.fromServerBoardToGameBoard(serverBoard);
-        this.board = board;
-    }
 
     // XXX this handler and its uses should eventually be deleted! This is just to help test the
     //     behaviour of the game by being able to explicitly move the players on the board!

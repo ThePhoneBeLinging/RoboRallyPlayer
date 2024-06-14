@@ -10,6 +10,8 @@ import dk.dtu.compute.se.pisd.roborally.model.Command;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
+import java.util.Objects;
+
 public class ConversionUtil
 {
     public static Board fromServerBoardToGameBoard(CompleteGame serverBoard)
@@ -40,12 +42,15 @@ public class ConversionUtil
                     new dk.dtu.compute.se.pisd.roborally.model.Card(Command.valueOf(card.getCommand()));
             for (int i = 0; i < gameBoard.getPlayersNumber(); i++)
             {
+                if (!Objects.equals(gameBoard.getPlayerID(), gameBoard.getPlayer(i).getPlayerID())) {
+                    continue;
+                }
                 dk.dtu.compute.se.pisd.roborally.model.Player gamePlayer = gameBoard.getPlayer(i);
                 switch (card.getLocation())
                 {
                     case "REGISTER":
                         int k = 0;
-                        while (gamePlayer.getProgramField(k) == null)
+                        while (gamePlayer.getProgramField(k).getCard() == null && k < 4)
                         {
                             k++;
                         }
@@ -53,7 +58,7 @@ public class ConversionUtil
                         break;
                     case "HAND":
                         int j = 0;
-                        while (gamePlayer.getCardField(j) == null)
+                        while (gamePlayer.getCardField(j).getCard() == null && j < 7)
                         {
                             j++;
                         }
