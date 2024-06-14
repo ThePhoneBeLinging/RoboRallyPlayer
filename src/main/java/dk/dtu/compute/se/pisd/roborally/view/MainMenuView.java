@@ -67,6 +67,7 @@ public class MainMenuView extends VBox
         imageView.setFitWidth(350);
         imageView.setPreserveRatio(true);
         button.setGraphic(imageView);
+        button.setStyle("-fx-background-color: transparent;");
         return button;
     }
     private Label createLabel(String imagePath, String tooltipText) {
