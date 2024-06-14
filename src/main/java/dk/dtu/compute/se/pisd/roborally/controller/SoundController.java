@@ -105,4 +105,10 @@ public class SoundController {
         }
     }
 
+    public void soundOn() {
+        isStopped = false; // set the flag to false when turning the sound on
+        if (clip != null) {
+            clip.start();
+        }
+    }
 }

@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
+import dk.dtu.compute.se.pisd.roborally.controller.SoundController;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -38,7 +39,11 @@ public class RoboRallyMenuBar extends MenuBar {
 
     private AppController appController;
 
+    SoundController sc = SoundController.getInstance();
+
     private Menu controlMenu;
+
+    private Menu soundMenu;
 
     private MenuItem saveGame;
 
@@ -49,6 +54,10 @@ public class RoboRallyMenuBar extends MenuBar {
     private MenuItem stopGame;
 
     private MenuItem exitApp;
+
+    private MenuItem soundOn;
+
+    private MenuItem soundOff;
 
     /**
      * @param appController
@@ -62,6 +71,17 @@ public class RoboRallyMenuBar extends MenuBar {
 
         controlMenu = new Menu("File");
         this.getMenus().add(controlMenu);
+
+        soundMenu = new Menu("Sound");
+        this.getMenus().add(soundMenu);
+
+        soundOn = new MenuItem("Sound On");
+        soundOn.setOnAction(e->this.sc.soundOn());
+        soundMenu.getItems().add(soundOn);
+
+        soundOff = new MenuItem("Mute");
+        soundOff.setOnAction(e->this.sc.stopSound());
+        soundMenu.getItems().add(soundOff);
 
 
         newGame = new MenuItem();
