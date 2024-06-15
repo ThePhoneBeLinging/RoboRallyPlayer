@@ -245,14 +245,40 @@ public class Board extends Subject
                 gameBoardPlayer.setPlayerID(player.getPlayerID());
             }
         }
+        boolean toLoadNewCards = false;
+        for (int i = 0; i < this.getPlayersNumber(); i++)
+        {
+            Player player = this.getPlayer(i);
+            if (this.playerID.equals(player.getPlayerID()))
+            {
+                int k = 0;
+                while (!toLoadNewCards && player.getProgramField(k).getCard() == null)
+                {
+                    k++;
+                    if (k == Player.NO_REGISTERS)
+                        toLoadNewCards = true;
+                }
+                int j = 0;
+                while (! toLoadNewCards && player.getCardField(j).getCard() == null)
+                {
+                    j++;
+                    if (j == Player.NO_CARDS)
+                    {
+                        toLoadNewCards = true;
+                    }
+                }
+            }
+        }
 
+        if (toLoadNewCards)
+        {
         for (Card card : serverBoard.getCards())
         {
-            dk.dtu.compute.se.pisd.roborally.model.Card cardToAdd =
-                    new dk.dtu.compute.se.pisd.roborally.model.Card(Command.valueOf(card.getCommand()));
+            dk.dtu.compute.se.pisd.roborally.model.Card cardToAdd = new dk.dtu.compute.se.pisd.roborally.model.Card(Command.valueOf(card.getCommand()));
             for (int i = 0; i < this.getPlayersNumber(); i++)
             {
-                if (!Objects.equals(this.getPlayerID(), this.getPlayer(i).getPlayerID())) {
+                if (!Objects.equals(this.getPlayerID(), this.getPlayer(i).getPlayerID()))
+                {
                     continue;
                 }
                 dk.dtu.compute.se.pisd.roborally.model.Player gamePlayer = this.getPlayer(i);
@@ -277,6 +303,7 @@ public class Board extends Subject
                 }
             }
         }
+    }
         notifyChange();
     }
 
