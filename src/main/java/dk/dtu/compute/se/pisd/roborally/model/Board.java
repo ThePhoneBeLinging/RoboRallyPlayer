@@ -191,14 +191,13 @@ public class Board extends Subject
                 {
                 });
                 CompleteGame serverBoard = response.getBody();
+                copyData(serverBoard);
                 Thread.sleep(2500);
-                Platform.runLater(() -> copyData(serverBoard));
             }
             catch (Exception e)
             {
                 //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
             }
-            keepUpdatingBoard = false;
         }
     }
 
