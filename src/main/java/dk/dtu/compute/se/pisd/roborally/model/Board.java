@@ -132,7 +132,7 @@ public class Board extends Subject
         new Checkpoint(spaces[7][7]);
         */
         this.activateBoardElements();
-
+        this.updateURL();
         this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
         this.updateBoard = new Thread(() -> {
             try
@@ -179,15 +179,12 @@ public class Board extends Subject
 
         while (keepUpdatingBoard)
         {
-
-
-
-
+            updateURL();
             if (this.getGameID() == null || this.getPlayerID() == null)
             {
+
                 continue;
             }
-
             try
             {
                 ResponseEntity<CompleteGame> response = restTemplate.exchange(this.URL, HttpMethod.GET, null,
@@ -202,6 +199,7 @@ public class Board extends Subject
             {
                 //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
             }
+            keepUpdatingBoard = false;
         }
     }
 
