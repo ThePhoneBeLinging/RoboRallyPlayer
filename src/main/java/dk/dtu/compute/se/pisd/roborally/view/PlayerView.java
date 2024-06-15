@@ -28,6 +28,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.UpgradeCard;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
@@ -85,7 +86,8 @@ public class PlayerView extends Tab implements ViewObserver
         upgradeCardsLabel = new Label("Active Upgrade Cards");
 
         energyCubesLabel = new Label("Energy Cubes: " + player.getEnergyCubes());
-        rightPanel.getChildren().addAll(energyCubesLabel, upgradeCardsLabel);
+        Button submitCards = new Button("Submit Cards");
+        rightPanel.getChildren().addAll(energyCubesLabel,submitCards, upgradeCardsLabel);
         horizontal.getChildren().addAll(top, rightPanel);
 
         this.setContent(horizontal);
@@ -108,10 +110,6 @@ public class PlayerView extends Tab implements ViewObserver
                 programPane.add(programCardViews[i], i, 0);
             }
         }
-
-        // XXX  the following buttons should actually not be on the tabs of the individual
-        //      players, but on the PlayersView (view for all players). This should be
-        //      refactored.
 
 
         // programPane.add(buttonPanel, Player.NO_REGISTERS, 0); done in update now

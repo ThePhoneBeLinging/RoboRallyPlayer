@@ -248,12 +248,14 @@ public class Board extends Subject
                     while (player1.getProgramField(i).getCard() != null) {
                         player.getProgramField(i).setCard(player1.getProgramField(i).getCard());
                         i++;
+                        if (i == Player.NO_REGISTERS) break;
                     }
 
                     i = 0;
                     while (player1.getCardField(i).getCard() != null) {
                         player.getCardField(i).setCard(player1.getCardField(i).getCard());
                         i++;
+                        if (i == Player.NO_CARDS) break;
                     }
                 }
             }
