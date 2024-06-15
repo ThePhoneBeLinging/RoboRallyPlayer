@@ -14,9 +14,10 @@ import java.util.Objects;
 
 public class ConversionUtil
 {
-    public static Board fromServerBoardToGameBoard(CompleteGame serverBoard)
+    public static Board fromServerBoardToGameBoard(CompleteGame serverBoard, Long playerID)
     {
         Board gameBoard = LoadBoard.loadBoard(serverBoard.getBoard().getBoardname());
+        gameBoard.setPlayerID(playerID);
         GameController gameController = new GameController(gameBoard);
         gameBoard.setStep(serverBoard.getBoard().getStep());
         gameBoard.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
@@ -50,7 +51,7 @@ public class ConversionUtil
                 {
                     case "REGISTER":
                         int k = 0;
-                        while (gamePlayer.getProgramField(k).getCard() == null && k < 4)
+                        while (gamePlayer.getProgramField(k).getCard() != null)
                         {
                             k++;
                         }
@@ -58,7 +59,7 @@ public class ConversionUtil
                         break;
                     case "HAND":
                         int j = 0;
-                        while (gamePlayer.getCardField(j).getCard() == null && j < 7)
+                        while (gamePlayer.getCardField(j).getCard() != null)
                         {
                             j++;
                         }

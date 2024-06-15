@@ -229,7 +229,7 @@ public class Board extends Subject
 
     private void copyData(CompleteGame completeGame)
     {
-        Board boardToCopyFrom = ConversionUtil.fromServerBoardToGameBoard(completeGame);
+        Board boardToCopyFrom = ConversionUtil.fromServerBoardToGameBoard(completeGame,this.playerID);
         for (Player player : this.players)
         {
             for (Player player1 : boardToCopyFrom.players)
