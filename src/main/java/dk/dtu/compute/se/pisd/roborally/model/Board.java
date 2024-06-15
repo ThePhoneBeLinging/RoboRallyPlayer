@@ -81,8 +81,8 @@ public class Board extends Subject
 
     public void updateURL()
     {
-        String playerID = "&playerID=" + this.getPlayerID();
         String gameID = "gameID=" + this.getGameID();
+        String playerID = "&playerID=" + this.getPlayerID();
         String turnID = "&TurnID=" + this.getTurnID();
         this.URL = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
     }
@@ -180,9 +180,8 @@ public class Board extends Subject
         while (keepUpdatingBoard)
         {
             updateURL();
-            if (this.getGameID() == null || this.getPlayerID() == null)
+            if (this.URL.contains("null"))
             {
-
                 continue;
             }
             try
