@@ -24,12 +24,10 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.APITypes.Player.Card;
-import dk.dtu.compute.se.pisd.roborally.ConversionUtil;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.BoardElement;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.RebootToken;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.SpawnPoint;
-import javafx.application.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -191,7 +189,7 @@ public class Board extends Subject
                 {
                 });
                 CompleteGame serverBoard = response.getBody();
-                copyData(serverBoard);
+                fromServerBoardToGameBoard(serverBoard);
                 Thread.sleep(2500);
             }
             catch (Exception e)
@@ -225,37 +223,57 @@ public class Board extends Subject
     {
         return playerID;
     }
-
-    private void copyData(CompleteGame completeGame)
+    public void fromServerBoardToGameBoard(CompleteGame serverBoard)
     {
-        Board boardToCopyFrom = ConversionUtil.fromServerBoardToGameBoard(completeGame,this.playerID);
-        for (Player player : this.players)
+        this.setStep(serverBoard.getBoard().getStep());
+        this.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
+
+        for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
         {
-            for (Player player1 : boardToCopyFrom.players)
+            for (Player gameBoardPlayer : this.players)
             {
-                if (Objects.equals(player.getPlayerID(), player1.getPlayerID()))
+                if (!Objects.equals(player.getPlayerID(), gameBoardPlayer.getPlayerID()))
                 {
-                    if (player1.getSpace() != null)
-                    {
-                        int x = player1.getSpace().x;
-                        int y = player1.getSpace().y;
-                        player.setSpace(this.getSpace(x, y));
-                    }
-                    player.setHeading(player1.getHeading());
+                    continue;
+                }
+                gameBoardPlayer.setSpace(this.getSpace(player.getX(), player.getY()));
+                gameBoardPlayer.setLastVisitedCheckPoint(player.getLastVisitedCheckpoint());
+                gameBoardPlayer.setHeading(Heading.valueOf(player.getHeading()));
+                gameBoardPlayer.setMovedByConveyorThisTurn(player.isMovedByConveyorThisTurn());
+                gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
+                gameBoardPlayer.setThisPlayerTurn(player.isPlayersTurn());
+                gameBoardPlayer.setPlayerID(player.getPlayerID());
+            }
+        }
 
-                    int i = 0;
-                    while (player1.getProgramField(i).getCard() != null) {
-                        player.getProgramField(i).setCard(player1.getProgramField(i).getCard());
-                        i++;
-                        if (i == Player.NO_REGISTERS) break;
-                    }
-
-                    i = 0;
-                    while (player1.getCardField(i).getCard() != null) {
-                        player.getCardField(i).setCard(player1.getCardField(i).getCard());
-                        i++;
-                        if (i == Player.NO_CARDS) break;
-                    }
+        for (Card card : serverBoard.getCards())
+        {
+            dk.dtu.compute.se.pisd.roborally.model.Card cardToAdd =
+                    new dk.dtu.compute.se.pisd.roborally.model.Card(Command.valueOf(card.getCommand()));
+            for (int i = 0; i < this.getPlayersNumber(); i++)
+            {
+                if (!Objects.equals(this.getPlayerID(), this.getPlayer(i).getPlayerID())) {
+                    continue;
+                }
+                dk.dtu.compute.se.pisd.roborally.model.Player gamePlayer = this.getPlayer(i);
+                switch (card.getLocation())
+                {
+                    case "REGISTER":
+                        int k = 0;
+                        while (gamePlayer.getProgramField(k).getCard() != null)
+                        {
+                            k++;
+                        }
+                        gamePlayer.getProgramField(k).setCard(cardToAdd);
+                        break;
+                    case "HAND":
+                        int j = 0;
+                        while (gamePlayer.getCardField(j).getCard() != null)
+                        {
+                            j++;
+                        }
+                        gamePlayer.getCardField(j).setCard(cardToAdd);
+                        break;
                 }
             }
         }

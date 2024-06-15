@@ -133,7 +133,7 @@ public class LoadSavePlayer
         {
             reader = gson.newJsonReader(new InputStreamReader(inputStream));
             PlayerTemplate playerTemplate = gson.fromJson(reader, PlayerTemplate.class);
-            result = new Player(gameController.board, playerTemplate.name, gameController.moveController);
+            result = new Player(gameController.board, playerTemplate.name);
             result.activeCardsPile.playerCards.clear();
             for (Command command : playerTemplate.activeCards)
             {

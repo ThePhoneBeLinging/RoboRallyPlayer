@@ -66,13 +66,13 @@ public class Player extends Subject
      * @param name  the name of the player
      * @author Elias, Frederik & Emil
      */
-    public Player(@NotNull Board board, @NotNull String name, MoveController moveController)
+    public Player(@NotNull Board board, @NotNull String name)
     {
         this.board = board;
         this.name = name;
         this.color = "color";
         this.space = null;
-        this.moveController = moveController;
+        this.moveController = null;
         activeCardsPile = new Deck();
         activeCardsPile.initializeAPlayerDeck();
         activeCardsPile.shuffleDeck();
