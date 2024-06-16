@@ -294,6 +294,7 @@ public class Board extends Subject
                             {
                                 k++;
                             }
+                            cardToAdd.setCardNumber(k);
                             gamePlayer.getProgramField(k).setCard(cardToAdd);
                             break;
                         case "HAND":
@@ -302,6 +303,7 @@ public class Board extends Subject
                             {
                                 j++;
                             }
+                            cardToAdd.setCardNumber(j);
                             gamePlayer.getCardField(j).setCard(cardToAdd);
                             break;
                     }

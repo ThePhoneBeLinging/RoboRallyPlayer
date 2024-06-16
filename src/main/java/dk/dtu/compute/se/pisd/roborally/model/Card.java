@@ -35,6 +35,7 @@ public class Card extends Subject
 
     public Command command;
     private Image image;
+    private int cardNumber;
 
     /**
      * @param command the command represented by this card
@@ -44,7 +45,7 @@ public class Card extends Subject
     {
 
         this.command = command;
-           this.image = getImageBasedOnCommand(command);
+        this.image = getImageBasedOnCommand(command);
     }
 
     /**
@@ -101,6 +102,16 @@ public class Card extends Subject
     {
         this.command = command;
         this.image = image;
+    }
+
+    public int getCardNumber()
+    {
+        return cardNumber;
+    }
+
+    public void setCardNumber(int cardNumber)
+    {
+        this.cardNumber = cardNumber;
     }
 
     /**
