@@ -86,14 +86,15 @@ public class PlayerView extends Tab implements ViewObserver
         upgradeCardsLabel = new Label("Active Upgrade Cards");
 
         energyCubesLabel = new Label("Energy Cubes: " + player.getEnergyCubes());
-        Button submitCards = new Button("Submit Cards");
-        rightPanel.getChildren().addAll(energyCubesLabel,submitCards, upgradeCardsLabel);
         horizontal.getChildren().addAll(top, rightPanel);
 
         this.setContent(horizontal);
 
         this.gameController = gameController;
         this.player = player;
+        Button submitCards = new Button("Submit Cards");
+        submitCards.setOnAction(e->gameController.submitCards(this.player));
+        rightPanel.getChildren().addAll(energyCubesLabel,submitCards, upgradeCardsLabel);
 
         programLabel = new Label("Program");
 
