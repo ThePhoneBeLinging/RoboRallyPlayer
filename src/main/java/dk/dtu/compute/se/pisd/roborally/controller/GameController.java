@@ -215,21 +215,16 @@ public class GameController
 
     public void submitCards(Player player)
     {
-        boolean canSend = true;
         for (int i = 0; i < Player.NO_REGISTERS; i++)
         {
             Card card = player.getProgramField(i).getCard();
             if (card == null)
             {
-                canSend = false;
+                return;
             }
         }
-        if (canSend)
-        {
-            //TODO add function to submit cards, should also stop the player from doing anything with them
-            board.setHasSubmittedCards(true);
-            board.setPhase(Phase.ACTIVATION);
-
-        }
+        //TODO add function to submit cards, should also stop the player from doing anything with them
+        board.setHasSubmittedCards(true);
+        board.setPhase(Phase.ACTIVATION);
     }
 }
