@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
+import static dk.dtu.compute.se.pisd.roborally.model.Phase.*;
 
 /**
  * ...
@@ -76,14 +76,7 @@ public class Board extends Subject
     private Long gameID;
 
     private String URL;
-
-    public void updateURL()
-    {
-        String gameID = "gameID=" + this.getGameID();
-        String playerID = "&playerID=" + this.getPlayerID();
-        String turnID = "&TurnID=" + this.getTurnID();
-        this.URL = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
-    }
+    private boolean hasSubmittedCards = false;
 
     /**
      * @param width  the width of the board
@@ -172,6 +165,14 @@ public class Board extends Subject
         }
     }
 
+    public void updateURL()
+    {
+        String gameID = "gameID=" + this.getGameID();
+        String playerID = "&playerID=" + this.getPlayerID();
+        String turnID = "&TurnID=" + this.getTurnID();
+        this.URL = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
+    }
+
     public void updateGameBoard()
     {
 
@@ -209,6 +210,11 @@ public class Board extends Subject
         this.gameID = gameID;
     }
 
+    public Long getPlayerID()
+    {
+        return playerID;
+    }
+
     public int getTurnID()
     {
         return turnID;
@@ -216,13 +222,16 @@ public class Board extends Subject
 
     public void setTurnID(int turnID)
     {
-        this.turnID = turnID;
+        if (this.turnID != turnID)
+        {
+            if (turnID == 1)
+            {
+                hasSubmittedCards = false;
+            }
+            this.turnID = turnID;
+        }
     }
 
-    public Long getPlayerID()
-    {
-        return playerID;
-    }
     public void fromServerBoardToGameBoard(CompleteGame serverBoard)
     {
         this.setStep(serverBoard.getBoard().getStep());
@@ -256,10 +265,12 @@ public class Board extends Subject
                 {
                     k++;
                     if (k == Player.NO_REGISTERS)
+                    {
                         toLoadNewCards = true;
+                    }
                 }
                 int j = 0;
-                while (! toLoadNewCards && player.getCardField(j).getCard() == null)
+                while (!toLoadNewCards && player.getCardField(j).getCard() == null)
                 {
                     j++;
                     if (j == Player.NO_CARDS)
@@ -272,38 +283,39 @@ public class Board extends Subject
 
         if (toLoadNewCards)
         {
-        for (Card card : serverBoard.getCards())
-        {
-            dk.dtu.compute.se.pisd.roborally.model.Card cardToAdd = new dk.dtu.compute.se.pisd.roborally.model.Card(Command.valueOf(card.getCommand()));
-            for (int i = 0; i < this.getPlayersNumber(); i++)
+            for (Card card : serverBoard.getCards())
             {
-                if (!Objects.equals(this.getPlayerID(), this.getPlayer(i).getPlayerID()))
+                dk.dtu.compute.se.pisd.roborally.model.Card cardToAdd =
+                        new dk.dtu.compute.se.pisd.roborally.model.Card(Command.valueOf(card.getCommand()));
+                for (int i = 0; i < this.getPlayersNumber(); i++)
                 {
-                    continue;
-                }
-                dk.dtu.compute.se.pisd.roborally.model.Player gamePlayer = this.getPlayer(i);
-                switch (card.getLocation())
-                {
-                    case "REGISTER":
-                        int k = 0;
-                        while (gamePlayer.getProgramField(k).getCard() != null)
-                        {
-                            k++;
-                        }
-                        gamePlayer.getProgramField(k).setCard(cardToAdd);
-                        break;
-                    case "HAND":
-                        int j = 0;
-                        while (gamePlayer.getCardField(j).getCard() != null)
-                        {
-                            j++;
-                        }
-                        gamePlayer.getCardField(j).setCard(cardToAdd);
-                        break;
+                    if (!Objects.equals(this.getPlayerID(), this.getPlayer(i).getPlayerID()))
+                    {
+                        continue;
+                    }
+                    dk.dtu.compute.se.pisd.roborally.model.Player gamePlayer = this.getPlayer(i);
+                    switch (card.getLocation())
+                    {
+                        case "REGISTER":
+                            int k = 0;
+                            while (gamePlayer.getProgramField(k).getCard() != null)
+                            {
+                                k++;
+                            }
+                            gamePlayer.getProgramField(k).setCard(cardToAdd);
+                            break;
+                        case "HAND":
+                            int j = 0;
+                            while (gamePlayer.getCardField(j).getCard() != null)
+                            {
+                                j++;
+                            }
+                            gamePlayer.getCardField(j).setCard(cardToAdd);
+                            break;
+                    }
                 }
             }
         }
-    }
         notifyChange();
     }
 
@@ -325,9 +337,46 @@ public class Board extends Subject
         }
     }
 
+    /**
+     * @return the number of players on the board
+     * @author Elias
+     */
+    public int getPlayersNumber()
+    {
+        return players.size();
+    }
+
+    /**
+     * @param i the index of the player to be returned
+     * @return the player with the given index
+     * @author Elias
+     */
+    public Player getPlayer(int i)
+    {
+        i %= players.size();
+        if (i >= 0 && i < players.size())
+        {
+            return players.get(i);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public void setPlayerID(Long playerID)
     {
         this.playerID = playerID;
+    }
+
+    public boolean isHasSubmittedCards()
+    {
+        return hasSubmittedCards;
+    }
+
+    public void setHasSubmittedCards(boolean hasSubmittedCards)
+    {
+        this.hasSubmittedCards = hasSubmittedCards;
     }
 
     public ArrayList<UpgradeCard> getUpgradeCards()
@@ -338,15 +387,6 @@ public class Board extends Subject
     public void setUpgradeCards(ArrayList<UpgradeCard> upgradeCards)
     {
         this.upgradeCards = upgradeCards;
-    }
-
-    /**
-     * @return the number of players on the board
-     * @author Elias
-     */
-    public int getPlayersNumber()
-    {
-        return players.size();
     }
 
     public void buyUpgradeCard(Player player, UpgradeCard upgradeCard)
@@ -427,17 +467,6 @@ public class Board extends Subject
     }
 
     /**
-     * @author Elias
-     */
-    public void setTabNumbersOnPlayers()
-    {
-        for (int i = 0; i < players.size(); i++)
-        {
-            players.get(i).setPlayerID((long) i);
-        }
-    }
-
-    /**
      * @return the current player
      * @author Elias
      */
@@ -449,6 +478,17 @@ public class Board extends Subject
      */
 
     /**
+     * @author Elias
+     */
+    public void setTabNumbersOnPlayers()
+    {
+        for (int i = 0; i < players.size(); i++)
+        {
+            players.get(i).setPlayerID((long) i);
+        }
+    }
+
+    /**
      * @param player the player to be added to the board
      * @author Elias
      */
@@ -458,24 +498,6 @@ public class Board extends Subject
         {
             players.add(player);
             notifyChange();
-        }
-    }
-
-    /**
-     * @param i the index of the player to be returned
-     * @return the player with the given index
-     * @author Elias
-     */
-    public Player getPlayer(int i)
-    {
-        i %= players.size();
-        if (i >= 0 && i < players.size())
-        {
-            return players.get(i);
-        }
-        else
-        {
-            return null;
         }
     }
 
@@ -615,6 +637,10 @@ public class Board extends Subject
     {
         if (phase != this.phase)
         {
+            if (this.phase == ACTIVATION && phase == PROGRAMMING && this.hasSubmittedCards)
+            {
+                return;
+            }
             this.phase = phase;
             notifyChange();
         }
