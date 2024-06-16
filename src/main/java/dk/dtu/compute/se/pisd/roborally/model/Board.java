@@ -260,22 +260,14 @@ public class Board extends Subject
             Player player = this.getPlayer(i);
             if (this.playerID.equals(player.getPlayerID()))
             {
-                int k = 0;
-                while (!toLoadNewCards && player.getProgramField(k).getCard() == null)
-                {
-                    k++;
-                    if (k == Player.NO_REGISTERS)
-                    {
-                        toLoadNewCards = true;
-                    }
-                }
                 int j = 0;
-                while (!toLoadNewCards && player.getCardField(j).getCard() == null)
+                while (player.getCardField(j).getCard() == null)
                 {
                     j++;
                     if (j == Player.NO_CARDS)
                     {
                         toLoadNewCards = true;
+                        break;
                     }
                 }
             }
