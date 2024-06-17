@@ -61,7 +61,10 @@ public class JoinedLobbyView extends HBox
                 {
                 });
                 List<Long> players = response.getBody();
-                Platform.runLater(() -> updateOtherCount(players));
+                Platform.runLater(() -> {
+                    updateOtherCount(players);
+                    checkGamePhase();
+                });
 
             }
             catch (Exception e)
@@ -82,7 +85,11 @@ public class JoinedLobbyView extends HBox
                         new ParameterizedTypeReference<Boolean>()
                 {
                 });
-                Platform.runLater(this::switchToBoardView);
+
+                if (Boolean.TRUE.equals(response.getBody())) {
+                    Platform.runLater(this::switchToBoardView);
+                }
+
                 shutDownExecutorService();
 
             }
@@ -114,6 +121,31 @@ public class JoinedLobbyView extends HBox
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
         this.appController.startGameFromBoard(gameController);
+    }
+
+    private void checkGamePhase()
+    {
+        String lobbyUrl = "http://localhost:8080/lobby/getPhase?gameID=" + lobby.getGameID();
+
+        new Thread(() -> {
+            try
+            {
+                var response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<String>()
+                {
+                });
+                String phase = response.getBody();
+                if (phase.equals("PROGRAMMING"))
+                {
+                    Platform.runLater(this::switchToBoardView);
+                }
+
+            }
+            catch (Exception e)
+            {
+                Platform.runLater(() -> lobbyContent.appendText("Failed to check game phase: " + e.getMessage() + "\n"));
+            }
+        }).start();
     }
 
     public void shutDownExecutorService()
