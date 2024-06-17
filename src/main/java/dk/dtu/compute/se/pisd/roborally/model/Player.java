@@ -22,9 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.SoundController;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.NullBoardElement;
 import javafx.scene.image.Image;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,7 +68,6 @@ public class Player extends Subject
         this.name = name;
         this.color = "color";
         this.space = null;
-        this.moveController = null;
         activeCardsPile = new Deck();
         activeCardsPile.initializeAPlayerDeck();
         activeCardsPile.shuffleDeck();
@@ -373,47 +370,6 @@ public class Player extends Subject
         this.thisPlayerTurn = thisPlayerTurn;
     }
 
-    public void shoot()
-    {
-        Heading headingToCheck = this.getHeading();
-        Space spaceToCheck = this.getSpace();
-
-        while (spaceToCheck != null)
-        {
-            if (spaceToCheck.getPlayer() != null)
-            {
-                if (!spaceToCheck.getPlayer().equals(this))
-                {
-                    if (checkIfOwnsUpgradeCard("DOUBLE BARREL LASER"))
-                    {
-                        spaceToCheck.getPlayer().addDamageCardToPile(SPAM, 2);
-                        break;
-                    }
-                    else
-                    {
-                        spaceToCheck.getPlayer().addDamageCardToPile(SPAM, 1);
-                        break;
-                    }
-                }
-            }
-            Space nextSpace = spaceToCheck.board.getNeighbour(spaceToCheck, headingToCheck);
-            // We check if we were to hit a board element, and break if we do
-            if (spaceToCheck.getBoardElement() == null)
-            {
-                spaceToCheck.setBoardElement(new NullBoardElement(spaceToCheck));
-            }
-            if (!spaceToCheck.getBoardElement().getCanWalkOutOf(headingToCheck) || nextSpace == null || !nextSpace.getBoardElement().getCanWalkInto(headingToCheck))
-            {
-                break;
-            }
-            spaceToCheck = nextSpace;
-        }
-        if (this.getSpace().board.isStepMode())
-        {
-            SoundController sc = SoundController.getInstance();
-            sc.playSound("laser_sound");
-        }
-    }
 
     /**
      * @return the heading of the player
@@ -425,12 +381,51 @@ public class Player extends Subject
     }
 
     /**
+     * @param heading the heading of the player
+     * @author Elias
+     */
+    public void setHeading(@NotNull Heading heading)
+    {
+        if (heading != this.heading)
+        {
+            this.heading = heading;
+            notifyChange();
+            if (space != null)
+            {
+                space.playerChanged();
+            }
+        }
+    }
+
+    /**
      * @return the space on which the player is located
      * @author Elias
      */
     public Space getSpace()
     {
         return space;
+    }
+
+    /**
+     * @param space the space on which the player is located
+     * @author Elias
+     */
+    public void setSpace(Space space)
+    {
+        Space oldSpace = this.space;
+        if (space != oldSpace && (space == null || space.board == this.board))
+        {
+            this.space = space;
+            if (oldSpace != null)
+            {
+                oldSpace.setPlayer(null);
+            }
+            if (space != null)
+            {
+                space.setPlayer(this);
+            }
+            notifyChange();
+        }
     }
 
     /**
@@ -464,44 +459,5 @@ public class Player extends Subject
         }
 
 
-    }
-
-    /**
-     * @param space the space on which the player is located
-     * @author Elias
-     */
-    public void setSpace(Space space)
-    {
-        Space oldSpace = this.space;
-        if (space != oldSpace && (space == null || space.board == this.board))
-        {
-            this.space = space;
-            if (oldSpace != null)
-            {
-                oldSpace.setPlayer(null);
-            }
-            if (space != null)
-            {
-                space.setPlayer(this);
-            }
-            notifyChange();
-        }
-    }
-
-    /**
-     * @param heading the heading of the player
-     * @author Elias
-     */
-    public void setHeading(@NotNull Heading heading)
-    {
-        if (heading != this.heading)
-        {
-            this.heading = heading;
-            notifyChange();
-            if (space != null)
-            {
-                space.playerChanged();
-            }
-        }
     }
 }

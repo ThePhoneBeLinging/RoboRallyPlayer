@@ -210,7 +210,6 @@ public class LoadBoard
                 spaceTemplate.y = boardElement.getSpace().y;
                 BoardElementTemplate boardElementTemplate = new BoardElementTemplate();
                 boardElementTemplate.spaceTemplate = spaceTemplate;
-                boardElementTemplate.isWalkable = boardElement.getIsWalkable();
                 boardElementTemplate.heading = boardElement.getHeading();
                 switch (i)
                 {

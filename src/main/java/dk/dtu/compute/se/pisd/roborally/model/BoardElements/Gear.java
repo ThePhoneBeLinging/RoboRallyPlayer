@@ -31,22 +31,4 @@ public class Gear extends NullBoardElement
         space.board.addBoardElement(Board.GEARS_INDEX, this);
     }
 
-    /**
-     * @author Frederik
-     */
-    public void activate()
-    {
-        if (this.getSpace() == null || this.getSpace().getPlayer() == null)
-        {
-            return;
-        }
-        if (isClockwise)
-        {
-            getSpace().getPlayer().setHeading(getSpace().getPlayer().getHeading().next());
-        }
-        else
-        {
-            getSpace().getPlayer().setHeading(getSpace().getPlayer().getHeading().prev());
-        }
-    }
 }

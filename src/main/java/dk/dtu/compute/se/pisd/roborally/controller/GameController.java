@@ -31,31 +31,30 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Ekkart Kindler, ekki@dtu.dk
  */
-public class GameController {
+public class GameController
+{
     final public Board board;
-    final public MoveController moveController;
-    private RoboRally roboRally;
     private final RestTemplate restTemplate = new RestTemplate();
+    private RoboRally roboRally;
 
 
     /**
      * @param board
      * @author Elias
      */
-    public GameController(@NotNull Board board) {
+    public GameController(@NotNull Board board)
+    {
         this.board = board;
-        this.moveController = new MoveController(this);
 
     }
 
-    public GameController(@NotNull Board board, RoboRally roboRally) {
+    public GameController(@NotNull Board board, RoboRally roboRally)
+    {
         this.board = board;
-        this.moveController = new MoveController(this);
         this.roboRally = roboRally;
     }
 
@@ -66,7 +65,8 @@ public class GameController {
      * @Author Emil
      */
     // XXX: implemented in the current version
-    public void openShop() {
+    public void openShop()
+    {
         Stage primStage = roboRally.getStage();
 
     }
@@ -76,11 +76,11 @@ public class GameController {
      *
      * @author Elias
      */
-    public void finishProgrammingPhase() {
+    public void finishProgrammingPhase()
+    {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
         board.setPhase(Phase.ACTIVATION);
-        board.activateBoardElementsOfIndex(Board.ANTENNA_INDEX);
         board.setStep(0);
     }
 
@@ -90,10 +90,13 @@ public class GameController {
      * @author Elias & Frederik
      */
     // XXX: implemented in the current version
-    private void makeProgramFieldsInvisible() {
-        for (int i = 0; i < board.getPlayersNumber(); i++) {
+    private void makeProgramFieldsInvisible()
+    {
+        for (int i = 0; i < board.getPlayersNumber(); i++)
+        {
             Player player = board.getPlayer(i);
-            for (int j = 0; j < Player.NO_REGISTERS; j++) {
+            for (int j = 0; j < Player.NO_REGISTERS; j++)
+            {
                 CardField field = player.getProgramField(j);
                 field.setVisible(false);
             }
@@ -108,9 +111,12 @@ public class GameController {
      * @author Elias & Frederik
      */
     // XXX: implemented in the current version
-    private void makeProgramFieldsVisible(int register) {
-        if (register >= 0 && register < Player.NO_REGISTERS) {
-            for (int i = 0; i < board.getPlayersNumber(); i++) {
+    private void makeProgramFieldsVisible(int register)
+    {
+        if (register >= 0 && register < Player.NO_REGISTERS)
+        {
+            for (int i = 0; i < board.getPlayersNumber(); i++)
+            {
                 Player player = board.getPlayer(i);
                 CardField field = player.getProgramField(register);
                 field.setVisible(true);
@@ -165,7 +171,8 @@ public class GameController {
      * @author Elias & Frederik
      */
     // XXX: implemented in the current version
-    private Card generateRandomCommandCard() {
+    private Card generateRandomCommandCard()
+    {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
         return new Card(commands[random]);
@@ -184,14 +191,18 @@ public class GameController {
      * @return true if sourceCard is not null and targetCard is null, false otherwise
      * @author Frederik & Elias
      */
-    public boolean moveCards(@NotNull CardField source, @NotNull CardField target) {
+    public boolean moveCards(@NotNull CardField source, @NotNull CardField target)
+    {
         Card sourceCard = source.getCard();
         Card targetCard = target.getCard();
-        if (sourceCard != null && targetCard == null) {
+        if (sourceCard != null && targetCard == null)
+        {
             target.setCard(sourceCard);
             source.setCard(null);
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
@@ -200,7 +211,8 @@ public class GameController {
      * A method called when no corresponding controller operation is implemented yet. This
      * should eventually be removed.
      */
-    public void notImplemented() {
+    public void notImplemented()
+    {
         // XXX just for now to indicate that the actual method is not yet implemented
         assert false;
     }
@@ -236,11 +248,14 @@ public class GameController {
         {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<CompleteGame> response = restTemplate.exchange(url, HttpMethod.POST, entity,
-                    new ParameterizedTypeReference<>() {});
+                    new ParameterizedTypeReference<>()
+            {
+            });
 
             // TODO Handle the gameBoard received as response at some point
 
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             // TODO Handle exception at some point
         }

@@ -122,7 +122,6 @@ public class Board extends Subject
         spaces[3][3].setBoardElement(new CornerWall(Heading.NORTH, Heading.EAST, spaces[3][3]));
         new Checkpoint(spaces[7][7]);
         */
-        this.activateBoardElements();
         this.updateURL();
         this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
         this.updateBoard = new Thread(() -> {
@@ -142,28 +141,7 @@ public class Board extends Subject
     /**
      * @author Elias
      */
-    public void activateBoardElements()
-    {
-        for (int i = 0; i < boardElements.length; i++)
-        {
-            if (i == Board.ROBOT_LASER_INDEX)
-            {
-                for (Player player : players)
-                {
-                    player.shoot();
-                }
-                continue;
-            }
-            for (int k = 0; k < boardElements[i].size(); k++)
-            {
-                boardElements[i].get(k).activate();
-            }
-        }
-        for (Player player : players)
-        {
-            player.setMovedByConveyorThisTurn(false);
-        }
-    }
+
 
     private void updateURL()
     {
@@ -411,13 +389,6 @@ public class Board extends Subject
      * @param indexOfElementsToBeActivated
      * @author Elias
      */
-    public void activateBoardElementsOfIndex(int indexOfElementsToBeActivated)
-    {
-        for (BoardElement boardElement : boardElements[indexOfElementsToBeActivated])
-        {
-            boardElement.activate();
-        }
-    }
 
     /**
      * @param index
