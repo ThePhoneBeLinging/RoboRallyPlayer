@@ -44,6 +44,8 @@ public class JoinedLobbyView extends HBox
         lobbyContent.setEditable(false);
         lobbyContent.setMinWidth(500);
         lobbyContent.setMinHeight(100);
+        lobbyContent.appendText("Joined lobby with gameID: " + lobby.getGameID() + "\n");
+        lobbyContent.appendText("Joined as player: " + lobby.getPlayerID() + "\n");
         this.getChildren().addAll(startButton, lobbyContent);
     }
 
