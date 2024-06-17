@@ -43,6 +43,7 @@ public class LobbyView extends VBox
         chatArea.setMinSize(300, 700);
         chatArea.setEditable(true);
         Button updateLobbiesButton = new Button("Update Lobbies");
+        updateLobbiesButton.setMinSize(300, 30);
         updateLobbiesButton.setOnAction(e -> fetchLobbies());
         hBox.getChildren().addAll(lobbyList, chatArea);
         this.getChildren().addAll(searchBar, hBox, updateLobbiesButton);
