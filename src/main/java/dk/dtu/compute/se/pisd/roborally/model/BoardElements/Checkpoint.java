@@ -17,8 +17,4 @@ public class Checkpoint extends NullBoardElement
         setImage(new Image("file:src/main/resources/images/" + (index + 1) + ".png"));
     }
 
-    /**
-     * @author Elias
-     */
-
 }

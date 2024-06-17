@@ -26,8 +26,6 @@ import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.APITypes.Player.Card;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.BoardElement;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.RebootToken;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.SpawnPoint;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -64,12 +62,11 @@ public class Board extends Subject
     private final Space[][] spaces;
     private final List<Player> players = new ArrayList<>();
     private final RestTemplate restTemplate = new RestTemplate();
+    private final boolean stepMode;
+    private final Thread updateBoard;
     public boolean keepUpdatingBoard = true;
-    public Thread updateBoard;
-    private RebootToken[] rebootToken;
     private Phase phase = INITIALISATION;
     private int step = 0;
-    private boolean stepMode;
     private ArrayList<UpgradeCard> upgradeCards = new ArrayList<>();
     private int turnID;
     private Long playerID;
@@ -235,7 +232,7 @@ public class Board extends Subject
                 gameBoardPlayer.setLastVisitedCheckPoint(player.getLastVisitedCheckpoint());
                 gameBoardPlayer.setHeading(Heading.valueOf(player.getHeading()));
                 gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
-                
+
                 gameBoardPlayer.setPlayerID(player.getPlayerID());
             }
         }
@@ -368,97 +365,11 @@ public class Board extends Subject
         this.upgradeCards = upgradeCards;
     }
 
-    public void buyUpgradeCard(Player player, UpgradeCard upgradeCard)
-    {
-        if (player.getEnergyCubes() >= upgradeCard.getPrice())
-        {
-            player.addUpgradeCard(upgradeCard);
-            this.upgradeCards.remove(upgradeCard);
-            player.setEnergyCubes(player.getEnergyCubes() - upgradeCard.getPrice());
-            notifyChange();
-        }
-    }
-
-    public BoardElement getCheckPointAtIndex(int index)
-    {
-        return boardElements[CHECKPOINTS_INDEX].get(index);
-    }
-
-    /**
-     * @param indexOfElementsToBeActivated
-     * @author Elias
-     */
-
-    /**
-     * @param index
-     * @param boardElement
-     * @author Elias
-     */
     public void addBoardElement(int index, BoardElement boardElement)
     {
         this.boardElements[index].add(boardElement);
     }
 
-    /**
-     * @param space
-     * @return
-     * @author Elias
-     */
-    public Position getIndexOfSpace(Space space)
-    {
-        for (int i = 0; i < this.width; i++)
-        {
-            for (int k = 0; k < this.height; k++)
-            {
-                if (this.spaces[i][k] == space)
-                {
-                    return new Position(i, k);
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param playersArr, can contain null elements, these are ignored.
-     * @author Elias
-     */
-    public void setPlayers(Player[] playersArr)
-    {
-        this.players.clear();
-        for (Player player : playersArr)
-        {
-            if (player != null)
-            {
-                this.players.add(player);
-            }
-        }
-        if (this.players.isEmpty())
-        {
-        }
-    }
-
-    /**
-     * @return the current player
-     * @author Elias
-     */
-
-
-    /**
-     * @param player the player to be set as the current player
-     * @author Elias
-     */
-
-    /**
-     * @author Elias
-     */
-    public void setTabNumbersOnPlayers()
-    {
-        for (int i = 0; i < players.size(); i++)
-        {
-            players.get(i).setPlayerID((long) i);
-        }
-    }
 
     /**
      * @param player the player to be added to the board
@@ -473,88 +384,6 @@ public class Board extends Subject
         }
     }
 
-    /**
-     * @return the list of players on the board
-     * @author Elias
-     */
-    public boolean isStepMode()
-    {
-        return stepMode;
-    }
-
-    /**
-     * @author Elias
-     */
-
-    /**
-     * @param stepMode the step mode to be set
-     * @author Elias
-     */
-    public void setStepMode(boolean stepMode)
-    {
-        if (stepMode != this.stepMode)
-        {
-            this.stepMode = stepMode;
-            notifyChange();
-        }
-    }
-
-    /**
-     * @return
-     * @author Elias
-     */
-
-    /**
-     * @param player the player for which the number should be returned
-     * @return the number of the player on the board; -1 if the player is not on the board
-     * @author Elias
-     */
-    public int getPlayerNumber(@NotNull Player player)
-    {
-        if (player.board == this)
-        {
-            return players.indexOf(player);
-        }
-        else
-        {
-            return -1;
-        }
-    }
-
-    /**
-     * Returns the neighbour of the given space of the board in the given heading.
-     * The neighbour is returned only, if it can be reached from the given space
-     * (no walls or obstacles in either of the involved spaces); otherwise,
-     * null will be returned.
-     *
-     * @param space   the space for which the neighbour should be computed
-     * @param heading the heading of the neighbour
-     * @return the space in the given direction; null if there is no (reachable) neighbour
-     * @author Elias & Mads
-     */
-    public Space getNeighbour(@NotNull Space space, @NotNull Heading heading)
-    {
-        int x = space.x;
-        int y = space.y;
-
-        switch (heading)
-        {
-            case SOUTH:
-                y = y + 1;
-                break;
-            case WEST:
-                x = x - 1;
-                break;
-            case NORTH:
-                y = y - 1;
-                break;
-            case EAST:
-                x = x + 1;
-                break;
-        }
-
-        return getSpace(x, y);
-    }
 
     /**
      * @return the list of players on the board
@@ -618,64 +447,15 @@ public class Board extends Subject
         }
     }
 
-    /**
-     * @param checkpoint
-     * @return
-     * @author Elias
-     */
-    public int getIndexOfCheckPoint(Checkpoint checkpoint)
-    {
-        return this.boardElements[CHECKPOINTS_INDEX].indexOf(checkpoint);
-    }
-
-    /**
-     * @return
-     * @author Elias
-     */
-    public RebootToken getRebootToken()
-    {
-        return rebootToken[0];
-    }
-
-    /**
-     * @param rebootToken
-     * @author Elias
-     */
-    public void setRebootToken(RebootToken rebootToken)
-    {
-        this.rebootToken = new RebootToken[]{rebootToken};
-    }
-
-    public void deleteBoardElement(BoardElement boardElement)
-    {
-        for (int i = 0; i < boardElements.length; i++)
-        {
-            boardElements[i].remove(boardElement);
-        }
-    }
-
-    public Space getAvailableSpawnPoint()
-    {
-        ArrayList<BoardElement> notactivateables = this.getBoardElementsWithIndex(Board.NOT_ACTIVATE_ABLE_INDEX);
-        Space lowestYSpace = null;
-        for (BoardElement element : notactivateables)
-        {
-            if (element instanceof SpawnPoint spawnPoint)
-            {
-                if (spawnPoint.getSpace().getPlayer() == null)
-                {
-                    if (lowestYSpace == null || spawnPoint.getSpace().y < lowestYSpace.y)
-                    {
-                        lowestYSpace = spawnPoint.getSpace();
-                    }
-                }
-            }
-        }
-        return lowestYSpace;
-    }
-
     public ArrayList<BoardElement> getBoardElementsWithIndex(int index)
     {
         return boardElements[index];
+    }
+
+    public int getIndexOfCheckPoint(Checkpoint checkpoint)
+    {
+        List<BoardElement> checkpoints = boardElements[Board.CHECKPOINTS_INDEX];
+        return checkpoints.indexOf(checkpoint);
+
     }
 }

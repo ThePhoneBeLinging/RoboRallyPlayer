@@ -12,9 +12,10 @@ import javafx.scene.layout.VBox;
  * The player can select an upgrade from a list of available upgrades and purchase it if they have enough energy cubes.
  * If the player does not have enough energy cubes, an error alert will be shown.
  * If the player successfully purchases an upgrade, an information alert will be shown.
- * The dialog will return the selected upgrade card if the player clicks the purchase button, otherwise it will return null.
+ * The dialog will return the selected upgrade card if the player clicks the purchase button, otherwise it will
+ * return null.
+ *
  * @Author Emil
-
  */
 public class UpgradeShopView extends Dialog<UpgradeCard>
 {
@@ -69,7 +70,7 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
                 UpgradeCard selectedUpgrade = upgradeListView.getSelectionModel().getSelectedItem();
                 if (selectedUpgrade != null && player.getEnergyCubes() >= selectedUpgrade.getPrice())
                 {
-                    player.board.buyUpgradeCard(player, selectedUpgrade);
+                    player.addUpgradeCard(selectedUpgrade);
                     showUpgradePurchasedAlert(player, selectedUpgrade);
                 }
                 else
@@ -81,19 +82,20 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         });
     }
 
-
-    private void showNotEnoughEnergyCubesAlert() {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Not enough Energy Cubes");
-        alert.setHeaderText("You do not have enough Energy Cubes to purchase this upgrade.");
-        alert.showAndWait();
-    }
-
-    private void showUpgradePurchasedAlert(Player player, UpgradeCard upgradeCard) {
+    private void showUpgradePurchasedAlert(Player player, UpgradeCard upgradeCard)
+    {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Upgrade Purchased");
         alert.setHeaderText("You have successfully purchased the " + upgradeCard.getName() + " upgrade.");
         alert.setContentText("You now have " + player.getEnergyCubes() + " Energy Cubes left.");
+        alert.showAndWait();
+    }
+
+    private void showNotEnoughEnergyCubesAlert()
+    {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Not enough Energy Cubes");
+        alert.setHeaderText("You do not have enough Energy Cubes to purchase this upgrade.");
         alert.showAndWait();
     }
 }

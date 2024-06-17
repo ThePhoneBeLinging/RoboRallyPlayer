@@ -40,10 +40,8 @@ public class Space extends Subject
 
     public final int x;
     public final int y;
-
-    private Player player;
     private BoardElement boardElement;
-
+    private Player player;
     /**
      * @param board the board to which this space belongs
      * @param x     the x-coordinate of this space
@@ -68,18 +66,9 @@ public class Space extends Subject
         return boardElement;
     }
 
-    /**
-     * @param boardElement
-     * @author Frederik
-     */
     public void setBoardElement(BoardElement boardElement)
     {
-        if (this.boardElement != null)
-        {
-            this.board.deleteBoardElement(this.boardElement);
-        }
         this.boardElement = boardElement;
-        notifyChange();
     }
 
     /**

@@ -22,7 +22,6 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -84,13 +83,6 @@ public class Player extends Subject
         this.lastVisitedCheckPoint = lastVisitedCheckPoint;
     }
 
-    /**
-     * @author Elias
-     */
-    public void die()
-    {
-        this.board.getRebootToken().reboot(this);
-    }
 
     /**
      * @return the name of the player
@@ -148,19 +140,6 @@ public class Player extends Subject
         return upgradeCards;
     }
 
-    /**
-     * @param checkpoint
-     * @author Elias
-     */
-    public void addCheckPointAsVisited(Checkpoint checkpoint)
-    {
-        int indexOfCheckPoint = board.getIndexOfCheckPoint(checkpoint);
-
-        if (indexOfCheckPoint == lastVisitedCheckPoint)
-        {
-            lastVisitedCheckPoint++;
-        }
-    }
 
     /**
      * @return

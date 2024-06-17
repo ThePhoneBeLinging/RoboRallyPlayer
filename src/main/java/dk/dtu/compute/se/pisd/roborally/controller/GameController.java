@@ -125,67 +125,6 @@ public class GameController
     }
 
     /**
-     * Executes the registers of the players. This method should be called when the players have pressed the execute
-     * registers button.
-     *
-     * @author Elias
-     */
-    // XXX: implemented in the current version
-
-
-    /**
-     * Continues the execution of the programs of the players. This method should be called when the
-     *
-     * @author Elias
-     */
-    // XXX: implemented in the current version
-
-
-    /**
-     * Executes the next step in the programming deck. Used for single steps or executing the whole deck
-     *
-     * @author Elias, Frederik, Emil & Adel
-     */
-    // XXX: implemented in the current version
-
-
-    /**
-     * Starts the programming phase of the game. This method should be called when the game has begun
-     *
-     * @author Elias, Adel & Frederik
-     */
-    // XXX: implemented in the current version
-
-
-    /**
-     * Executes the command option and continues the program. This method should be called when the player has chosen
-     * an option for an interactive command.
-     *
-     * @param commandOption the command option to be executed
-     * @author Emil
-     */
-
-
-    /**
-     * @return new Card with random commands
-     * @author Elias & Frederik
-     */
-    // XXX: implemented in the current version
-    private Card generateRandomCommandCard()
-    {
-        Command[] commands = Command.values();
-        int random = (int) (Math.random() * commands.length);
-        return new Card(commands[random]);
-    }
-
-    /**
-     * Executes next step
-     *
-     * @author Elias
-     */
-    // XXX: implemented in the current version
-
-    /**
      * @param source
      * @param target
      * @return true if sourceCard is not null and targetCard is null, false otherwise
@@ -207,15 +146,6 @@ public class GameController
         }
     }
 
-    /**
-     * A method called when no corresponding controller operation is implemented yet. This
-     * should eventually be removed.
-     */
-    public void notImplemented()
-    {
-        // XXX just for now to indicate that the actual method is not yet implemented
-        assert false;
-    }
 
     public void submitCards(Player player)
     {
