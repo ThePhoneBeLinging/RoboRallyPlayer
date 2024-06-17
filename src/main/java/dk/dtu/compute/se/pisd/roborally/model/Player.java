@@ -22,7 +22,6 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.MoveController;
 import dk.dtu.compute.se.pisd.roborally.controller.SoundController;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.NullBoardElement;
@@ -45,7 +44,6 @@ public class Player extends Subject
     public static int NO_CARDS = 8;
     public static int NO_REGISTERS = 5;
     final public Board board;
-    public final MoveController moveController;
     public final Deck activeCardsPile;
     public final Deck discardedCardsPile;
     private final CardField[] program;
