@@ -49,7 +49,6 @@ public class GameController
     public GameController(@NotNull Board board)
     {
         this.board = board;
-
     }
 
     public GameController(@NotNull Board board, RoboRally roboRally)

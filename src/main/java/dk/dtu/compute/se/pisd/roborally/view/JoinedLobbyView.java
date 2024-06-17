@@ -1,5 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
+import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.APITypes.Lobby;
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
@@ -12,18 +13,20 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class JoinedLobbyView extends HBox
 {
+    private final ScheduledExecutorService executor;
     public List<Long> listOfPlayers = new ArrayList<>();
-    private ScheduledExecutorService executor;
     Button startButton;
     RestTemplate restTemplate = new RestTemplate();
     TextArea lobbyContent;
@@ -36,7 +39,7 @@ public class JoinedLobbyView extends HBox
         this.appController = appController;
         this.lobby = lobby;
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this::updatePlayerCount, 0, 1, TimeUnit.SECONDS);
+        executor.scheduleAtFixedRate(this::updateLobbyState, 0, 1, TimeUnit.SECONDS);
         startButton = new Button("Start Game");
         startButton.setOnAction(e -> this.startGame());
         startButton.setMinSize(500, 100);
@@ -49,29 +52,31 @@ public class JoinedLobbyView extends HBox
         this.getChildren().addAll(startButton, lobbyContent);
     }
 
-    private void updatePlayerCount()
+    private void updateLobbyState()
     {
-        String lobbyUrl = "http://localhost:8080/lobby/getPlayers?gameID=" + lobby.getGameID();
-
-        new Thread(() -> {
-            try
+        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID"
+                + "=" + lobby.getPlayerID();
+        try
+        {
+            ResponseEntity<CompleteGame> response = restTemplate.exchange(URL, HttpMethod.GET, null,
+                    new ParameterizedTypeReference<CompleteGame>()
             {
-                var response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<List<Long>>()
-                {
-                });
-                List<Long> players = response.getBody();
-                Platform.runLater(() -> {
-                    updateOtherCount(players);
-                    checkGamePhase();
-                });
-
-            }
-            catch (Exception e)
+            });
+            CompleteGame serverBoard = response.getBody();
+            this.listOfPlayers.clear();
+            for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
             {
-                Platform.runLater(() -> lobbyContent.appendText("Failed to join game: " + e.getMessage() + "\n"));
+                listOfPlayers.add(player.getPlayerID());
             }
-        }).start();
+            if (Objects.equals(serverBoard.getBoard().getPhase(), "PROGRAMMING"))
+            {
+                Platform.runLater(this::switchToBoardView);
+            }
+        }
+        catch (Exception e)
+        {
+            //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
+        }
     }
 
     private void startGame()
@@ -86,11 +91,10 @@ public class JoinedLobbyView extends HBox
                 {
                 });
 
-                if (Boolean.TRUE.equals(response.getBody())) {
+                if (Boolean.TRUE.equals(response.getBody()))
+                {
                     Platform.runLater(this::switchToBoardView);
                 }
-
-                shutDownExecutorService();
 
             }
             catch (Exception e)
@@ -100,13 +104,9 @@ public class JoinedLobbyView extends HBox
         }).start();
     }
 
-    private void updateOtherCount(List<Long> listOfPlayers)
-    {
-        this.listOfPlayers = listOfPlayers;
-    }
-
     private void switchToBoardView()
     {
+        executor.shutdown();
         //TODO Change line below...
         this.boardName = "dizzyHighway";
         Board board = LoadBoard.loadBoard(this.boardName);
@@ -121,35 +121,5 @@ public class JoinedLobbyView extends HBox
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
         this.appController.startGameFromBoard(gameController);
-    }
-
-    private void checkGamePhase()
-    {
-        String lobbyUrl = "http://localhost:8080/lobby/getPhase?gameID=" + lobby.getGameID();
-
-        new Thread(() -> {
-            try
-            {
-                var response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<String>()
-                {
-                });
-                String phase = response.getBody();
-                if (phase.equals("PROGRAMMING"))
-                {
-                    Platform.runLater(this::switchToBoardView);
-                }
-
-            }
-            catch (Exception e)
-            {
-                Platform.runLater(() -> lobbyContent.appendText("Failed to check game phase: " + e.getMessage() + "\n"));
-            }
-        }).start();
-    }
-
-    public void shutDownExecutorService()
-    {
-        executor.shutdown();
     }
 }
