@@ -16,10 +16,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class JoinedLobbyView extends HBox
 {
     public List<Long> listOfPlayers = new ArrayList<>();
+    private ScheduledExecutorService executor;
     Button startButton;
     RestTemplate restTemplate = new RestTemplate();
     TextArea lobbyContent;
@@ -31,7 +35,8 @@ public class JoinedLobbyView extends HBox
     {
         this.appController = appController;
         this.lobby = lobby;
-        updatePlayerCount();
+        executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(this::updatePlayerCount, 0, 1, TimeUnit.SECONDS);
         startButton = new Button("Start Game");
         startButton.setOnAction(e -> this.startGame());
         startButton.setMinSize(500, 100);
@@ -76,6 +81,7 @@ public class JoinedLobbyView extends HBox
                 {
                 });
                 Platform.runLater(this::switchToBoardView);
+                shutDownExecutorService();
 
             }
             catch (Exception e)
@@ -106,5 +112,10 @@ public class JoinedLobbyView extends HBox
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
         this.appController.startGameFromBoard(gameController);
+    }
+
+    public void shutDownExecutorService()
+    {
+        executor.shutdown();
     }
 }
