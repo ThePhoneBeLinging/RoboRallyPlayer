@@ -224,6 +224,11 @@ public class Board extends Subject
     {
         if (this.turnID != turnID)
         {
+            if (turnID == 30)
+            {
+                turnID = 1;
+            }
+            turnID %= 30;
             if (turnID == 1)
             {
                 hasSubmittedCards = false;
@@ -236,7 +241,10 @@ public class Board extends Subject
     {
         this.setStep(serverBoard.getBoard().getStep());
         this.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
-
+        if (serverBoard.getBoard().getPhase().equals("ACTIVATION"))
+        {
+            this.setTurnID(this.getTurnID() + 1);
+        }
         for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
         {
             for (Player gameBoardPlayer : this.players)
