@@ -204,6 +204,6 @@ public class GameController
             return "null";
         }
 
-        return "http://localhost:8080/get/boards/single?gameID=" + gameID + "&playerID=" + playerID + "&TurnID=" + turnID;
+        return "http://localhost:8080/set/player/cards";
     }
 }

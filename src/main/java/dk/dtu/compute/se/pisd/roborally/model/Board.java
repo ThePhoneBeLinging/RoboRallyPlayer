@@ -199,11 +199,10 @@ public class Board extends Subject
     {
         if (this.turnID != turnID)
         {
-            if (turnID == 30)
+            if (turnID == Player.NO_REGISTERS * this.getPlayersNumber())
             {
                 turnID = 1;
             }
-            turnID %= 30;
             if (turnID == 1)
             {
                 hasSubmittedCards = false;
