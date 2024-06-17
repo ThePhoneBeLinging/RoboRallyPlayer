@@ -596,7 +596,7 @@ public class Board extends Subject
         // the students, this method gives a string representation of the current
         // status of the game (specifically, it shows the phase, the player and the step)
 
-        return "Phase: " + getPhase().name() + "Step: " + getStep();
+        return "Phase: " + getPhase().name() + " Step: " + getStep() + " TurnID: " + getTurnID() + " PlayerID: " + getPlayerID() + "GameID: " + getGameID();
 
     }
 
