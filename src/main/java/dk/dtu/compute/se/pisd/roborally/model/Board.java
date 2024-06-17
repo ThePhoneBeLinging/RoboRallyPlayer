@@ -234,9 +234,8 @@ public class Board extends Subject
                 gameBoardPlayer.setSpace(this.getSpace(player.getX(), player.getY()));
                 gameBoardPlayer.setLastVisitedCheckPoint(player.getLastVisitedCheckpoint());
                 gameBoardPlayer.setHeading(Heading.valueOf(player.getHeading()));
-                gameBoardPlayer.setMovedByConveyorThisTurn(player.isMovedByConveyorThisTurn());
                 gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
-                gameBoardPlayer.setThisPlayerTurn(player.isPlayersTurn());
+                
                 gameBoardPlayer.setPlayerID(player.getPlayerID());
             }
         }

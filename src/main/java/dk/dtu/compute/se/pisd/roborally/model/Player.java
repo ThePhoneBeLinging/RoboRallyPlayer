@@ -23,12 +23,10 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
-import javafx.scene.image.Image;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static dk.dtu.compute.se.pisd.roborally.model.Command.*;
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
 /**
@@ -42,20 +40,15 @@ public class Player extends Subject
     public static int NO_CARDS = 8;
     public static int NO_REGISTERS = 5;
     final public Board board;
-    public final Deck activeCardsPile;
-    public final Deck discardedCardsPile;
     private final CardField[] program;
     private final ArrayList<UpgradeCard> upgradeCards = new ArrayList<>();
-    private CardField[] cards;
+    private final CardField[] cards;
     private int lastVisitedCheckPoint = 0;
     private String name;
-    private String color;
     private Space space;
     private Heading heading = SOUTH;
     private Long playerID;
-    private boolean movedByConveyorThisTurn;
     private int energyCubes;
-    private boolean thisPlayerTurn = false;
 
     /**
      * @param board the board to which this player belongs
@@ -66,12 +59,7 @@ public class Player extends Subject
     {
         this.board = board;
         this.name = name;
-        this.color = "color";
         this.space = null;
-        activeCardsPile = new Deck();
-        activeCardsPile.initializeAPlayerDeck();
-        activeCardsPile.shuffleDeck();
-        discardedCardsPile = new Deck();
         energyCubes = 0;
         program = new CardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++)
@@ -130,94 +118,9 @@ public class Player extends Subject
         }
     }
 
-    /**
-     * @return the color of the player
-     * @author Elias
-     */
-    public String getColor()
-    {
-        return color;
-    }
-
-    /**
-     * @param color the color of the player
-     * @author Elias
-     */
-    public void setColor(String color)
-    {
-        this.color = color;
-        notifyChange();
-        if (space != null)
-        {
-            space.playerChanged();
-        }
-    }
-
     public void addUpgradeCard(@NotNull UpgradeCard upgradeCard)
     {
         this.upgradeCards.add(upgradeCard);
-        if (upgradeCard.getName().equals("BRAKES"))
-        {
-            this.changeCardsOfCertainType(FORWARD, OPTION_FORWARD_OR_NOT);
-        }
-        if (upgradeCard.getName().equals("MEMORY STICK"))
-        {
-            NO_CARDS += 1;
-            CardField[] newCardArr = new CardField[NO_CARDS];
-            if (NO_CARDS - 1 >= 0)
-            {
-                System.arraycopy(this.cards, 0, newCardArr, 0, NO_CARDS - 1);
-            }
-            newCardArr[NO_CARDS - 1] = new CardField(this);
-            this.cards = new CardField[NO_CARDS];
-        }
-    }
-
-    private void changeCardsOfCertainType(Command cmd, Command newCommand)
-    {
-        Card card = new Card(newCommand);
-        Image image = card.getImage();
-
-        for (Card activeCards : this.activeCardsPile.playerCards)
-        {
-            if (activeCards.command == cmd)
-            {
-                activeCards.command = newCommand;
-                activeCards.setImage(image);
-            }
-        }
-        for (Card discardedCards : this.discardedCardsPile.playerCards)
-        {
-            if (discardedCards.command == cmd)
-            {
-                discardedCards.command = newCommand;
-                discardedCards.setImage(image);
-            }
-        }
-        for (int i = 0; i < Player.NO_CARDS; i++)
-        {
-            CardField cardField = this.getCardField(i);
-            if (cardField != null && cardField.getCard() != null)
-            {
-                if (cardField.getCard().command == cmd)
-                {
-                    cardField.getCard().command = newCommand;
-                    cardField.getCard().setImage(image);
-                }
-            }
-        }
-        for (int i = 0; i < Player.NO_REGISTERS; i++)
-        {
-            CardField cardField = this.getProgramField(i);
-            if (cardField != null && cardField.getCard() != null)
-            {
-                if (cardField.getCard().command == cmd)
-                {
-                    cardField.getCard().command = newCommand;
-                    cardField.getCard().setImage(image);
-                }
-            }
-        }
     }
 
     /**
@@ -277,57 +180,6 @@ public class Player extends Subject
         this.playerID = playerID;
     }
 
-    /**
-     * @return
-     * @author Elias
-     */
-    public boolean getMovedByConveyorThisTurn()
-    {
-        return movedByConveyorThisTurn;
-    }
-
-    /**
-     * @param movedByConveyorThisTurn
-     * @author Elias
-     */
-    public void setMovedByConveyorThisTurn(boolean movedByConveyorThisTurn)
-    {
-        this.movedByConveyorThisTurn = movedByConveyorThisTurn;
-    }
-
-    /**
-     * @return void
-     * @author Frederik
-     */
-    public void discardAllCardsUponReboot()
-    {
-        for (int i = 0; i < program.length; i++)
-        {
-            this.addCardToDiscardPile(program[i].getCard());
-            program[i].setCard(new Card(DEATH));
-        }
-        this.discardedCardsPile.playerCards.add(new Card((SPAM)));
-        this.discardedCardsPile.playerCards.add(new Card((SPAM)));
-
-
-    }
-
-    /**
-     * @param card
-     * @return void
-     * @author Frederik
-     */
-    public void addCardToDiscardPile(Card card)
-    {
-        if (card != null)
-        {
-            if (card.command == SPAM || card.command == DEATH || card.command == TROJAN_HORSE || card.command == WORM || card.command == VIRUS)
-            {
-                return;
-            }
-            this.discardedCardsPile.playerCards.add(card);
-        }
-    }
 
     /**
      * @return void
@@ -338,17 +190,6 @@ public class Player extends Subject
         energyCubes++;
     }
 
-    public Card drawTopCard()
-    {
-        Card cardToReturn = activeCardsPile.drawTopCard();
-        if (cardToReturn == null)
-        {
-            activeCardsPile.shuffleDeckIntoAnotherDeck(discardedCardsPile);
-            cardToReturn = activeCardsPile.drawTopCard();
-        }
-
-        return cardToReturn;
-    }
 
     public int getEnergyCubes()
     {
@@ -358,16 +199,6 @@ public class Player extends Subject
     public void setEnergyCubes(int energyCubes)
     {
         this.energyCubes = energyCubes;
-    }
-
-    public boolean isThisPlayerTurn()
-    {
-        return thisPlayerTurn;
-    }
-
-    public void setThisPlayerTurn(boolean thisPlayerTurn)
-    {
-        this.thisPlayerTurn = thisPlayerTurn;
     }
 
 
@@ -451,13 +282,5 @@ public class Player extends Subject
      * @param amount
      * @author Elias
      */
-    public void addDamageCardToPile(Command command, int amount)
-    {
-        for (int i = 0; i < amount; i++)
-        {
-            this.discardedCardsPile.playerCards.add(new Card(command));
-        }
 
-
-    }
 }
