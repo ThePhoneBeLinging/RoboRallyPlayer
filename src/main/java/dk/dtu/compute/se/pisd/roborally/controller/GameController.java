@@ -166,44 +166,28 @@ public class GameController
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<PlayerRegisters> entity = new HttpEntity<>(registers, headers);
-
-        String url = constructURL();
-        if (url.contains("null"))
-        {
-            return;
-        }
-
-        try
-        {
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<CompleteGame> response = restTemplate.exchange(url, HttpMethod.POST, entity,
-                    new ParameterizedTypeReference<>()
+        String url = "http://localhost:8080/set/player/cards";
+        new Thread(() -> {
+            try
             {
-            });
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<CompleteGame> response = restTemplate.exchange(url, HttpMethod.POST, entity,
+                        new ParameterizedTypeReference<>()
+                {
+                });
+                response = null;
+                // TODO Handle the gameBoard received as response at some point
 
-            // TODO Handle the gameBoard received as response at some point
+            }
+            catch (Exception e)
+            {
+                // TODO Handle exception at some point
+            }
 
-        }
-        catch (Exception e)
-        {
-            // TODO Handle exception at some point
-        }
+        }).start();
+
 
         board.setHasSubmittedCards(true);
         board.setPhase(Phase.ACTIVATION);
-    }
-
-    private String constructURL()
-    {
-        String gameID = String.valueOf(board.getGameID());
-        String playerID = String.valueOf(board.getPlayerID());
-        String turnID = String.valueOf(board.getTurnID());
-
-        if (gameID == null || playerID == null || turnID == null)
-        {
-            return "null";
-        }
-
-        return "http://localhost:8080/set/player/cards";
     }
 }

@@ -213,6 +213,10 @@ public class Board extends Subject
 
     public void fromServerBoardToGameBoard(CompleteGame serverBoard)
     {
+        if (serverBoard == null)
+        {
+            return;
+        }
         this.setStep(serverBoard.getBoard().getStep());
         this.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
         if (serverBoard.getBoard().getPhase().equals("ACTIVATION"))
