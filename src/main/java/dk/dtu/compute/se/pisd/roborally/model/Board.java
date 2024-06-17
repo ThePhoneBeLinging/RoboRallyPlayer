@@ -165,7 +165,7 @@ public class Board extends Subject
         }
     }
 
-    public void updateURL()
+    private void updateURL()
     {
         String gameID = "gameID=" + this.getGameID();
         String playerID = "&playerID=" + this.getPlayerID();
