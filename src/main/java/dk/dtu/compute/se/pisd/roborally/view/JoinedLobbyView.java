@@ -54,8 +54,8 @@ public class JoinedLobbyView extends HBox
 
     private void updateLobbyState()
     {
-        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID"
-                + "=" + lobby.getPlayerID();
+        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID" +
+                "=" + lobby.getPlayerID();
         try
         {
             ResponseEntity<CompleteGame> response = restTemplate.exchange(URL, HttpMethod.GET, null,
