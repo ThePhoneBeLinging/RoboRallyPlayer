@@ -207,7 +207,7 @@ public class GameController {
 
     public void submitCards(Player player)
     {
-        PlayerRegisters registers = null;
+        PlayerRegisters registers = new PlayerRegisters();
         ArrayList<Integer> selectedCardsNumbers = new ArrayList<>();
         for (int i = 0; i < Player.NO_REGISTERS; i++)
         {
