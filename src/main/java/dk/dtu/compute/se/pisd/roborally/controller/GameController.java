@@ -24,6 +24,7 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.view.UpgradeShopView;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
@@ -127,5 +128,17 @@ public class GameController
 
         board.setHasSubmittedCards(true);
         board.setPhase(Phase.ACTIVATION);
+    }
+
+    public void setRoboRally(RoboRally roboRally) {
+        this.roboRally = roboRally;
+    }
+
+    public void openShop(Player player) {
+        Stage primStage = roboRally.getStage();
+
+        UpgradeShopView upgradeShopView = new UpgradeShopView(player);
+        upgradeShopView.initOwner(primStage);
+        upgradeShopView.showAndWait();
     }
 }

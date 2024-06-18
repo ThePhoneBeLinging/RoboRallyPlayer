@@ -114,6 +114,7 @@ public class JoinedLobbyView extends HBox
         board.setTurnID(0);
         board.setPlayerID(lobby.getPlayerID());
         GameController gameController = new GameController(board);
+        gameController.setRoboRally(appController.getRoboRally());
         for (int i = 0; i < this.listOfPlayers.size(); i++)
         {
             board.addPlayer(new Player(board, "Player"));

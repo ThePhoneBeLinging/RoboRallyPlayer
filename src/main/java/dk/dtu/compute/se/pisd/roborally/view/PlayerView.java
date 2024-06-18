@@ -95,10 +95,13 @@ public class PlayerView extends Tab implements ViewObserver
         this.gameController = gameController;
         this.player = player;
         Button submitCards = new Button("Submit Cards");
-        submitCards.setOnAction(e->gameController.submitCards(this.player));
-        rightPanel.getChildren().addAll(energyCubesLabel,submitCards, upgradeCardsLabel);
+        Button upgradeShopButton = new Button("Open Upgrade Shop");
 
-        createUpgradeShopButton();
+        submitCards.setOnAction(e->gameController.submitCards(this.player));
+        upgradeShopButton.setOnAction(e -> gameController.openShop(player));
+        
+        rightPanel.getChildren().addAll(energyCubesLabel,submitCards, upgradeCardsLabel, upgradeShopButton);
+
 
         programLabel = new Label("Program");
 
@@ -150,14 +153,6 @@ public class PlayerView extends Tab implements ViewObserver
         }
     }
 
-    private void createUpgradeShopButton() {
-    Button upgradeShopButton = new Button("Open Upgrade Shop");
-    upgradeShopButton.setOnAction(e -> {
-        UpgradeShopView upgradeShopView = new UpgradeShopView(player);
-        upgradeShopView.showAndWait();
-    });
-    rightPanel.getChildren().add(upgradeShopButton);
-}
 
     private void updateUpgradeCardsLabel()
     {
