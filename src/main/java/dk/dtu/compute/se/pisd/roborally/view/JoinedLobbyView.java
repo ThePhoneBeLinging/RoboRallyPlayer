@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -129,8 +130,10 @@ public class JoinedLobbyView extends HBox
         mapImages.put("riskyCrossing", new Image("file:src/main/resources/Images/riskyCrossing.png"));
         mapImages.put("chopShopChallenge", new Image("file:src/main/resources/Images/chopShopChallenge.png"));
 
+        Stage primStage = appController.getRoboRally().getStage();
 
         Dialog<String> mapDialog = new Dialog<>();
+        mapDialog.initOwner(primStage);
         mapDialog.setTitle("Map Selection");
         mapDialog.setHeaderText("Select a map");
 

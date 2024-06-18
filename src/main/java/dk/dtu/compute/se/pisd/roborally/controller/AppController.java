@@ -164,4 +164,8 @@ public class AppController implements Observer
     {
         // XXX do nothing for now
     }
+
+    public RoboRally getRoboRally() {
+        return this.roboRally;
+    }
 }
