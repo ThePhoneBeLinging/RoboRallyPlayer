@@ -54,8 +54,8 @@ public class JoinedLobbyView extends HBox
 
     private void updateLobbyState()
     {
-        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID" +
-                "=" + lobby.getPlayerID();
+        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID"
+                + "=" + lobby.getPlayerID();
         try
         {
             ResponseEntity<CompleteGame> response = restTemplate.exchange(URL, HttpMethod.GET, null,
@@ -107,7 +107,6 @@ public class JoinedLobbyView extends HBox
     private void switchToBoardView()
     {
         executor.shutdown();
-        //TODO Change line below...
         this.boardName = selectMap();
         Board board = LoadBoard.loadBoard(this.boardName);
         board.setGameID(this.lobby.getGameID());
@@ -124,7 +123,8 @@ public class JoinedLobbyView extends HBox
         this.appController.startGameFromBoard(gameController);
     }
 
-    private String selectMap() {
+    private String selectMap()
+    {
         Map<String, Image> mapImages = new HashMap<>();
         mapImages.put("dizzyHighway", new Image("file:src/main/resources/Images/dizzyHighway.png"));
         mapImages.put("mallfunctionMayhem", new Image("file:src/main/resources/Images/mallfunctionMayhem.png"));
@@ -144,7 +144,8 @@ public class JoinedLobbyView extends HBox
         HBox box = new HBox();
         box.setSpacing(10);
 
-        for (Map.Entry<String, Image> entry : mapImages.entrySet()) {
+        for (Map.Entry<String, Image> entry : mapImages.entrySet())
+        {
             ImageView imageView = new ImageView(entry.getValue());
             imageView.setFitHeight(200);
             imageView.setPreserveRatio(true);
