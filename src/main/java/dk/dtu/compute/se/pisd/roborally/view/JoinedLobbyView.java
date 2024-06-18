@@ -127,6 +127,32 @@ public class JoinedLobbyView extends VBox
         }).start();
     }
 
+    private void changeBoardName(String boardName)
+    {
+        String urlToSendTo = "http://localhost:8080/lobby/changeBoard?gameID=" + this.lobby.getGameID() + "&boardName"
+                + "=" + boardName;
+
+        new Thread(() -> {
+            try
+            {
+                var response = restTemplate.exchange(urlToSendTo, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<Boolean>()
+                {
+                });
+
+                if (Boolean.TRUE.equals(response.getBody()))
+                {
+                    Platform.runLater(this::switchToBoardView);
+                }
+
+            }
+            catch (Exception e)
+            {
+                Platform.runLater(() -> lobbyContent.appendText("Failed to change Board" + e.getMessage() + "\n"));
+            }
+        }).start();
+    }
+
     private void switchToBoardView()
     {
         executor.shutdown();
