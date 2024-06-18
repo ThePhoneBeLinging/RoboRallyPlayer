@@ -8,10 +8,12 @@ import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -23,7 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class JoinedLobbyView extends HBox
+public class JoinedLobbyView extends VBox
 {
     private final ScheduledExecutorService executor;
     public List<Long> listOfPlayers = new ArrayList<>();
@@ -49,7 +51,28 @@ public class JoinedLobbyView extends HBox
         lobbyContent.setMinHeight(100);
         lobbyContent.appendText("Joined lobby with gameID: " + lobby.getGameID() + "\n");
         lobbyContent.appendText("Joined as player: " + lobby.getPlayerID() + "\n");
-        this.getChildren().addAll(startButton, lobbyContent);
+        Button dizzyHighWay = createButton("Images/dizzyHighway.PNG");
+        Button chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
+        Button mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
+        Button riskyCrossing = createButton("Images/riskyCrossing.PNG");
+        HBox mapSelection = new HBox();
+        mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing);
+        mapSelection.setSpacing(10);
+        mapSelection.setAlignment(Pos.CENTER);
+        this.getChildren().addAll(startButton, lobbyContent, mapSelection);
+    }
+
+    private Button createButton(String imagePath)
+    {
+        Button button = new Button();
+        Image image = new Image(imagePath);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(100);
+        imageView.setFitWidth(350);
+        imageView.setPreserveRatio(true);
+        button.setGraphic(imageView);
+        button.setStyle("-fx-background-color: transparent;");
+        return button;
     }
 
     private void updateLobbyState()
