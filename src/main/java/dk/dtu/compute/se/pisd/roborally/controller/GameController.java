@@ -57,71 +57,9 @@ public class GameController
         this.roboRally = roboRally;
     }
 
-    /**
-     * Opens the upgrade shop for the current player. This method should be called when the player has pressed the
-     * upgrade button.
-     *
-     * @Author Emil
-     */
-    // XXX: implemented in the current version
-    public void openShop()
-    {
-        Stage primStage = roboRally.getStage();
 
-    }
 
-    /**
-     * Method to finish the programming phase, used after the players have used programming cards.
-     *
-     * @author Elias
-     */
-    public void finishProgrammingPhase()
-    {
-        makeProgramFieldsInvisible();
-        makeProgramFieldsVisible(0);
-        board.setPhase(Phase.ACTIVATION);
-        board.setStep(0);
-    }
 
-    /**
-     * Makes program fields invisible, used for the finishProgrammingPhase
-     *
-     * @author Elias & Frederik
-     */
-    // XXX: implemented in the current version
-    private void makeProgramFieldsInvisible()
-    {
-        for (int i = 0; i < board.getPlayersNumber(); i++)
-        {
-            Player player = board.getPlayer(i);
-            for (int j = 0; j < Player.NO_REGISTERS; j++)
-            {
-                CardField field = player.getProgramField(j);
-                field.setVisible(false);
-            }
-        }
-    }
-
-    /**
-     * Makes program fields visible, used to revert makeProgramFieldsInvisble. Usage under
-     * programming and executing next step
-     *
-     * @param register
-     * @author Elias & Frederik
-     */
-    // XXX: implemented in the current version
-    private void makeProgramFieldsVisible(int register)
-    {
-        if (register >= 0 && register < Player.NO_REGISTERS)
-        {
-            for (int i = 0; i < board.getPlayersNumber(); i++)
-            {
-                Player player = board.getPlayer(i);
-                CardField field = player.getProgramField(register);
-                field.setVisible(true);
-            }
-        }
-    }
 
     /**
      * @param source
