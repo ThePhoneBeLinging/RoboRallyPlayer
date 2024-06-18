@@ -107,7 +107,7 @@ public class AppController implements Observer
         // after the option to save the game
         if (gameController == null || stopGame())
         {
-            Platform.exit();
+            System.exit(0);
         }
     }
 
