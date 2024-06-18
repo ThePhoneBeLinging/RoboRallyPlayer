@@ -2,7 +2,6 @@ package dk.dtu.compute.se.pisd.roborally.model.BoardElements;
 
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Position;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import javafx.scene.image.Image;
 
@@ -12,7 +11,6 @@ import javafx.scene.image.Image;
 public class Antenna extends NullBoardElement
 {
     private Player[] players;
-    private Position[] offsetArr;
 
     public Antenna(Space space)
     {
