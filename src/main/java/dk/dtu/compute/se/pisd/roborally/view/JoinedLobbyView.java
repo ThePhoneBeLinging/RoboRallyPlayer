@@ -8,12 +8,13 @@ import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,7 @@ public class JoinedLobbyView extends VBox
 {
     private final ScheduledExecutorService executor;
     public List<Long> listOfPlayers = new ArrayList<>();
+    private Button selectedMap;
     Button startButton;
     RestTemplate restTemplate = new RestTemplate();
     TextArea lobbyContent;
@@ -52,9 +54,13 @@ public class JoinedLobbyView extends VBox
         lobbyContent.appendText("Joined lobby with gameID: " + lobby.getGameID() + "\n");
         lobbyContent.appendText("Joined as player: " + lobby.getPlayerID() + "\n");
         Button dizzyHighWay = createButton("Images/dizzyHighway.PNG");
+        dizzyHighWay.setOnAction(e -> changeBoard("dizzyHighway", dizzyHighWay));
         Button chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
+        chopShopChallenge.setOnAction(e -> changeBoard("chopShopChallenge", chopShopChallenge));
         Button mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
+        mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
         Button riskyCrossing = createButton("Images/riskyCrossing.PNG");
+        riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
         HBox mapSelection = new HBox();
         mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing);
         mapSelection.setSpacing(10);
@@ -87,6 +93,7 @@ public class JoinedLobbyView extends VBox
             });
             CompleteGame serverBoard = response.getBody();
             this.listOfPlayers.clear();
+            this.boardName = serverBoard.getBoard().getBoardname();
             for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
             {
                 listOfPlayers.add(player.getPlayerID());
@@ -127,7 +134,7 @@ public class JoinedLobbyView extends VBox
         }).start();
     }
 
-    private void changeBoardName(String boardName)
+    private void changeBoard(String boardName, Button button)
     {
         String urlToSendTo = "http://localhost:8080/lobby/changeBoard?gameID=" + this.lobby.getGameID() + "&boardName"
                 + "=" + boardName;
@@ -138,12 +145,16 @@ public class JoinedLobbyView extends VBox
                 var response = restTemplate.exchange(urlToSendTo, HttpMethod.GET, null,
                         new ParameterizedTypeReference<Boolean>()
                 {
+
                 });
 
-                if (Boolean.TRUE.equals(response.getBody()))
-                {
-                    Platform.runLater(this::switchToBoardView);
+                button.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
+
+                if (selectedMap != null) {
+                    selectedMap.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
                 }
+                this.boardName = boardName;
+                selectedMap = button;
 
             }
             catch (Exception e)
@@ -156,7 +167,6 @@ public class JoinedLobbyView extends VBox
     private void switchToBoardView()
     {
         executor.shutdown();
-        this.boardName = selectMap();
         Board board = LoadBoard.loadBoard(this.boardName);
         board.setGameID(this.lobby.getGameID());
         board.setTurnID(0);
@@ -170,41 +180,5 @@ public class JoinedLobbyView extends VBox
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
         this.appController.startGameFromBoard(gameController);
-    }
-
-    private String selectMap()
-    {
-        Map<String, Image> mapImages = new HashMap<>();
-        mapImages.put("dizzyHighway", new Image("file:src/main/resources/Images/dizzyHighway.png"));
-        mapImages.put("mallfunctionMayhem", new Image("file:src/main/resources/Images/mallfunctionMayhem.png"));
-        mapImages.put("riskyCrossing", new Image("file:src/main/resources/Images/riskyCrossing.png"));
-        mapImages.put("chopShopChallenge", new Image("file:src/main/resources/Images/chopShopChallenge.png"));
-
-        Stage primStage = appController.getRoboRally().getStage();
-
-        Dialog<String> mapDialog = new Dialog<>();
-        mapDialog.initOwner(primStage);
-        mapDialog.setTitle("Map Selection");
-        mapDialog.setHeaderText("Select a map");
-
-        ButtonType buttonTypeOk = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
-        mapDialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
-
-        HBox box = new HBox();
-        box.setSpacing(10);
-
-        for (Map.Entry<String, Image> entry : mapImages.entrySet())
-        {
-            ImageView imageView = new ImageView(entry.getValue());
-            imageView.setFitHeight(200);
-            imageView.setPreserveRatio(true);
-            imageView.setOnMouseClicked(e -> mapDialog.setResult(entry.getKey()));
-            box.getChildren().add(imageView);
-        }
-
-        mapDialog.getDialogPane().setContent(box);
-
-        Optional<String> mapResult = mapDialog.showAndWait();
-        return mapResult.orElse(null);
     }
 }
