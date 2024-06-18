@@ -219,10 +219,7 @@ public class Board extends Subject
         }
         this.setStep(serverBoard.getBoard().getStep());
         this.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
-        if (serverBoard.getBoard().getPhase().equals("ACTIVATION"))
-        {
-            this.setTurnID(this.getTurnID() + 1);
-        }
+        this.setTurnID(this.getTurnID() + 1);
         for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
         {
             for (Player gameBoardPlayer : this.players)
