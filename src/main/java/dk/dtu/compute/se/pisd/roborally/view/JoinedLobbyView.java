@@ -8,17 +8,16 @@ import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import javafx.application.Platform;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -108,7 +107,7 @@ public class JoinedLobbyView extends HBox
     {
         executor.shutdown();
         //TODO Change line below...
-        this.boardName = "dizzyHighway";
+        this.boardName = selectMap();
         Board board = LoadBoard.loadBoard(this.boardName);
         board.setGameID(this.lobby.getGameID());
         board.setTurnID(0);
@@ -121,5 +120,37 @@ public class JoinedLobbyView extends HBox
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
         this.appController.startGameFromBoard(gameController);
+    }
+
+    private String selectMap() {
+        Map<String, Image> mapImages = new HashMap<>();
+        mapImages.put("dizzyHighway", new Image("file:src/main/resources/Images/dizzyHighway.png"));
+        mapImages.put("mallfunctionMayhem", new Image("file:src/main/resources/Images/mallfunctionMayhem.png"));
+        mapImages.put("riskyCrossing", new Image("file:src/main/resources/Images/riskyCrossing.png"));
+        mapImages.put("chopShopChallenge", new Image("file:src/main/resources/Images/chopShopChallenge.png"));
+
+
+        Dialog<String> mapDialog = new Dialog<>();
+        mapDialog.setTitle("Map Selection");
+        mapDialog.setHeaderText("Select a map");
+
+        ButtonType buttonTypeOk = new ButtonType("Okay", ButtonBar.ButtonData.OK_DONE);
+        mapDialog.getDialogPane().getButtonTypes().add(buttonTypeOk);
+
+        HBox box = new HBox();
+        box.setSpacing(10);
+
+        for (Map.Entry<String, Image> entry : mapImages.entrySet()) {
+            ImageView imageView = new ImageView(entry.getValue());
+            imageView.setFitHeight(200);
+            imageView.setPreserveRatio(true);
+            imageView.setOnMouseClicked(e -> mapDialog.setResult(entry.getKey()));
+            box.getChildren().add(imageView);
+        }
+
+        mapDialog.getDialogPane().setContent(box);
+
+        Optional<String> mapResult = mapDialog.showAndWait();
+        return mapResult.orElse(null);
     }
 }
