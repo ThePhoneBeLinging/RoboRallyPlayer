@@ -28,12 +28,14 @@ import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.UpgradeCard;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -96,6 +98,8 @@ public class PlayerView extends Tab implements ViewObserver
         submitCards.setOnAction(e->gameController.submitCards(this.player));
         rightPanel.getChildren().addAll(energyCubesLabel,submitCards, upgradeCardsLabel);
 
+        createUpgradeShopButton();
+
         programLabel = new Label("Program");
 
         programPane = new GridPane();
@@ -146,6 +150,14 @@ public class PlayerView extends Tab implements ViewObserver
         }
     }
 
+    private void createUpgradeShopButton() {
+    Button upgradeShopButton = new Button("Open Upgrade Shop");
+    upgradeShopButton.setOnAction(e -> {
+        UpgradeShopView upgradeShopView = new UpgradeShopView(player);
+        upgradeShopView.showAndWait();
+    });
+    rightPanel.getChildren().add(upgradeShopButton);
+}
 
     private void updateUpgradeCardsLabel()
     {
