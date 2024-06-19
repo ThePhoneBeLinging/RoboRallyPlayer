@@ -115,7 +115,7 @@ public class Board extends Subject
             boardElements[i] = new ArrayList<BoardElement>();
         }
         this.updateURL();
-        this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
+        this.upgradeCards = new ArrayList<>();
         this.updateBoard = new Thread(() -> {
             try
             {
