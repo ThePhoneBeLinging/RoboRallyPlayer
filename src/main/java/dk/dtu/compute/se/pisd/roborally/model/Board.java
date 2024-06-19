@@ -441,6 +441,23 @@ public class Board extends Subject
     {
         if (phase != this.phase)
         {
+            if (this.phase == ACTIVATION && phase == PROGRAMMING && !this.hasSubmittedCards)
+            {
+                for (int i = 0; i < this.getPlayersNumber(); i++)
+                {
+                    if (Objects.equals(players.get(i).getPlayerID(), this.playerID))
+                    {
+                        for (int x = 0; x < Player.NO_CARDS; x++)
+                        {
+                            players.get(i).getCardField(x).setCard(null);
+                        }
+                        for (int y = 0; y < Player.NO_REGISTERS; y++)
+                        {
+                            players.get(i).getProgramField(y).setCard(null);
+                        }
+                    }
+                }
+            }
             if (this.phase == ACTIVATION && phase == PROGRAMMING && this.hasSubmittedCards)
             {
                 return;
