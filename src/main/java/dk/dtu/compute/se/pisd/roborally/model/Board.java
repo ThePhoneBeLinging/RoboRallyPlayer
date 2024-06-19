@@ -114,11 +114,6 @@ public class Board extends Subject
         {
             boardElements[i] = new ArrayList<BoardElement>();
         }
-        /*
-        spaces[4][4].setBoardElement(new Antenna(spaces[4][4]));
-        spaces[3][3].setBoardElement(new CornerWall(Heading.NORTH, Heading.EAST, spaces[3][3]));
-        new Checkpoint(spaces[7][7]);
-        */
         this.updateURL();
         this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
         this.updateBoard = new Thread(() -> {
