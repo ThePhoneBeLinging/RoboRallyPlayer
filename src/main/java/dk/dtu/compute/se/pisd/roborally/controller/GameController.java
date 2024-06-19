@@ -59,9 +59,6 @@ public class GameController
     }
 
 
-
-
-
     /**
      * @param source
      * @param target
@@ -128,13 +125,16 @@ public class GameController
 
         board.setHasSubmittedCards(true);
         board.setPhase(Phase.ACTIVATION);
+        board.setTurnID(1);
     }
 
-    public void setRoboRally(RoboRally roboRally) {
+    public void setRoboRally(RoboRally roboRally)
+    {
         this.roboRally = roboRally;
     }
 
-    public void openShop(Player player) {
+    public void openShop(Player player)
+    {
         Stage primStage = roboRally.getStage();
 
         UpgradeShopView upgradeShopView = new UpgradeShopView(player);
