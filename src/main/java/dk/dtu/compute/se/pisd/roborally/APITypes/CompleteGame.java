@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.tomcat.util.http.parser.Upgrade;
 
 import java.util.List;
 
@@ -23,5 +22,5 @@ public class CompleteGame
     private List<EnergyCube> energyCubes;
     private List<Player> playerList;
     private List<Card> cards;
-    private List<Upgrade> upgradeList;
+    private List<UpgradeCard> upgradeCards;
 }
