@@ -50,6 +50,7 @@ public class RoboRally extends Application
 
     private static final int MIN_APP_WIDTH = 600;
     private static final int MIN_APP_HEIGHT = 800;
+    SoundController sc = SoundController.getInstance();
 
     private Stage stage;
     private BorderPane boardRoot;
@@ -106,6 +107,7 @@ public class RoboRally extends Application
         //
         // CREATE Main Menu
         //
+        sc.loopSounds(new String[]{"OST", "OST2", "OST3", "OST4", "OST5", "OST6"});
         createMainMenuView(appController);
         //
         //
@@ -125,8 +127,6 @@ public class RoboRally extends Application
 
         stage.show();
 
-        SoundController sc = SoundController.getInstance();
-        sc.loopSounds(new String[]{"OST", "OST2", "OST3", "OST4", "OST5", "OST6"});
     }
 
     /**
@@ -156,9 +156,8 @@ public class RoboRally extends Application
             MainMenuView mainMenu = new MainMenuView(appController);
             mainMenu.setAlignment(Pos.CENTER);
             boardRoot.setCenter(mainMenu);
-
-
         }
+        sc.stopSound();
     }
 
     /**

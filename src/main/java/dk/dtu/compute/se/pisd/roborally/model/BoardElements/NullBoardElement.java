@@ -28,20 +28,5 @@ public class NullBoardElement extends BoardElement
      * @return
      * @author Elias
      */
-    @Override
-    public boolean getCanWalkOutOf(Heading heading)
-    {
-        return this.getIsWalkable();
-    }
 
-    /**
-     * @param heading
-     * @return
-     * @author Elias
-     */
-    @Override
-    public boolean getCanWalkInto(Heading heading)
-    {
-        return this.getIsWalkable();
-    }
 }

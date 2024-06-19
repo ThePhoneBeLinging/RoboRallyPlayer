@@ -2,7 +2,6 @@ package dk.dtu.compute.se.pisd.roborally.model.BoardElements;
 
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import javafx.scene.image.Image;
 
@@ -18,17 +17,5 @@ public class PushPanel extends BoardElement
         setImage(new Image("file:src/main/resources/images/push135.png"));
     }
 
-    /**
-     * @author Emil
-     */
-    @Override
-    public void activate()
-    {
-        Player playerToMove = this.getSpace().getPlayer();
-        if (playerToMove != null)
-        {
-            Heading heading = this.getHeading().next().next();
-            this.getSpace().getPlayer().moveController.movePlayerAmountOfTimesWithHeading(playerToMove, heading, 1);
-        }
-    }
+
 }

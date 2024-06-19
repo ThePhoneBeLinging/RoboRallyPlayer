@@ -33,37 +33,28 @@ import javafx.scene.image.ImageView;
  * ...
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
-public class RoboRallyMenuBar extends MenuBar {
+public class RoboRallyMenuBar extends MenuBar
+{
 
-    private AppController appController;
-
+    private final AppController appController;
+    private final Menu controlMenu;
+    private final Menu soundMenu;
+    private final MenuItem saveGame;
+    private final MenuItem loadGame;
+    private final MenuItem stopGame;
+    private final MenuItem exitApp;
+    private final MenuItem soundOn;
+    private final MenuItem soundOff;
     SoundController sc = SoundController.getInstance();
-
-    private Menu controlMenu;
-
-    private Menu soundMenu;
-
-    private MenuItem saveGame;
-
     private MenuItem newGame;
-
-    private MenuItem loadGame;
-
-    private MenuItem stopGame;
-
-    private MenuItem exitApp;
-
-    private MenuItem soundOn;
-
-    private MenuItem soundOff;
 
     /**
      * @param appController
      * @author
      */
-    public RoboRallyMenuBar(AppController appController) {
+    public RoboRallyMenuBar(AppController appController)
+    {
         this.appController = appController;
 
         int width = 120;
@@ -76,21 +67,12 @@ public class RoboRallyMenuBar extends MenuBar {
         this.getMenus().add(soundMenu);
 
         soundOn = new MenuItem("Sound On");
-        soundOn.setOnAction(e->this.sc.soundOn());
+        soundOn.setOnAction(e -> this.sc.soundOn());
         soundMenu.getItems().add(soundOn);
 
         soundOff = new MenuItem("Mute");
-        soundOff.setOnAction(e->this.sc.stopSound());
+        soundOff.setOnAction(e -> this.sc.stopSound());
         soundMenu.getItems().add(soundOff);
-
-
-        newGame = new MenuItem();
-        ImageView newGameView = new ImageView(new Image("file:src/main/resources/Images/newGamet.png"));
-        newGameView.setFitWidth(width);
-        newGameView.setFitHeight(height);
-        newGame.setGraphic(newGameView);
-        newGame.setOnAction(e -> this.appController.newGame());
-        controlMenu.getItems().add(newGame);
 
         stopGame = new MenuItem();
         ImageView stopGameView = new ImageView(new Image("file:src/main/resources/Images/stopGamet.png"));
@@ -132,14 +114,16 @@ public class RoboRallyMenuBar extends MenuBar {
     /**
      * @author
      */
-    public void update() {
-        if (appController.isGameRunning()) {
-            newGame.setVisible(false);
+    public void update()
+    {
+        if (appController.isGameRunning())
+        {
             stopGame.setVisible(true);
             saveGame.setVisible(true);
             loadGame.setVisible(false);
-        } else {
-            newGame.setVisible(true);
+        }
+        else
+        {
             stopGame.setVisible(false);
             saveGame.setVisible(false);
             loadGame.setVisible(true);

@@ -43,9 +43,13 @@ public class LobbyView extends VBox
         chatArea.setMinSize(300, 700);
         chatArea.setEditable(true);
         Button updateLobbiesButton = new Button("Update Lobbies");
+        updateLobbiesButton.setMinSize(300, 30);
         updateLobbiesButton.setOnAction(e -> fetchLobbies());
+        Button createLobbyButton = new Button("Create Lobby");
+        createLobbyButton.setMinSize(300, 30);
+        createLobbyButton.setOnAction(e -> createLobby());
         hBox.getChildren().addAll(lobbyList, chatArea);
-        this.getChildren().addAll(searchBar, hBox, updateLobbiesButton);
+        this.getChildren().addAll(searchBar, hBox, updateLobbiesButton, createLobbyButton);
         joinedLobby = null;
         fetchLobbies();
     }
@@ -69,6 +73,29 @@ public class LobbyView extends VBox
             }
 
         }).start();
+    }
+
+    private void createLobby() {
+        String lobbyUrl = "http://localhost:8080/lobby/create";
+
+        new Thread(() -> {
+            try
+            {
+                ResponseEntity<Lobby> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<Lobby>()
+                {
+                });
+                this.joinedLobby = response.getBody();
+                chatArea.appendText("Created Lobby: " + this.joinedLobby.getGameID() + "\n");
+
+            }
+            catch (Exception e)
+            {
+                Platform.runLater(() -> chatArea.setText("Failed to create lobby: " + e.getMessage()));
+            }
+
+        }).start();
+        joinLobbyView();
     }
 
     private void populateVBox(List<Long> lobbies)

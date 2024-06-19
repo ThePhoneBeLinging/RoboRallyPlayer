@@ -21,10 +21,17 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.view.UpgradeShopView;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
 
 /**
  * @author Ekkart Kindler, ekki@dtu.dk
@@ -32,8 +39,9 @@ import org.jetbrains.annotations.NotNull;
 public class GameController
 {
     final public Board board;
-    final public MoveController moveController;
+    private final RestTemplate restTemplate = new RestTemplate();
     private RoboRally roboRally;
+
 
     /**
      * @param board
@@ -42,144 +50,17 @@ public class GameController
     public GameController(@NotNull Board board)
     {
         this.board = board;
-        this.moveController = new MoveController(this);
-
     }
 
     public GameController(@NotNull Board board, RoboRally roboRally)
     {
         this.board = board;
-        this.moveController = new MoveController(this);
         this.roboRally = roboRally;
     }
 
-    /**
-     * Opens the upgrade shop for the current player. This method should be called when the player has pressed the
-     * upgrade button.
-     *
-     * @Author Emil
-     */
-    // XXX: implemented in the current version
-    public void openShop()
-    {
-        Stage primStage = roboRally.getStage();
-
-    }
-
-    /**
-     * Method to finish the programming phase, used after the players have used programming cards.
-     *
-     * @author Elias
-     */
-    public void finishProgrammingPhase()
-    {
-        makeProgramFieldsInvisible();
-        makeProgramFieldsVisible(0);
-        board.setPhase(Phase.ACTIVATION);
-        board.activateBoardElementsOfIndex(Board.ANTENNA_INDEX);
-        board.setStep(0);
-    }
-
-    /**
-     * Makes program fields invisible, used for the finishProgrammingPhase
-     *
-     * @author Elias & Frederik
-     */
-    // XXX: implemented in the current version
-    private void makeProgramFieldsInvisible()
-    {
-        for (int i = 0; i < board.getPlayersNumber(); i++)
-        {
-            Player player = board.getPlayer(i);
-            for (int j = 0; j < Player.NO_REGISTERS; j++)
-            {
-                CardField field = player.getProgramField(j);
-                field.setVisible(false);
-            }
-        }
-    }
-
-    /**
-     * Makes program fields visible, used to revert makeProgramFieldsInvisble. Usage under
-     * programming and executing next step
-     *
-     * @param register
-     * @author Elias & Frederik
-     */
-    // XXX: implemented in the current version
-    private void makeProgramFieldsVisible(int register)
-    {
-        if (register >= 0 && register < Player.NO_REGISTERS)
-        {
-            for (int i = 0; i < board.getPlayersNumber(); i++)
-            {
-                Player player = board.getPlayer(i);
-                CardField field = player.getProgramField(register);
-                field.setVisible(true);
-            }
-        }
-    }
-
-    /**
-     * Executes the registers of the players. This method should be called when the players have pressed the execute
-     * registers button.
-     *
-     * @author Elias
-     */
-    // XXX: implemented in the current version
 
 
-    /**
-     * Continues the execution of the programs of the players. This method should be called when the
-     *
-     * @author Elias
-     */
-    // XXX: implemented in the current version
 
-
-    /**
-     * Executes the next step in the programming deck. Used for single steps or executing the whole deck
-     *
-     * @author Elias, Frederik, Emil & Adel
-     */
-    // XXX: implemented in the current version
-
-
-    /**
-     * Starts the programming phase of the game. This method should be called when the game has begun
-     *
-     * @author Elias, Adel & Frederik
-     */
-    // XXX: implemented in the current version
-
-
-    /**
-     * Executes the command option and continues the program. This method should be called when the player has chosen
-     * an option for an interactive command.
-     *
-     * @param commandOption the command option to be executed
-     * @author Emil
-     */
-
-
-    /**
-     * @return new Card with random commands
-     * @author Elias & Frederik
-     */
-    // XXX: implemented in the current version
-    private Card generateRandomCommandCard()
-    {
-        Command[] commands = Command.values();
-        int random = (int) (Math.random() * commands.length);
-        return new Card(commands[random]);
-    }
-
-    /**
-     * Executes next step
-     *
-     * @author Elias
-     */
-    // XXX: implemented in the current version
 
     /**
      * @param source
@@ -203,14 +84,61 @@ public class GameController
         }
     }
 
-    /**
-     * A method called when no corresponding controller operation is implemented yet. This
-     * should eventually be removed.
-     */
-    public void notImplemented()
+
+    public void submitCards(Player player)
     {
-        // XXX just for now to indicate that the actual method is not yet implemented
-        assert false;
+        PlayerRegisters registers = new PlayerRegisters();
+        ArrayList<Integer> selectedCardsNumbers = new ArrayList<>();
+        for (int i = 0; i < Player.NO_REGISTERS; i++)
+        {
+            Card card = player.getProgramField(i).getCard();
+            if (card == null)
+            {
+                return;
+            }
+            selectedCardsNumbers.add(card.getCardNumber());
+        }
+        registers.setRegisterCards(selectedCardsNumbers);
+        registers.setPlayerID(player.getPlayerID());
+        registers.setGameID(player.board.getGameID());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<PlayerRegisters> entity = new HttpEntity<>(registers, headers);
+        String url = "http://localhost:8080/set/player/cards";
+        new Thread(() -> {
+            try
+            {
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<CompleteGame> response = restTemplate.exchange(url, HttpMethod.POST, entity,
+                        new ParameterizedTypeReference<>()
+                {
+                });
+                response = null;
+                // TODO Handle the gameBoard received as response at some point
+
+            }
+            catch (Exception e)
+            {
+                // TODO Handle exception at some point
+            }
+
+        }).start();
+
+
+        board.setHasSubmittedCards(true);
+        board.setPhase(Phase.ACTIVATION);
     }
 
+    public void setRoboRally(RoboRally roboRally) {
+        this.roboRally = roboRally;
+    }
+
+    public void openShop(Player player) {
+        Stage primStage = roboRally.getStage();
+
+        UpgradeShopView upgradeShopView = new UpgradeShopView(player);
+        upgradeShopView.initOwner(primStage);
+        upgradeShopView.showAndWait();
+    }
 }

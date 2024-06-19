@@ -40,28 +40,5 @@ public class CornerWall extends BoardElement
     {
         return heading2;
     }
-
-    /**
-     * @param heading
-     * @return boolean that states if the player can walk out of the space that the corner wall is on
-     * @author Frederik
-     */
-    @Override
-    public boolean getCanWalkOutOf(Heading heading)
-    {
-        return getIsWalkable() && (getHeading() != heading && this.heading2 != heading);
-    }
-
-    /**
-     * @param heading
-     * @return boolean that states if the player can walk into the space
-     * @author Frederik & Adel
-     */
-    @Override
-    public boolean getCanWalkInto(Heading heading)
-    {
-        Heading headingToCheck = heading.next().next();
-
-        return getIsWalkable() && (getHeading() != headingToCheck && this.heading2 != headingToCheck);
-    }
+    
 }

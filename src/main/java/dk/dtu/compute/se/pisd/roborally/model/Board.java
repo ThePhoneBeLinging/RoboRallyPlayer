@@ -24,12 +24,8 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.APITypes.Player.Card;
-import dk.dtu.compute.se.pisd.roborally.ConversionUtil;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.BoardElement;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.RebootToken;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.SpawnPoint;
-import javafx.application.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -40,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
+import static dk.dtu.compute.se.pisd.roborally.model.Phase.*;
 
 /**
  * ...
@@ -66,16 +62,23 @@ public class Board extends Subject
     private final Space[][] spaces;
     private final List<Player> players = new ArrayList<>();
     private final RestTemplate restTemplate = new RestTemplate();
+    private final boolean stepMode;
+    private final Thread updateBoard;
     public boolean keepUpdatingBoard = true;
+<<<<<<< HEAD
     private Thread updateBoard;
     private RebootToken[] rebootToken;
+=======
+>>>>>>> 2ae89859742ad555d9ed6cbeefe50e043e79d052
     private Phase phase = INITIALISATION;
     private int step = 0;
-    private boolean stepMode;
     private ArrayList<UpgradeCard> upgradeCards = new ArrayList<>();
     private int turnID;
     private Long playerID;
     private Long gameID;
+
+    private String URL;
+    private boolean hasSubmittedCards = false;
 
     /**
      * @param width  the width of the board
@@ -116,14 +119,8 @@ public class Board extends Subject
         {
             boardElements[i] = new ArrayList<BoardElement>();
         }
-        /*
-        spaces[4][4].setBoardElement(new Antenna(spaces[4][4]));
-        spaces[3][3].setBoardElement(new CornerWall(Heading.NORTH, Heading.EAST, spaces[3][3]));
-        new Checkpoint(spaces[7][7]);
-        */
-        this.activateBoardElements();
-
-        this.upgradeCards = UpgradeCardsFactory.createUpgradeCards();
+        this.updateURL();
+        this.upgradeCards = new ArrayList<>();
         this.updateBoard = new Thread(() -> {
             try
             {
@@ -141,51 +138,35 @@ public class Board extends Subject
     /**
      * @author Elias
      */
-    public void activateBoardElements()
+
+
+    private void updateURL()
     {
-        for (int i = 0; i < boardElements.length; i++)
-        {
-            if (i == Board.ROBOT_LASER_INDEX)
-            {
-                for (Player player : players)
-                {
-                    player.shoot();
-                }
-                continue;
-            }
-            for (int k = 0; k < boardElements[i].size(); k++)
-            {
-                boardElements[i].get(k).activate();
-            }
-        }
-        for (Player player : players)
-        {
-            player.setMovedByConveyorThisTurn(false);
-        }
+        String gameID = "gameID=" + this.getGameID();
+        String playerID = "&playerID=" + this.getPlayerID();
+        String turnID = "&TurnID=" + this.getTurnID();
+        this.URL = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
     }
 
     public void updateGameBoard()
     {
+
         while (keepUpdatingBoard)
         {
-
-            String gameID = "gameID=" + this.getGameID();
-            String turnID = "&TurnID=" + this.getTurnID();
-            String playerID = "&playerID=" + this.getPlayerID();
-            if (this.getGameID() == null || this.getPlayerID() == null)
+            updateURL();
+            if (this.URL.contains("null"))
             {
                 continue;
             }
-            String lobbyUrl = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
             try
             {
-                ResponseEntity<CompleteGame> response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
+                ResponseEntity<CompleteGame> response = restTemplate.exchange(this.URL, HttpMethod.GET, null,
                         new ParameterizedTypeReference<CompleteGame>()
                 {
                 });
                 CompleteGame serverBoard = response.getBody();
+                fromServerBoardToGameBoard(serverBoard);
                 Thread.sleep(2500);
-                Platform.runLater(() -> copyData(serverBoard));
             }
             catch (Exception e)
             {
@@ -204,6 +185,11 @@ public class Board extends Subject
         this.gameID = gameID;
     }
 
+    public Long getPlayerID()
+    {
+        return playerID;
+    }
+
     public int getTurnID()
     {
         return turnID;
@@ -211,41 +197,100 @@ public class Board extends Subject
 
     public void setTurnID(int turnID)
     {
-        this.turnID = turnID;
-    }
-
-    public Long getPlayerID()
-    {
-        return playerID;
-    }
-
-    private void copyData(CompleteGame completeGame)
-    {
-        Board boardToCopyFrom = ConversionUtil.fromServerBoardToGameBoard(completeGame);
-        for (Player player : this.players)
+        if (this.turnID != turnID)
         {
-            for (Player player1 : boardToCopyFrom.players)
+            if (turnID == Player.NO_REGISTERS * this.getPlayersNumber() - 1)
             {
-                if (Objects.equals(player.getPlayerID(), player1.getPlayerID()))
+                turnID = 0;
+            }
+            if (turnID == 0)
+            {
+                hasSubmittedCards = false;
+            }
+            this.turnID = turnID;
+        }
+    }
+
+    public void fromServerBoardToGameBoard(CompleteGame serverBoard)
+    {
+        if (serverBoard == null)
+        {
+            return;
+        }
+        this.setStep(serverBoard.getBoard().getStep());
+        this.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
+        if (phase != PROGRAMMING)
+        {
+            this.setTurnID(this.getTurnID() + 1);
+        }
+        for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
+        {
+            for (Player gameBoardPlayer : this.players)
+            {
+                if (!Objects.equals(player.getPlayerID(), gameBoardPlayer.getPlayerID()))
                 {
-                    if (player1.getSpace() != null)
+                    continue;
+                }
+                gameBoardPlayer.setSpace(this.getSpace(player.getX(), player.getY()));
+                gameBoardPlayer.setLastVisitedCheckPoint(player.getLastVisitedCheckpoint());
+                gameBoardPlayer.setHeading(Heading.valueOf(player.getHeading()));
+                gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
+
+                gameBoardPlayer.setPlayerID(player.getPlayerID());
+            }
+        }
+        boolean toLoadNewCards = false;
+        for (int i = 0; i < this.getPlayersNumber(); i++)
+        {
+            Player player = this.getPlayer(i);
+            if (this.playerID.equals(player.getPlayerID()))
+            {
+                int j = 0;
+                while (player.getCardField(j).getCard() == null)
+                {
+                    j++;
+                    if (j == Player.NO_CARDS)
                     {
-                        int x = player1.getSpace().x;
-                        int y = player1.getSpace().y;
-                        player.setSpace(this.getSpace(x, y));
+                        toLoadNewCards = true;
+                        break;
                     }
-                    player.setHeading(player1.getHeading());
+                }
+            }
+        }
 
-                    int i = 0;
-                    while (player1.getProgramField(i).getCard() != null) {
-                        player.getProgramField(i).setCard(player1.getProgramField(i).getCard());
-                        i++;
+        if (toLoadNewCards)
+        {
+            for (Card card : serverBoard.getCards())
+            {
+                dk.dtu.compute.se.pisd.roborally.model.Card cardToAdd =
+                        new dk.dtu.compute.se.pisd.roborally.model.Card(Command.valueOf(card.getCommand()));
+                for (int i = 0; i < this.getPlayersNumber(); i++)
+                {
+                    if (!Objects.equals(this.getPlayerID(), this.getPlayer(i).getPlayerID()))
+                    {
+                        continue;
                     }
-
-                    i = 0;
-                    while (player1.getCardField(i).getCard() != null) {
-                        player.getCardField(i).setCard(player1.getCardField(i).getCard());
-                        i++;
+                    dk.dtu.compute.se.pisd.roborally.model.Player gamePlayer = this.getPlayer(i);
+                    switch (card.getLocation())
+                    {
+                        case "REGISTER":
+                            int k = 0;
+                            while (gamePlayer.getProgramField(k).getCard() != null)
+                            {
+                                k++;
+                            }
+                            cardToAdd.setCardNumber(k);
+                            gamePlayer.getProgramField(k).setCard(cardToAdd);
+                            break;
+                        case "HAND":
+                            int j = 0;
+                            while (gamePlayer.getCardField(j).getCard() != null)
+                            {
+                                j++;
+                            }
+                            cardToAdd.setCardNumber(j);
+                            gamePlayer.getCardField(j).setCard(cardToAdd);
+                            break;
                     }
                 }
             }
@@ -271,21 +316,6 @@ public class Board extends Subject
         }
     }
 
-    public void setPlayerID(Long playerID)
-    {
-        this.playerID = playerID;
-    }
-
-    public ArrayList<UpgradeCard> getUpgradeCards()
-    {
-        return upgradeCards;
-    }
-
-    public void setUpgradeCards(ArrayList<UpgradeCard> upgradeCards)
-    {
-        this.upgradeCards = upgradeCards;
-    }
-
     /**
      * @return the number of players on the board
      * @author Elias
@@ -293,118 +323,6 @@ public class Board extends Subject
     public int getPlayersNumber()
     {
         return players.size();
-    }
-
-    public void buyUpgradeCard(Player player, UpgradeCard upgradeCard)
-    {
-        if (player.getEnergyCubes() >= upgradeCard.getPrice())
-        {
-            player.addUpgradeCard(upgradeCard);
-            this.upgradeCards.remove(upgradeCard);
-            player.setEnergyCubes(player.getEnergyCubes() - upgradeCard.getPrice());
-            notifyChange();
-        }
-    }
-
-    public BoardElement getCheckPointAtIndex(int index)
-    {
-        return boardElements[CHECKPOINTS_INDEX].get(index);
-    }
-
-    /**
-     * @param indexOfElementsToBeActivated
-     * @author Elias
-     */
-    public void activateBoardElementsOfIndex(int indexOfElementsToBeActivated)
-    {
-        for (BoardElement boardElement : boardElements[indexOfElementsToBeActivated])
-        {
-            boardElement.activate();
-        }
-    }
-
-    /**
-     * @param index
-     * @param boardElement
-     * @author Elias
-     */
-    public void addBoardElement(int index, BoardElement boardElement)
-    {
-        this.boardElements[index].add(boardElement);
-    }
-
-    /**
-     * @param space
-     * @return
-     * @author Elias
-     */
-    public Position getIndexOfSpace(Space space)
-    {
-        for (int i = 0; i < this.width; i++)
-        {
-            for (int k = 0; k < this.height; k++)
-            {
-                if (this.spaces[i][k] == space)
-                {
-                    return new Position(i, k);
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param playersArr, can contain null elements, these are ignored.
-     * @author Elias
-     */
-    public void setPlayers(Player[] playersArr)
-    {
-        this.players.clear();
-        for (Player player : playersArr)
-        {
-            if (player != null)
-            {
-                this.players.add(player);
-            }
-        }
-        if (this.players.isEmpty())
-        {
-        }
-    }
-
-    /**
-     * @author Elias
-     */
-    public void setTabNumbersOnPlayers()
-    {
-        for (int i = 0; i < players.size(); i++)
-        {
-            players.get(i).setPlayerID((long) i);
-        }
-    }
-
-    /**
-     * @return the current player
-     * @author Elias
-     */
-
-
-    /**
-     * @param player the player to be set as the current player
-     * @author Elias
-     */
-
-    /**
-     * @param player the player to be added to the board
-     * @author Elias
-     */
-    public void addPlayer(@NotNull Player player)
-    {
-        if (player.board == this && !players.contains(player))
-        {
-            players.add(player);
-            notifyChange();
-        }
     }
 
     /**
@@ -425,88 +343,50 @@ public class Board extends Subject
         }
     }
 
-    /**
-     * @return the list of players on the board
-     * @author Elias
-     */
-    public boolean isStepMode()
+    public void setPlayerID(Long playerID)
     {
-        return stepMode;
+        this.playerID = playerID;
     }
 
-    /**
-     * @author Elias
-     */
+    public boolean isHasSubmittedCards()
+    {
+        return hasSubmittedCards;
+    }
+
+    public void setHasSubmittedCards(boolean hasSubmittedCards)
+    {
+        this.hasSubmittedCards = hasSubmittedCards;
+    }
+
+    public ArrayList<UpgradeCard> getUpgradeCards()
+    {
+        return upgradeCards;
+    }
+
+    public void setUpgradeCards(ArrayList<UpgradeCard> upgradeCards)
+    {
+        this.upgradeCards = upgradeCards;
+    }
+
+    public void addBoardElement(int index, BoardElement boardElement)
+    {
+        this.boardElements[index].add(boardElement);
+    }
+
 
     /**
-     * @param stepMode the step mode to be set
+     * @param player the player to be added to the board
      * @author Elias
      */
-    public void setStepMode(boolean stepMode)
+    public void addPlayer(@NotNull Player player)
     {
-        if (stepMode != this.stepMode)
+        if (player.board == this && !players.contains(player))
         {
-            this.stepMode = stepMode;
+            players.add(player);
             notifyChange();
         }
     }
 
-    /**
-     * @return
-     * @author Elias
-     */
-
-    /**
-     * @param player the player for which the number should be returned
-     * @return the number of the player on the board; -1 if the player is not on the board
-     * @author Elias
-     */
-    public int getPlayerNumber(@NotNull Player player)
-    {
-        if (player.board == this)
-        {
-            return players.indexOf(player);
-        }
-        else
-        {
-            return -1;
-        }
-    }
-
-    /**
-     * Returns the neighbour of the given space of the board in the given heading.
-     * The neighbour is returned only, if it can be reached from the given space
-     * (no walls or obstacles in either of the involved spaces); otherwise,
-     * null will be returned.
-     *
-     * @param space   the space for which the neighbour should be computed
-     * @param heading the heading of the neighbour
-     * @return the space in the given direction; null if there is no (reachable) neighbour
-     * @author Elias & Mads
-     */
-    public Space getNeighbour(@NotNull Space space, @NotNull Heading heading)
-    {
-        int x = space.x;
-        int y = space.y;
-
-        switch (heading)
-        {
-            case SOUTH:
-                y = y + 1;
-                break;
-            case WEST:
-                x = x - 1;
-                break;
-            case NORTH:
-                y = y - 1;
-                break;
-            case EAST:
-                x = x + 1;
-                break;
-        }
-
-        return getSpace(x, y);
-    }
 
     /**
      * @return the list of players on the board
@@ -518,7 +398,7 @@ public class Board extends Subject
         // the students, this method gives a string representation of the current
         // status of the game (specifically, it shows the phase, the player and the step)
 
-        return "Phase: " + getPhase().name() + "Step: " + getStep();
+        return "Phase: " + getPhase().name() + " Step: " + getStep() + " TurnID: " + getTurnID() + " PlayerID: " + getPlayerID() + "GameID: " + getGameID();
 
     }
 
@@ -561,69 +441,41 @@ public class Board extends Subject
     {
         if (phase != this.phase)
         {
+            if (this.phase == ACTIVATION && phase == PROGRAMMING && !this.hasSubmittedCards)
+            {
+                for (int i = 0; i < this.getPlayersNumber(); i++)
+                {
+                    if (Objects.equals(players.get(i).getPlayerID(), this.playerID))
+                    {
+                        for (int x = 0; x < Player.NO_CARDS; x++)
+                        {
+                            players.get(i).getCardField(x).setCard(null);
+                        }
+                        for (int y = 0; y < Player.NO_REGISTERS; y++)
+                        {
+                            players.get(i).getProgramField(y).setCard(null);
+                        }
+                    }
+                }
+            }
+            if (this.phase == ACTIVATION && phase == PROGRAMMING && this.hasSubmittedCards)
+            {
+                return;
+            }
             this.phase = phase;
             notifyChange();
         }
     }
 
-    /**
-     * @param checkpoint
-     * @return
-     * @author Elias
-     */
-    public int getIndexOfCheckPoint(Checkpoint checkpoint)
-    {
-        return this.boardElements[CHECKPOINTS_INDEX].indexOf(checkpoint);
-    }
-
-    /**
-     * @return
-     * @author Elias
-     */
-    public RebootToken getRebootToken()
-    {
-        return rebootToken[0];
-    }
-
-    /**
-     * @param rebootToken
-     * @author Elias
-     */
-    public void setRebootToken(RebootToken rebootToken)
-    {
-        this.rebootToken = new RebootToken[]{rebootToken};
-    }
-
-    public void deleteBoardElement(BoardElement boardElement)
-    {
-        for (int i = 0; i < boardElements.length; i++)
-        {
-            boardElements[i].remove(boardElement);
-        }
-    }
-
-    public Space getAvailableSpawnPoint()
-    {
-        ArrayList<BoardElement> notactivateables = this.getBoardElementsWithIndex(Board.NOT_ACTIVATE_ABLE_INDEX);
-        Space lowestYSpace = null;
-        for (BoardElement element : notactivateables)
-        {
-            if (element instanceof SpawnPoint spawnPoint)
-            {
-                if (spawnPoint.getSpace().getPlayer() == null)
-                {
-                    if (lowestYSpace == null || spawnPoint.getSpace().y < lowestYSpace.y)
-                    {
-                        lowestYSpace = spawnPoint.getSpace();
-                    }
-                }
-            }
-        }
-        return lowestYSpace;
-    }
-
     public ArrayList<BoardElement> getBoardElementsWithIndex(int index)
     {
         return boardElements[index];
+    }
+
+    public int getIndexOfCheckPoint(Checkpoint checkpoint)
+    {
+        List<BoardElement> checkpoints = boardElements[Board.CHECKPOINTS_INDEX];
+        return checkpoints.indexOf(checkpoint);
+
     }
 }

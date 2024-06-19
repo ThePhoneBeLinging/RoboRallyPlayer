@@ -1,12 +1,11 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 
 /**
  * @author Elias
@@ -17,13 +16,13 @@ public class MainMenuView extends VBox
     /**
      * @param appController The controller for the application
      * @author Elias
-     *
      */
     public MainMenuView(AppController appController)
     {
         Image backgroundImage = new Image("file:src/main/resources/Images/dizzyHighway.png");
         BackgroundSize backgroundSize = new BackgroundSize(600.0, 1500.0, true, true, false, true);
-        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
         this.setBackground(new Background(backgroundImg));
 
         // Move all elements 50 pixels down.
@@ -33,9 +32,6 @@ public class MainMenuView extends VBox
         Label newGameLabel = createLabel("file:src/main/resources/Images/roborally.png", "RoboRally");
         this.getChildren().add(newGameLabel);
 
-        Button newGameButton = createButton("file:src/main/resources/Images/newGame.png", "New Game");
-        this.getChildren().add(newGameButton);
-        newGameButton.setOnAction(e -> appController.newGame());
 
         Button loadGameButton = createButton("file:src/main/resources/Images/loadGame.png", "Load Game");
         this.getChildren().add(loadGameButton);
@@ -54,12 +50,25 @@ public class MainMenuView extends VBox
         this.setHeight(800);
         this.setPrefHeight(600);
         VBox.setVgrow(newGameLabel, Priority.ALWAYS);
-        VBox.setVgrow(newGameButton, Priority.ALWAYS);
         VBox.setVgrow(loadGameButton, Priority.ALWAYS);
         VBox.setVgrow(exitGameButton, Priority.ALWAYS);
 
     }
-    private Button createButton(String imagePath, String tooltipText) {
+
+    private Label createLabel(String imagePath, String tooltipText)
+    {
+        Label label = new Label();
+        Image image = new Image(imagePath);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(80);
+        imageView.setFitWidth(280);
+        imageView.setPreserveRatio(true);
+        label.setGraphic(imageView);
+        return label;
+    }
+
+    private Button createButton(String imagePath, String tooltipText)
+    {
         Button button = new Button();
         Image image = new Image(imagePath);
         ImageView imageView = new ImageView(image);
@@ -69,16 +78,6 @@ public class MainMenuView extends VBox
         button.setGraphic(imageView);
         button.setStyle("-fx-background-color: transparent;");
         return button;
-    }
-    private Label createLabel(String imagePath, String tooltipText) {
-        Label label = new Label();
-        Image image = new Image(imagePath);
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(80);
-        imageView.setFitWidth(280);
-        imageView.setPreserveRatio(true);
-        label.setGraphic(imageView);
-        return label;
     }
 
 }
