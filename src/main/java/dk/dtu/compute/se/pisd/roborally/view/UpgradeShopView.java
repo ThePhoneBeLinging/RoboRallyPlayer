@@ -33,6 +33,7 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         setHeaderText("Select an upgrade to purchase:");
 
         upgradeListView = new ListView<>();
+        upgradeListView.getItems().clear();
         upgradeListView.getItems().addAll(player.board.getUpgradeCards());
 
         upgradeListView.setCellFactory(lv -> new ListCell<>()
@@ -97,21 +98,28 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         alert.showAndWait();
     }
 
-    private void sendUpgradePurchase(Player player, UpgradeCard upgradeCard) {
-        String urlToSend = "http://localhost:8080/set/boards/upgradeCards/addToPlayer?gameID=" + player.board.getGameID() + "&playerID=" + player.getPlayerID() +
-                "&upgradeCardName=" + upgradeCard.getName() + "&price=" + upgradeCard.getPrice();
+    private void sendUpgradePurchase(Player player, UpgradeCard upgradeCard)
+    {
+        String urlToSend =
+                "http://localhost:8080/set/boards/upgradeCards/addToPlayer?gameID=" + player.board.getGameID() +
+                        "&playerID=" + player.getPlayerID() + "&upgradeCardName=" + upgradeCard.getName() + "&price=" + upgradeCard.getPrice();
 
         new Thread(() -> {
             try
             {
                 ResponseEntity<UpgradeCard> response = restTemplate.exchange(urlToSend, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<UpgradeCard>() {});
+                        new ParameterizedTypeReference<UpgradeCard>()
+                {
+                });
 
                 UpgradeCard returnedUpgradeCard = response.getBody();
 
-                if(returnedUpgradeCard != null) {
+                if (returnedUpgradeCard != null)
+                {
                     System.out.println("Purchased Upgrade Card " + returnedUpgradeCard.getName());
-                } else {
+                }
+                else
+                {
                     System.out.println("Failed to buy");
                 }
             }
