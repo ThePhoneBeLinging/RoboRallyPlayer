@@ -32,6 +32,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.*;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Conveyors.BlueConveyor;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Conveyors.GreenConveyor;
+import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Void;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Walls.CornerWall;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Walls.Wall;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
@@ -151,6 +152,9 @@ public class LoadBoard
                                     break;
                                 case PIT:
                                     new Pit(space);
+                                    break;
+                                case VOID:
+                                    new Void(space);
                                     break;
                             }
                         }

@@ -67,7 +67,7 @@ public class Board extends Subject
     private final List<Player> players = new ArrayList<>();
     private final RestTemplate restTemplate = new RestTemplate();
     public boolean keepUpdatingBoard = true;
-    public Thread updateBoard;
+    private Thread updateBoard;
     private RebootToken[] rebootToken;
     private Phase phase = INITIALISATION;
     private int step = 0;
