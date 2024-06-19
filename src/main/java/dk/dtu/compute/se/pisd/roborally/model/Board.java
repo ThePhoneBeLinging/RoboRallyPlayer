@@ -194,7 +194,7 @@ public class Board extends Subject
     {
         if (this.turnID != turnID)
         {
-            if (turnID == Player.NO_REGISTERS * this.getPlayersNumber() - 1)
+            if (turnID == Player.NO_REGISTERS * this.getPlayersNumber())
             {
                 turnID = 0;
             }
@@ -254,7 +254,7 @@ public class Board extends Subject
         }
 
         this.upgradeCards.clear();
-        for (dk.dtu.compute.se.pisd.roborally.APITypes.UpgradeCard upgradeCard: serverBoard.getUpgradeCards())
+        for (dk.dtu.compute.se.pisd.roborally.APITypes.UpgradeCard upgradeCard : serverBoard.getUpgradeCards())
         {
             UpgradeCard upgrade = new UpgradeCard(upgradeCard.getCardName(), upgradeCard.getPrice());
             this.upgradeCards.add(upgrade);
