@@ -6,6 +6,10 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.VBox;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * A dialog for the player to purchase upgrades from the upgrade shop.
@@ -21,6 +25,7 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
 {
 
     private final ListView<UpgradeCard> upgradeListView;
+    RestTemplate restTemplate = new RestTemplate();
 
     public UpgradeShopView(Player player)
     {
@@ -72,6 +77,7 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
                 {
                     player.addUpgradeCard(selectedUpgrade);
                     showUpgradePurchasedAlert(player, selectedUpgrade);
+                    sendUpgradePurchase(player, selectedUpgrade);
                 }
                 else
                 {
@@ -89,6 +95,31 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         alert.setHeaderText("You have successfully purchased the " + upgradeCard.getName() + " upgrade.");
         alert.setContentText("You now have " + player.getEnergyCubes() + " Energy Cubes left.");
         alert.showAndWait();
+    }
+
+    private void sendUpgradePurchase(Player player, UpgradeCard upgradeCard) {
+        String urlToSend = "http://localhost:8080/set/boards/upgradeCards/addToPlayer?gameID=" + player.board.getGameID() + "&playerID=" + player.getPlayerID() +
+                "&upgradeCardName=" + upgradeCard.getName() + "&price=" + upgradeCard.getPrice();
+
+        new Thread(() -> {
+            try
+            {
+                ResponseEntity<UpgradeCard> response = restTemplate.exchange(urlToSend, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<UpgradeCard>() {});
+
+                UpgradeCard returnedUpgradeCard = response.getBody();
+
+                if(returnedUpgradeCard != null) {
+                    System.out.println("Purchased Upgrade Card " + returnedUpgradeCard.getName());
+                } else {
+                    System.out.println("Failed to buy");
+                }
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void showNotEnoughEnergyCubesAlert()
