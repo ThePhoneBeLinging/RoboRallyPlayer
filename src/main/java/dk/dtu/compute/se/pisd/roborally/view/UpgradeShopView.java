@@ -76,7 +76,6 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
                 UpgradeCard selectedUpgrade = upgradeListView.getSelectionModel().getSelectedItem();
                 if (selectedUpgrade != null && player.getEnergyCubes() >= selectedUpgrade.getPrice())
                 {
-                    player.addUpgradeCard(selectedUpgrade);
                     showUpgradePurchasedAlert(player, selectedUpgrade);
                     sendUpgradePurchase(player, selectedUpgrade);
                 }
