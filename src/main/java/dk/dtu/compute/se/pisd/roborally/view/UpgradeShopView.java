@@ -126,6 +126,7 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
     {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Not enough Energy Cubes");
+        alert.initOwner(this.getDialogPane().getScene().getWindow());
         alert.setHeaderText("You do not have enough Energy Cubes to purchase this upgrade.");
         alert.showAndWait();
     }
