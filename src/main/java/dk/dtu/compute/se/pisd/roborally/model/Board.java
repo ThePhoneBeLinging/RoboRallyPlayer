@@ -65,11 +65,6 @@ public class Board extends Subject
     private final boolean stepMode;
     private final Thread updateBoard;
     public boolean keepUpdatingBoard = true;
-<<<<<<< HEAD
-    private Thread updateBoard;
-    private RebootToken[] rebootToken;
-=======
->>>>>>> 2ae89859742ad555d9ed6cbeefe50e043e79d052
     private Phase phase = INITIALISATION;
     private int step = 0;
     private ArrayList<UpgradeCard> upgradeCards = new ArrayList<>();
