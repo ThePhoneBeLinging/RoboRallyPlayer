@@ -199,11 +199,11 @@ public class Board extends Subject
     {
         if (this.turnID != turnID)
         {
-            if (turnID == Player.NO_REGISTERS * this.getPlayersNumber() + 1)
+            if (turnID == Player.NO_REGISTERS * this.getPlayersNumber())
             {
-                turnID = 1;
+                turnID = 0;
             }
-            if (turnID == 1)
+            if (turnID == 0)
             {
                 hasSubmittedCards = false;
             }
@@ -219,7 +219,10 @@ public class Board extends Subject
         }
         this.setStep(serverBoard.getBoard().getStep());
         this.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
-        this.setTurnID(this.getTurnID() + 1);
+        if (phase != PROGRAMMING)
+        {
+            this.setTurnID(this.getTurnID() + 1);
+        }
         for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
         {
             for (Player gameBoardPlayer : this.players)
