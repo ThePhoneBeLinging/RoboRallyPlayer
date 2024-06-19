@@ -55,6 +55,7 @@ public class JoinedLobbyView extends VBox
         lobbyContent.appendText("Joined as player: " + lobby.getPlayerID() + "\n");
         Button dizzyHighWay = createButton("Images/dizzyHighway.PNG");
         dizzyHighWay.setOnAction(e -> changeBoard("dizzyHighway", dizzyHighWay));
+        changeBoard("dizzyHighway", dizzyHighWay);
         Button chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
         chopShopChallenge.setOnAction(e -> changeBoard("chopShopChallenge", chopShopChallenge));
         Button mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
