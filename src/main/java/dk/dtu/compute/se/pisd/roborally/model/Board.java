@@ -253,6 +253,14 @@ public class Board extends Subject
             }
         }
 
+        this.upgradeCards.clear();
+        for (dk.dtu.compute.se.pisd.roborally.APITypes.UpgradeCard upgradeCard: serverBoard.getUpgradeCards())
+        {
+            UpgradeCard upgrade = new UpgradeCard(upgradeCard.getCardName(), upgradeCard.getPrice());
+            this.upgradeCards.add(upgrade);
+        }
+
+
         if (toLoadNewCards)
         {
             for (Card card : serverBoard.getCards())
