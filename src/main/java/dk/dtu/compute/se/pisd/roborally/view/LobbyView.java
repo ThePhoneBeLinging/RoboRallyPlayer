@@ -54,6 +54,18 @@ public class LobbyView extends VBox
         fetchLobbies();
     }
 
+    private int getLobbySize(Long lobbyID) {
+        String url = "http://localhost:8080/lobby/size?gameID=" + lobbyID;
+        try {
+            ResponseEntity<Integer> response = restTemplate.exchange(url, HttpMethod.GET, null,
+                    new ParameterizedTypeReference<Integer>() {});
+            return response.getBody();
+        } catch (Exception e) {
+            Platform.runLater(() -> chatArea.appendText("Failed to get lobby size: " + e.getMessage()));
+            return -1;
+        }
+    }
+
     private void fetchLobbies()
     {
         new Thread(() -> {
@@ -116,6 +128,11 @@ public class LobbyView extends VBox
     private void joinLobbies(Long lobbyID)
     {
         String lobbyUrl = "http://localhost:8080/lobby/join?gameID=" + lobbyID;
+        int size = getLobbySize(lobbyID);
+        if(size >= 6) {
+            Platform.runLater(() -> chatArea.appendText("The lobby is full.\n"));
+            return;
+        }
 
         new Thread(() -> {
             try
