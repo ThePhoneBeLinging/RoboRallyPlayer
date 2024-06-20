@@ -38,9 +38,40 @@ public class JoinedLobbyView extends VBox
     Lobby lobby;
     String boardName;
     Button leaveButton;
+    boolean partyLeader=false;
+    int playerIDOfPartyLeader;
+
+    private void updateLobbyState()
+    {
+        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID"
+                + "=" + lobby.getPlayerID();
+        try
+        {
+            ResponseEntity<CompleteGame> response = restTemplate.exchange(URL, HttpMethod.GET, null,
+                    new ParameterizedTypeReference<CompleteGame>()
+                    {
+                    });
+            CompleteGame serverBoard = response.getBody();
+            this.listOfPlayers.clear();
+            for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
+            {
+                listOfPlayers.add(player.getPlayerID());
+            }
+            this.boardName = serverBoard.getBoard().getBoardname();
+            if (Objects.equals(serverBoard.getBoard().getPhase(), "PROGRAMMING"))
+            {
+                Platform.runLater(this::switchToBoardView);
+            }
+        }
+        catch (Exception e)
+        {
+            //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
+        }
+    }
 
     public JoinedLobbyView(AppController appController, Lobby lobby)
     {
+        listOfPlayers.add(lobby.getPlayerID());
         this.appController = appController;
         this.lobby = lobby;
         executor = Executors.newSingleThreadScheduledExecutor();
@@ -52,7 +83,8 @@ public class JoinedLobbyView extends VBox
         lobbyContent.appendText("Joined lobby with gameID: " + lobby.getGameID() + "\n");
         lobbyContent.appendText("Joined as player: " + lobby.getPlayerID() + "\n");
         this.getChildren().add(lobbyContent);
-        if(lobby.getPlayerID()==1) {
+        assignPartyLeader();
+        if(partyLeader) {
             startButton = new Button("Start Game");
             startButton.setOnAction(e -> this.startGame());
             startButton.setMinSize(500, 100);
@@ -71,9 +103,11 @@ public class JoinedLobbyView extends VBox
             mapSelection.setAlignment(Pos.CENTER);
             this.getChildren().addAll(startButton, mapSelection);
         }
+
         leaveButton = new Button("Leave Lobby");
         leaveButton.setOnAction(e->{
             appController.joinGame();
+            listOfPlayers.remove(lobby.getPlayerID()-1);
         });
         leaveButton.setMinSize(500, 100);
         this.getChildren().add(leaveButton);
@@ -92,33 +126,7 @@ public class JoinedLobbyView extends VBox
         return button;
     }
 
-    private void updateLobbyState()
-    {
-        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID"
-                + "=" + lobby.getPlayerID();
-        try
-        {
-            ResponseEntity<CompleteGame> response = restTemplate.exchange(URL, HttpMethod.GET, null,
-                    new ParameterizedTypeReference<CompleteGame>()
-            {
-            });
-            CompleteGame serverBoard = response.getBody();
-            this.listOfPlayers.clear();
-            this.boardName = serverBoard.getBoard().getBoardname();
-            for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
-            {
-                listOfPlayers.add(player.getPlayerID());
-            }
-            if (Objects.equals(serverBoard.getBoard().getPhase(), "PROGRAMMING"))
-            {
-                Platform.runLater(this::switchToBoardView);
-            }
-        }
-        catch (Exception e)
-        {
-            //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
-        }
-    }
+
 
     private void startGame()
     {
@@ -191,5 +199,19 @@ public class JoinedLobbyView extends VBox
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
         this.appController.startGameFromBoard(gameController);
+    }
+    public void assignPartyLeader() {
+    // Sort the list of playerIDs
+    Collections.sort(listOfPlayers);
+
+    // The player with the lowest ID becomes the party leader
+    playerIDOfPartyLeader = Math.toIntExact(listOfPlayers.get(0));
+
+    // Check if the current player is the party leader
+        if(lobby.getPlayerID() == playerIDOfPartyLeader) {
+            partyLeader = true;
+        } else {
+            partyLeader = false;
+        }
     }
 }
