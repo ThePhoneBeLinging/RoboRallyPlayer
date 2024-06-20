@@ -77,6 +77,7 @@ public class JoinedLobbyView extends VBox
         leaveButton = new Button("Leave Lobby");
         leaveButton.setOnAction(e->{
             appController.joinGame();
+            leaveLobby();
         });
         leaveButton.setMinSize(500, 100);
         this.getChildren().add(leaveButton);
@@ -199,5 +200,25 @@ public class JoinedLobbyView extends VBox
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
         this.appController.startGameFromBoard(gameController);
+    }
+
+    private void leaveLobby(){
+        String urlToSend1 = "http://localhost:8080/lobby/leave?gameID=" + this.lobby.getGameID() + "&playerID=" + this.lobby.getPlayerID();
+        String urlToSend2 = "http://localhost:8080/players/leave?gameID=" + this.lobby.getGameID() + "&playerID=" + this.lobby.getPlayerID();
+        new Thread(() -> {
+            try {
+                var response = restTemplate.exchange(urlToSend1, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<Boolean>() {
+                        });
+                var response2 = restTemplate.exchange(urlToSend2, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<Boolean>() {
+                        });
+                if (Boolean.TRUE.equals(response.getBody()) && Boolean.TRUE.equals(response2.getBody())) {
+                    Platform.runLater(() -> appController.joinGame());
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> lobbyContent.appendText("Failed to leave lobby" + e.getMessage() + "\n"));
+            }
+        }).start();
     }
 }
