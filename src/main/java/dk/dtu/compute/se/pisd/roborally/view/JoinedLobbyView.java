@@ -73,7 +73,7 @@ public class JoinedLobbyView extends VBox
         riskyCrossing = createButton("Images/riskyCrossing.PNG");
         riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
         undertow = createButton("Images/dizzyHighway.PNG");
-        dizzyHighWay.setOnAction(e -> changeBoard("undertow", undertow));
+        undertow.setOnAction(e -> changeBoard("undertow", undertow));
         changeBoard("undertow", undertow);
         mapSelection = new HBox();
         mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, undertow);
