@@ -163,12 +163,17 @@ public class Board extends Subject
                 });
                 CompleteGame serverBoard = response.getBody();
                 fromServerBoardToGameBoard(serverBoard);
-                Thread.sleep(2500);
             }
             catch (Exception e)
             {
                 //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
             }
+            try {
+                Thread.sleep(2500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
         }
     }
 
@@ -214,11 +219,6 @@ public class Board extends Subject
         {
             return;
         }
-        if (serverBoard.getBoard().getPhase().equals("PLAYER_INTERACTION") && serverBoard.getBoard().getPlayerID().equals(this.playerID))
-        {
-            this.setOptions(serverBoard.getCommandsToChooseBetween());
-            notifyChange();
-        }
         this.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
         this.setStep(serverBoard.getBoard().getStep());
         if (phase != PROGRAMMING && phase != PLAYER_INTERACTION)
@@ -239,6 +239,21 @@ public class Board extends Subject
                 gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
 
                 gameBoardPlayer.setPlayerID(player.getPlayerID());
+                if(this.getPhase() == PLAYER_INTERACTION)
+                {
+                    for (Card card : serverBoard.getCards())
+                    {
+                        if (card.getLocation().equals("OPTION") && card.getPlayerID() == player.getPlayerID())
+                        {
+                            this.options.add(card.getCommand());
+                        }
+                    }
+                    if (this.options.isEmpty())
+                    {
+                        this.turnID++;
+                    }
+                    gameBoardPlayer.notify();
+                }
             }
         }
         boolean toLoadNewCards = false;

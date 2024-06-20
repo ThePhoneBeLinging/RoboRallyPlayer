@@ -22,10 +22,12 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.CardField;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.UpgradeCard;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -35,14 +37,19 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Objects;
 
 /**
  * ...
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
-public class PlayerView extends Tab implements ViewObserver
-{
+public class PlayerView extends Tab implements ViewObserver {
 
     private final Player player;
 
@@ -70,8 +77,7 @@ public class PlayerView extends Tab implements ViewObserver
      * @param player
      * @author Elias, Frederik, Emil, Adel & Mads
      */
-    public PlayerView(@NotNull GameController gameController, @NotNull Player player)
-    {
+    public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
         super(player.getName());
 
         top = new VBox();
@@ -107,11 +113,9 @@ public class PlayerView extends Tab implements ViewObserver
         programPane.setVgap(2.0);
         programPane.setHgap(2.0);
         programCardViews = new CardFieldView[Player.NO_REGISTERS];
-        for (int i = 0; i < Player.NO_REGISTERS; i++)
-        {
+        for (int i = 0; i < Player.NO_REGISTERS; i++) {
             CardField cardField = player.getProgramField(i);
-            if (cardField != null)
-            {
+            if (cardField != null) {
                 programCardViews[i] = new CardFieldView(gameController, cardField);
                 programPane.add(programCardViews[i], i, 0);
             }
@@ -126,11 +130,9 @@ public class PlayerView extends Tab implements ViewObserver
         cardsPane.setVgap(2.0);
         cardsPane.setHgap(2.0);
         cardViews = new CardFieldView[Player.NO_CARDS];
-        for (int i = 0; i < Player.NO_CARDS; i++)
-        {
+        for (int i = 0; i < Player.NO_CARDS; i++) {
             CardField cardField = player.getCardField(i);
-            if (cardField != null)
-            {
+            if (cardField != null) {
                 cardViews[i] = new CardFieldView(gameController, cardField);
                 cardsPane.add(cardViews[i], i, 0);
             }
@@ -141,40 +143,33 @@ public class PlayerView extends Tab implements ViewObserver
         top.getChildren().add(cardsLabel);
         top.getChildren().add(cardsPane);
 
-        if (player.board != null)
-        {
+        if (player.board != null) {
             player.board.attach(this);
             update(player.board);
         }
     }
 
 
-    private void updateUpgradeCardsLabel()
-    {
+    private void updateUpgradeCardsLabel() {
         StringBuilder upgrades = new StringBuilder("Active Upgrade Cards:\n");
 
-        for (UpgradeCard upgrade : player.getUpgradeCards())
-        {
+        for (UpgradeCard upgrade : player.getUpgradeCards()) {
             upgrades.append(upgrade.getName()).append("\n");
         }
         upgradeCardsLabel.setText(upgrades.toString());
     }
 
-    private void updateEnergyCubesLabel()
-    {
+    private void updateEnergyCubesLabel() {
         energyCubesLabel.setText("Energy Cubes: " + player.getEnergyCubes());
     }
 
     @Override
-    public void updateView(Subject subject)
-    {
+    public void updateView(Subject subject) {
         playerInteractionPanel.getChildren().clear();
-        for (String option : player.board.getOptions())
-        {
+        for (String option : player.board.getOptions()) {
             Button optionButton = new Button(option);
-            optionButton.setMinSize(100, 250);
-            //optionButton.setOnAction(e -> gameController.executeCommandOptionAndContinue(option));
-            playerInteractionPanel.getChildren().add(optionButton);
+            optionButton.setOnAction(e -> sendInteractiveChoice(player.board.getOptions().indexOf(option)));
+                    playerInteractionPanel.getChildren().add(optionButton);
             optionButton.setDisable(false);
         }
         rightPanel.getChildren().removeAll(playerInteractionPanel);
@@ -182,14 +177,33 @@ public class PlayerView extends Tab implements ViewObserver
     }
 
     @Override
-    public void update(Subject subject)
-    {
+    public void update(Subject subject) {
         ViewObserver.super.update(subject);
     }
 
     @Override
-    public Node getStyleableNode()
-    {
+    public Node getStyleableNode() {
         return super.getStyleableNode();
+    }
+
+    private void sendInteractiveChoice(int choice) {
+        new Thread(() -> {
+            String URL = "http://localhost:8080/set/interactive/choice" + "?gameID=" + player.board.getGameID() + "&turnID=" + player.board.getTurnID() + "&playerID=" + player.getPlayerID() + "&choice=" + choice;
+        try
+
+            {
+                RestTemplate restTemplate = new RestTemplate();
+                ResponseEntity<Boolean> response = restTemplate.exchange(URL, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<Boolean>() {
+                        });
+                Boolean bool = response.getBody();
+                Platform.runLater(() -> player.board.setTurnID(player.board.getTurnID() + 1));
+            } catch(
+            Exception e)
+
+            {
+                //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
+            }
+        }).start();
     }
 }
