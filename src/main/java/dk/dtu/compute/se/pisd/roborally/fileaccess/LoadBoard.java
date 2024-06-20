@@ -156,6 +156,9 @@ public class LoadBoard
                                 case VOID:
                                     new Void(space);
                                     break;
+                                case GALAXY:
+                                    new Galaxy(space);
+                                    break;
                             }
                         }
                     }
