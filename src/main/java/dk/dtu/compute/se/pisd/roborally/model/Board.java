@@ -74,6 +74,7 @@ public class Board extends Subject
 
     private String URL;
     private boolean hasSubmittedCards = false;
+    private List<String> options;
 
     /**
      * @param width  the width of the board
@@ -128,6 +129,7 @@ public class Board extends Subject
 
         });
         this.updateBoard.start();
+        this.options = new ArrayList<>();
     }
 
     /**
@@ -212,9 +214,14 @@ public class Board extends Subject
         {
             return;
         }
-        this.setStep(serverBoard.getBoard().getStep());
+        if (serverBoard.getBoard().getPhase() == "PLAYER_INTERACTION" && serverBoard.getBoard().getPlayerID() == this.playerID)
+        {
+            this.setOptions(serverBoard.getCommandsToChooseBetween());
+            notifyChange();
+        }
         this.setPhase(Phase.valueOf(serverBoard.getBoard().getPhase()));
-        if (phase != PROGRAMMING)
+        this.setStep(serverBoard.getBoard().getStep());
+        if (phase != PROGRAMMING && phase != PLAYER_INTERACTION)
         {
             this.setTurnID(this.getTurnID() + 1);
         }
@@ -480,5 +487,15 @@ public class Board extends Subject
         List<BoardElement> checkpoints = boardElements[Board.CHECKPOINTS_INDEX];
         return checkpoints.indexOf(checkpoint);
 
+    }
+
+    public List<String> getOptions()
+    {
+        return options;
+    }
+
+    public void setOptions(List<String> options)
+    {
+        this.options = options;
     }
 }

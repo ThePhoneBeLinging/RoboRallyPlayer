@@ -28,14 +28,12 @@ import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.UpgradeCard;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -97,10 +95,10 @@ public class PlayerView extends Tab implements ViewObserver
         Button submitCards = new Button("Submit Cards");
         Button upgradeShopButton = new Button("Open Upgrade Shop");
 
-        submitCards.setOnAction(e->gameController.submitCards(this.player));
+        submitCards.setOnAction(e -> gameController.submitCards(this.player));
         upgradeShopButton.setOnAction(e -> gameController.openShop(player));
-        
-        rightPanel.getChildren().addAll(energyCubesLabel,submitCards, upgradeCardsLabel, upgradeShopButton);
+
+        rightPanel.getChildren().addAll(energyCubesLabel, submitCards, upgradeCardsLabel, upgradeShopButton);
 
 
         programLabel = new Label("Program");
@@ -118,13 +116,19 @@ public class PlayerView extends Tab implements ViewObserver
                 programPane.add(programCardViews[i], i, 0);
             }
         }
-
-
-        // programPane.add(buttonPanel, Player.NO_REGISTERS, 0); done in update now
-
         playerInteractionPanel = new VBox();
         playerInteractionPanel.setAlignment(Pos.CENTER_LEFT);
         playerInteractionPanel.setSpacing(3.0);
+
+        for (String option : player.board.getOptions())
+        {
+
+            Button optionButton = new Button(option);
+            //optionButton.setOnAction(e -> gameController.executeCommandOptionAndContinue(option));
+            playerInteractionPanel.getChildren().add(optionButton);
+            optionButton.setDisable(false);
+        }
+
 
         cardsLabel = new Label("Command Cards");
         cardsPane = new GridPane();
