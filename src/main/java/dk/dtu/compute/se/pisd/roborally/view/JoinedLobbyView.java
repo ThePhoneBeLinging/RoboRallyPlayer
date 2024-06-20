@@ -37,6 +37,7 @@ public class JoinedLobbyView extends VBox
     AppController appController;
     Lobby lobby;
     String boardName;
+    Button leaveButton;
 
     public JoinedLobbyView(AppController appController, Lobby lobby)
     {
@@ -70,6 +71,12 @@ public class JoinedLobbyView extends VBox
             mapSelection.setAlignment(Pos.CENTER);
             this.getChildren().addAll(startButton, mapSelection);
         }
+        leaveButton = new Button("Leave Lobby");
+        leaveButton.setOnAction(e->{
+            appController.joinGame();
+        });
+        leaveButton.setMinSize(500, 100);
+        this.getChildren().add(leaveButton);
     }
 
     private Button createButton(String imagePath)

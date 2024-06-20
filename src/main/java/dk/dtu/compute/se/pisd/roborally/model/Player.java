@@ -261,5 +261,9 @@ public class Player extends Subject
         return false;
     }
 
+    public void setPartyLeader(boolean partyLeader){
+        this.partyLeader=partyLeader;
+    }
+
 
 }
