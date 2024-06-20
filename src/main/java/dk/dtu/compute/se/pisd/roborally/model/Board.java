@@ -214,7 +214,7 @@ public class Board extends Subject
         {
             return;
         }
-        if (serverBoard.getBoard().getPhase() == "PLAYER_INTERACTION" && serverBoard.getBoard().getPlayerID() == this.playerID)
+        if (serverBoard.getBoard().getPhase().equals("PLAYER_INTERACTION") && serverBoard.getBoard().getPlayerID().equals(this.playerID))
         {
             this.setOptions(serverBoard.getCommandsToChooseBetween());
             notifyChange();
