@@ -48,6 +48,7 @@ public class Player extends Subject
     private Heading heading = SOUTH;
     private Long playerID;
     private int energyCubes;
+    public boolean partyLeader = false;
 
     /**
      * @param board the board to which this player belongs
@@ -157,6 +158,9 @@ public class Player extends Subject
     public void setPlayerID(Long playerID)
     {
         this.playerID = playerID;
+        if(this.playerID==1l){
+            partyLeader = true;
+        }
     }
 
 
@@ -257,9 +261,5 @@ public class Player extends Subject
         return false;
     }
 
-    /**
-     * @param amount
-     * @author Elias
-     */
 
 }

@@ -44,29 +44,32 @@ public class JoinedLobbyView extends VBox
         this.lobby = lobby;
         executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this::updateLobbyState, 0, 1, TimeUnit.SECONDS);
-        startButton = new Button("Start Game");
-        startButton.setOnAction(e -> this.startGame());
-        startButton.setMinSize(500, 100);
         lobbyContent = new TextArea();
         lobbyContent.setEditable(false);
         lobbyContent.setMinWidth(500);
         lobbyContent.setMinHeight(100);
         lobbyContent.appendText("Joined lobby with gameID: " + lobby.getGameID() + "\n");
         lobbyContent.appendText("Joined as player: " + lobby.getPlayerID() + "\n");
-        Button dizzyHighWay = createButton("Images/dizzyHighway.PNG");
-        dizzyHighWay.setOnAction(e -> changeBoard("dizzyHighway", dizzyHighWay));
-        changeBoard("dizzyHighway", dizzyHighWay);
-        Button chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
-        chopShopChallenge.setOnAction(e -> changeBoard("chopShopChallenge", chopShopChallenge));
-        Button mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
-        mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
-        Button riskyCrossing = createButton("Images/riskyCrossing.PNG");
-        riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
-        HBox mapSelection = new HBox();
-        mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing);
-        mapSelection.setSpacing(10);
-        mapSelection.setAlignment(Pos.CENTER);
-        this.getChildren().addAll(startButton, lobbyContent, mapSelection);
+        this.getChildren().add(lobbyContent);
+        if(lobby.getPlayerID()==1) {
+            startButton = new Button("Start Game");
+            startButton.setOnAction(e -> this.startGame());
+            startButton.setMinSize(500, 100);
+            Button dizzyHighWay = createButton("Images/dizzyHighway.PNG");
+            dizzyHighWay.setOnAction(e -> changeBoard("dizzyHighway", dizzyHighWay));
+            changeBoard("dizzyHighway", dizzyHighWay);
+            Button chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
+            chopShopChallenge.setOnAction(e -> changeBoard("chopShopChallenge", chopShopChallenge));
+            Button mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
+            mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
+            Button riskyCrossing = createButton("Images/riskyCrossing.PNG");
+            riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
+            HBox mapSelection = new HBox();
+            mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing);
+            mapSelection.setSpacing(10);
+            mapSelection.setAlignment(Pos.CENTER);
+            this.getChildren().addAll(startButton, mapSelection);
+        }
     }
 
     private Button createButton(String imagePath)
