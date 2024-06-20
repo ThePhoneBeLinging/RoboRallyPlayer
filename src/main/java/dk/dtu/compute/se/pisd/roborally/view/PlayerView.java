@@ -120,15 +120,6 @@ public class PlayerView extends Tab implements ViewObserver
         playerInteractionPanel.setAlignment(Pos.CENTER_LEFT);
         playerInteractionPanel.setSpacing(3.0);
 
-        for (String option : player.board.getOptions())
-        {
-
-            Button optionButton = new Button(option);
-            //optionButton.setOnAction(e -> gameController.executeCommandOptionAndContinue(option));
-            playerInteractionPanel.getChildren().add(optionButton);
-            optionButton.setDisable(false);
-        }
-
 
         cardsLabel = new Label("Command Cards");
         cardsPane = new GridPane();
@@ -177,7 +168,17 @@ public class PlayerView extends Tab implements ViewObserver
     @Override
     public void updateView(Subject subject)
     {
-
+        playerInteractionPanel.getChildren().clear();
+        for (String option : player.board.getOptions())
+        {
+            Button optionButton = new Button(option);
+            optionButton.setMinSize(100, 250);
+            //optionButton.setOnAction(e -> gameController.executeCommandOptionAndContinue(option));
+            playerInteractionPanel.getChildren().add(optionButton);
+            optionButton.setDisable(false);
+        }
+        rightPanel.getChildren().removeAll(playerInteractionPanel);
+        rightPanel.getChildren().add(playerInteractionPanel);
     }
 
     @Override
