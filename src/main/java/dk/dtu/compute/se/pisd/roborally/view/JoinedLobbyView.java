@@ -38,6 +38,12 @@ public class JoinedLobbyView extends VBox
     Lobby lobby;
     String boardName;
     Button leaveButton;
+    Button dizzyHighWay;
+    Button chopShopChallenge;
+    Button mallfunctionMayhem;
+    Button riskyCrossing;
+    Button undertow;
+    HBox mapSelection;
 
 
     public JoinedLobbyView(AppController appController, Lobby lobby)
@@ -57,19 +63,19 @@ public class JoinedLobbyView extends VBox
         startButton = new Button("Start Game");
         startButton.setOnAction(e -> this.startGame());
         startButton.setMinSize(500, 100);
-        Button dizzyHighWay = createButton("Images/dizzyHighway.PNG");
+        dizzyHighWay = createButton("Images/dizzyHighway.PNG");
         dizzyHighWay.setOnAction(e -> changeBoard("dizzyHighway", dizzyHighWay));
         changeBoard("dizzyHighway", dizzyHighWay);
-        Button chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
+        chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
         chopShopChallenge.setOnAction(e -> changeBoard("chopShopChallenge", chopShopChallenge));
-        Button mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
+        mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
         mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
-        Button riskyCrossing = createButton("Images/riskyCrossing.PNG");
+        riskyCrossing = createButton("Images/riskyCrossing.PNG");
         riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
-        Button undertow = createButton("Images/dizzyHighway.PNG");
+        undertow = createButton("Images/dizzyHighway.PNG");
         dizzyHighWay.setOnAction(e -> changeBoard("undertow", undertow));
         changeBoard("undertow", undertow);
-        HBox mapSelection = new HBox();
+        mapSelection = new HBox();
         mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, undertow);
         mapSelection.setSpacing(10);
         mapSelection.setAlignment(Pos.CENTER);
@@ -112,7 +118,35 @@ public class JoinedLobbyView extends VBox
         {
             listOfPlayers.add(player.getPlayerID());
         }
-        this.boardName = serverBoard.getBoard().getBoardname();
+            for(Button button: Arrays.asList(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, undertow))
+            {
+                button.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
+            }
+            switch (serverBoard.getBoard().getBoardname()){
+                case("dizzyHighway"):
+                    dizzyHighWay.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
+                    for(Button button: Arrays.asList(chopShopChallenge, mallfunctionMayhem, riskyCrossing, undertow))
+                    {
+                        button.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
+                    }
+                    break;
+                case("chopShopChallenge"):
+                    chopShopChallenge.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
+                    break;
+                case("mallfunctionMayhem"):
+                    mallfunctionMayhem.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
+                    break;
+                case("riskyCrossing"):
+                    riskyCrossing.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
+                    break;
+                case("undertow"):
+                    undertow.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
+                    break;
+                default:
+                    return;
+            }
+
+
         if (Objects.equals(serverBoard.getBoard().getPhase(), "PROGRAMMING"))
         {
             Platform.runLater(this::switchToBoardView);
