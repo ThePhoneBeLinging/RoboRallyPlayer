@@ -41,34 +41,6 @@ public class JoinedLobbyView extends VBox
     boolean partyLeader=false;
     int playerIDOfPartyLeader;
 
-    private void updateLobbyState()
-    {
-        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID"
-                + "=" + lobby.getPlayerID();
-        try
-        {
-            ResponseEntity<CompleteGame> response = restTemplate.exchange(URL, HttpMethod.GET, null,
-                    new ParameterizedTypeReference<CompleteGame>()
-                    {
-                    });
-            CompleteGame serverBoard = response.getBody();
-            this.listOfPlayers.clear();
-            for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
-            {
-                listOfPlayers.add(player.getPlayerID());
-            }
-            this.boardName = serverBoard.getBoard().getBoardname();
-            if (Objects.equals(serverBoard.getBoard().getPhase(), "PROGRAMMING"))
-            {
-                Platform.runLater(this::switchToBoardView);
-            }
-        }
-        catch (Exception e)
-        {
-            //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
-        }
-    }
-
     public JoinedLobbyView(AppController appController, Lobby lobby)
     {
         listOfPlayers.add(lobby.getPlayerID());
@@ -126,7 +98,33 @@ public class JoinedLobbyView extends VBox
         return button;
     }
 
-
+    private void updateLobbyState()
+    {
+        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID"
+            + "=" + lobby.getPlayerID();
+        try
+        {
+            ResponseEntity<CompleteGame> response = restTemplate.exchange(URL, HttpMethod.GET, null,
+                new ParameterizedTypeReference<CompleteGame>()
+            {
+        });
+        CompleteGame serverBoard = response.getBody();
+        this.listOfPlayers.clear();
+        for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
+        {
+            listOfPlayers.add(player.getPlayerID());
+        }
+        this.boardName = serverBoard.getBoard().getBoardname();
+        if (Objects.equals(serverBoard.getBoard().getPhase(), "PROGRAMMING"))
+        {
+            Platform.runLater(this::switchToBoardView);
+        }
+    }
+        catch (Exception e)
+        {
+        //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
+        }
+    }
 
     private void startGame()
     {
