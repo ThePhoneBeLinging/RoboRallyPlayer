@@ -38,8 +38,7 @@ public class JoinedLobbyView extends VBox
     Lobby lobby;
     String boardName;
     Button leaveButton;
-    boolean partyLeader=false;
-    int playerIDOfPartyLeader;
+
 
     public JoinedLobbyView(AppController appController, Lobby lobby)
     {
@@ -55,31 +54,26 @@ public class JoinedLobbyView extends VBox
         lobbyContent.appendText("Joined lobby with gameID: " + lobby.getGameID() + "\n");
         lobbyContent.appendText("Joined as player: " + lobby.getPlayerID() + "\n");
         this.getChildren().add(lobbyContent);
-        assignPartyLeader();
-        if(partyLeader) {
-            startButton = new Button("Start Game");
-            startButton.setOnAction(e -> this.startGame());
-            startButton.setMinSize(500, 100);
-            Button dizzyHighWay = createButton("Images/dizzyHighway.PNG");
-            dizzyHighWay.setOnAction(e -> changeBoard("dizzyHighway", dizzyHighWay));
-            changeBoard("dizzyHighway", dizzyHighWay);
-            Button chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
-            chopShopChallenge.setOnAction(e -> changeBoard("chopShopChallenge", chopShopChallenge));
-            Button mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
-            mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
-            Button riskyCrossing = createButton("Images/riskyCrossing.PNG");
-            riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
-            HBox mapSelection = new HBox();
-            mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing);
-            mapSelection.setSpacing(10);
-            mapSelection.setAlignment(Pos.CENTER);
-            this.getChildren().addAll(startButton, mapSelection);
-        }
-
+        startButton = new Button("Start Game");
+        startButton.setOnAction(e -> this.startGame());
+        startButton.setMinSize(500, 100);
+        Button dizzyHighWay = createButton("Images/dizzyHighway.PNG");
+        dizzyHighWay.setOnAction(e -> changeBoard("dizzyHighway", dizzyHighWay));
+        changeBoard("dizzyHighway", dizzyHighWay);
+        Button chopShopChallenge = createButton("Images/chopShopChallenge.PNG");
+        chopShopChallenge.setOnAction(e -> changeBoard("chopShopChallenge", chopShopChallenge));
+        Button mallfunctionMayhem = createButton("Images/mallfunctionMayhem.PNG");
+        mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
+        Button riskyCrossing = createButton("Images/riskyCrossing.PNG");
+        riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
+        HBox mapSelection = new HBox();
+        mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing);
+        mapSelection.setSpacing(10);
+        mapSelection.setAlignment(Pos.CENTER);
+        this.getChildren().addAll(startButton, mapSelection);
         leaveButton = new Button("Leave Lobby");
         leaveButton.setOnAction(e->{
             appController.joinGame();
-            listOfPlayers.remove(lobby.getPlayerID()-1);
         });
         leaveButton.setMinSize(500, 100);
         this.getChildren().add(leaveButton);
@@ -128,57 +122,62 @@ public class JoinedLobbyView extends VBox
 
     private void startGame()
     {
-        String lobbyUrl = "http://localhost:8080/lobby/startGame?gameID=" + this.lobby.getGameID();
+        Collections.sort(listOfPlayers);
+        if(listOfPlayers.get(0) != lobby.getPlayerID())
+        {
+            lobbyContent.appendText("Only the host can start the game\n");
+            return;
+        }else {
+            String lobbyUrl = "http://localhost:8080/lobby/startGame?gameID=" + this.lobby.getGameID();
 
-        new Thread(() -> {
-            try
-            {
-                var response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<Boolean>()
-                {
-                });
+            new Thread(() -> {
+                try {
+                    var response = restTemplate.exchange(lobbyUrl, HttpMethod.GET, null,
+                            new ParameterizedTypeReference<Boolean>() {
+                            });
 
-                if (Boolean.TRUE.equals(response.getBody()))
-                {
-                    Platform.runLater(this::switchToBoardView);
+                    if (Boolean.TRUE.equals(response.getBody())) {
+                        Platform.runLater(this::switchToBoardView);
+                    }
+
+                } catch (Exception e) {
+                    Platform.runLater(() -> lobbyContent.appendText("Failed to get other players info: " + e.getMessage() + "\n"));
                 }
-
-            }
-            catch (Exception e)
-            {
-                Platform.runLater(() -> lobbyContent.appendText("Failed to get other players info: " + e.getMessage() + "\n"));
-            }
-        }).start();
+            }).start();
+        }
     }
 
     private void changeBoard(String boardName, Button button)
     {
-        String urlToSendTo = "http://localhost:8080/lobby/changeBoard?gameID=" + this.lobby.getGameID() + "&boardName"
-                + "=" + boardName;
+        Collections.sort(listOfPlayers);
+        if(listOfPlayers.get(0) != lobby.getPlayerID())
+        {
+            lobbyContent.appendText("Only the host can change the board\n");
+            return;
+        }else {
+            String urlToSendTo = "http://localhost:8080/lobby/changeBoard?gameID=" + this.lobby.getGameID() + "&boardName"
+                    + "=" + boardName;
 
-        new Thread(() -> {
-            try
-            {
-                var response = restTemplate.exchange(urlToSendTo, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<Boolean>()
-                {
+            new Thread(() -> {
+                try {
+                    var response = restTemplate.exchange(urlToSendTo, HttpMethod.GET, null,
+                            new ParameterizedTypeReference<Boolean>() {
 
-                });
+                            });
 
-                button.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
+                    button.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
 
-                if (selectedMap != null) {
-                    selectedMap.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
+                    if (selectedMap != null) {
+                        selectedMap.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
+                    }
+                    this.boardName = boardName;
+                    selectedMap = button;
+
+                } catch (Exception e) {
+                    Platform.runLater(() -> lobbyContent.appendText("Failed to change Board" + e.getMessage() + "\n"));
                 }
-                this.boardName = boardName;
-                selectedMap = button;
-
-            }
-            catch (Exception e)
-            {
-                Platform.runLater(() -> lobbyContent.appendText("Failed to change Board" + e.getMessage() + "\n"));
-            }
-        }).start();
+            }).start();
+        }
     }
 
     private void switchToBoardView()
@@ -197,19 +196,5 @@ public class JoinedLobbyView extends VBox
             board.getPlayer(i).setSpace(board.getSpace(i, i));
         }
         this.appController.startGameFromBoard(gameController);
-    }
-    public void assignPartyLeader() {
-    // Sort the list of playerIDs
-    Collections.sort(listOfPlayers);
-
-    // The player with the lowest ID becomes the party leader
-    playerIDOfPartyLeader = Math.toIntExact(listOfPlayers.get(0));
-
-    // Check if the current player is the party leader
-        if(lobby.getPlayerID() == playerIDOfPartyLeader) {
-            partyLeader = true;
-        } else {
-            partyLeader = false;
-        }
     }
 }
