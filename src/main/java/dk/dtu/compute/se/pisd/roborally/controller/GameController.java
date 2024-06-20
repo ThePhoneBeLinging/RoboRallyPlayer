@@ -52,11 +52,6 @@ public class GameController
         this.board = board;
     }
 
-    public GameController(@NotNull Board board, RoboRally roboRally)
-    {
-        this.board = board;
-        this.roboRally = roboRally;
-    }
 
 
     /**
