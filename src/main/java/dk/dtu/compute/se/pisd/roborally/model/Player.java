@@ -22,9 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
@@ -49,6 +51,15 @@ public class Player extends Subject
     private Long playerID;
     private int energyCubes;
     public boolean partyLeader = false;
+    private List<Checkpoint> visitedCheckpoints = new ArrayList<>();
+
+    public void visitCheckpoint(Checkpoint checkpoint) {
+        visitedCheckpoints.add(checkpoint);
+    }
+
+    public List<Checkpoint> getVisitedCheckpoints() {
+        return visitedCheckpoints;
+    }
 
     /**
      * @param board the board to which this player belongs
