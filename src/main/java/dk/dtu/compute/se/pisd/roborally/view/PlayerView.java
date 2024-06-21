@@ -189,20 +189,18 @@ public class PlayerView extends Tab implements ViewObserver {
     private void sendInteractiveChoice(int choice) {
         new Thread(() -> {
             String URL = "http://localhost:8080/set/interactive/choice" + "?gameID=" + player.board.getGameID() + "&turnID=" + player.board.getTurnID() + "&playerID=" + player.getPlayerID() + "&choice=" + choice;
-        try
-
-            {
+            try {
                 RestTemplate restTemplate = new RestTemplate();
                 ResponseEntity<Boolean> response = restTemplate.exchange(URL, HttpMethod.GET, null,
                         new ParameterizedTypeReference<Boolean>() {
                         });
                 Boolean bool = response.getBody();
-                Platform.runLater(() -> player.board.setTurnID(player.board.getTurnID() + 1));
-            } catch(
-            Exception e)
-
-            {
-                //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
+                Platform.runLater(() -> {
+                    player.board.setTurnID(player.board.getTurnID() + 1);
+                    playerInteractionPanel.getChildren().clear();
+                });
+            } catch (Exception e) {
+                System.out.println("Exception occurred: " + e.getMessage());
             }
         }).start();
     }
