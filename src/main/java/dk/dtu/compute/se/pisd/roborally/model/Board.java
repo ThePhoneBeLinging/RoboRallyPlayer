@@ -168,9 +168,12 @@ public class Board extends Subject
             {
                 //Platform.runLater(() -> chatArea.setText("Failed to fetch lobbies: " + e.getMessage()));
             }
-            try {
+            try
+            {
                 Thread.sleep(2500);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e)
+            {
                 throw new RuntimeException(e);
             }
 
@@ -225,6 +228,7 @@ public class Board extends Subject
         {
             this.setTurnID(this.getTurnID() + 1);
         }
+        options.clear();
         for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
         {
             for (Player gameBoardPlayer : this.players)
@@ -239,18 +243,14 @@ public class Board extends Subject
                 gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
 
                 gameBoardPlayer.setPlayerID(player.getPlayerID());
-                if(this.getPhase() == PLAYER_INTERACTION)
+                if (this.getPhase() == PLAYER_INTERACTION)
                 {
                     for (Card card : serverBoard.getCards())
                     {
-                        if (card.getLocation().equals("OPTION") && card.getPlayerID() == player.getPlayerID())
+                        if (card.getLocation().equals("OPTION") && card.getPlayerID() == this.getPlayerID())
                         {
                             this.options.add(card.getCommand());
                         }
-                    }
-                    if (this.options.isEmpty())
-                    {
-                        this.turnID++;
                     }
                     gameBoardPlayer.notify();
                 }
@@ -342,6 +342,15 @@ public class Board extends Subject
     }
 
     /**
+     * @return the current phase of the board
+     * @author Elias
+     */
+    public Phase getPhase()
+    {
+        return phase;
+    }
+
+    /**
      * @return the number of players on the board
      * @author Elias
      */
@@ -365,96 +374,6 @@ public class Board extends Subject
         else
         {
             return null;
-        }
-    }
-
-    public void setPlayerID(Long playerID)
-    {
-        this.playerID = playerID;
-    }
-
-    public boolean isHasSubmittedCards()
-    {
-        return hasSubmittedCards;
-    }
-
-    public void setHasSubmittedCards(boolean hasSubmittedCards)
-    {
-        this.hasSubmittedCards = hasSubmittedCards;
-    }
-
-    public ArrayList<UpgradeCard> getUpgradeCards()
-    {
-        return upgradeCards;
-    }
-
-    public void setUpgradeCards(ArrayList<UpgradeCard> upgradeCards)
-    {
-        this.upgradeCards = upgradeCards;
-    }
-
-    public void addBoardElement(int index, BoardElement boardElement)
-    {
-        this.boardElements[index].add(boardElement);
-    }
-
-
-    /**
-     * @param player the player to be added to the board
-     * @author Elias
-     */
-    public void addPlayer(@NotNull Player player)
-    {
-        if (player.board == this && !players.contains(player))
-        {
-            players.add(player);
-            notifyChange();
-        }
-    }
-
-
-    /**
-     * @return the list of players on the board
-     * @author Elias
-     */
-    public String getStatusMessage()
-    {
-        // This is actually a view aspect, but for making the first task easy for
-        // the students, this method gives a string representation of the current
-        // status of the game (specifically, it shows the phase, the player and the step)
-
-        return "Phase: " + getPhase().name() + " Step: " + getStep() + " TurnID: " + getTurnID() + " PlayerID: " + getPlayerID() + "GameID: " + getGameID();
-
-    }
-
-    /**
-     * @return the current phase of the board
-     * @author Elias
-     */
-    public Phase getPhase()
-    {
-        return phase;
-    }
-
-    /**
-     * @return the list of players on the board
-     * @author Elias
-     */
-    public int getStep()
-    {
-        return step;
-    }
-
-    /**
-     * @param step the step to be set
-     * @author Elias
-     */
-    public void setStep(int step)
-    {
-        if (step != this.step)
-        {
-            this.step = step;
-            notifyChange();
         }
     }
 
@@ -488,6 +407,85 @@ public class Board extends Subject
                 return;
             }
             this.phase = phase;
+            notifyChange();
+        }
+    }
+
+    public void setPlayerID(Long playerID)
+    {
+        this.playerID = playerID;
+    }
+
+    public boolean isHasSubmittedCards()
+    {
+        return hasSubmittedCards;
+    }
+
+    public void setHasSubmittedCards(boolean hasSubmittedCards)
+    {
+        this.hasSubmittedCards = hasSubmittedCards;
+    }
+
+    public ArrayList<UpgradeCard> getUpgradeCards()
+    {
+        return upgradeCards;
+    }
+
+    public void setUpgradeCards(ArrayList<UpgradeCard> upgradeCards)
+    {
+        this.upgradeCards = upgradeCards;
+    }
+
+    public void addBoardElement(int index, BoardElement boardElement)
+    {
+        this.boardElements[index].add(boardElement);
+    }
+
+    /**
+     * @param player the player to be added to the board
+     * @author Elias
+     */
+    public void addPlayer(@NotNull Player player)
+    {
+        if (player.board == this && !players.contains(player))
+        {
+            players.add(player);
+            notifyChange();
+        }
+    }
+
+    /**
+     * @return the list of players on the board
+     * @author Elias
+     */
+    public String getStatusMessage()
+    {
+        // This is actually a view aspect, but for making the first task easy for
+        // the students, this method gives a string representation of the current
+        // status of the game (specifically, it shows the phase, the player and the step)
+
+        return "Phase: " + getPhase().name() + " Step: " + getStep() + " TurnID: " + getTurnID() + " PlayerID: " + getPlayerID() + "GameID: " + getGameID();
+
+    }
+
+    /**
+     * @return the list of players on the board
+     * @author Elias
+     */
+    public int getStep()
+    {
+        return step;
+    }
+
+    /**
+     * @param step the step to be set
+     * @author Elias
+     */
+    public void setStep(int step)
+    {
+        if (step != this.step)
+        {
+            this.step = step;
             notifyChange();
         }
     }
