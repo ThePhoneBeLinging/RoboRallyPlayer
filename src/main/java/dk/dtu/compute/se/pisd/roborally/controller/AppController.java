@@ -71,7 +71,6 @@ public class AppController implements Observer
 
     public void joinGame()
     {
-        System.out.println("Join Pressed");
         LobbyView lobbyView = new LobbyView(this);
         roboRally.createLobbyView(lobbyView);
     }

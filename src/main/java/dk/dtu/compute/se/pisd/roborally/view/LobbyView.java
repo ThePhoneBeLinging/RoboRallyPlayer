@@ -156,7 +156,6 @@ public class LobbyView extends VBox
 
     public void joinLobbyView()
     {
-        System.out.println("Joined Lobby View");
         while (this.joinedLobby == null)
         {
             try
