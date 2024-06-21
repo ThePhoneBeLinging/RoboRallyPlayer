@@ -51,15 +51,8 @@ public class Player extends Subject
     private Long playerID;
     private int energyCubes;
     public boolean partyLeader = false;
-    private List<Checkpoint> visitedCheckpoints = new ArrayList<>();
 
-    public void visitCheckpoint(Checkpoint checkpoint) {
-        visitedCheckpoints.add(checkpoint);
-    }
 
-    public List<Checkpoint> getVisitedCheckpoints() {
-        return visitedCheckpoints;
-    }
 
     /**
      * @param board the board to which this player belongs

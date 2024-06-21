@@ -46,31 +46,6 @@ public class GameController
     private RoboRally roboRally;
 
 
-    public void checkWinCondition(Player player) {
-        List<Checkpoint> visitedCheckpoints = player.getVisitedCheckpoints();
-        List<BoardElement> boardElements = board.getBoardElementsWithIndex(Board.CHECKPOINTS_INDEX);
-
-        List<Checkpoint> allCheckpoints = new ArrayList<>();
-        for(BoardElement element : boardElements) {
-            if (element instanceof Checkpoint) {
-                allCheckpoints.add((Checkpoint) element);
-            }
-        }
-
-        if(visitedCheckpoints.size() != allCheckpoints.size()) {
-            return;
-        }
-
-        for(int i = 0; i < allCheckpoints.size(); i++) {
-            if(!visitedCheckpoints.get(i).equals(allCheckpoints.get(i))) {
-                return;
-            }
-        }
-
-        System.out.println("Player " + player.getName() + " has won the game!");
-    }
-
-
     /**
      * @param board
      * @author Elias
