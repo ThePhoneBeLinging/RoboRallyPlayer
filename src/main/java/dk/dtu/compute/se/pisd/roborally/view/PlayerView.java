@@ -183,6 +183,8 @@ public class PlayerView extends Tab implements ViewObserver
         }
         rightPanel.getChildren().removeAll(playerInteractionPanel);
         rightPanel.getChildren().add(playerInteractionPanel);
+        updateEnergyCubesLabel();
+        updateUpgradeCardsLabel();
     }
 
     @Override
