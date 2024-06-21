@@ -22,11 +22,9 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
@@ -50,8 +48,6 @@ public class Player extends Subject
     private Heading heading = SOUTH;
     private Long playerID;
     private int energyCubes;
-    public boolean partyLeader = false;
-
 
 
     /**
@@ -162,8 +158,8 @@ public class Player extends Subject
     public void setPlayerID(Long playerID)
     {
         this.playerID = playerID;
-        if(this.playerID==1l){
-            partyLeader = true;
+        if (this.playerID == 1L)
+        {
         }
     }
 
@@ -263,10 +259,6 @@ public class Player extends Subject
 
         }
         return false;
-    }
-
-    public void setPartyLeader(boolean partyLeader){
-        this.partyLeader=partyLeader;
     }
 
 
