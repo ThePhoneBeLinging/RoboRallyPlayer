@@ -250,9 +250,10 @@ public class Board extends Subject
                         if (card.getLocation().equals("OPTION") && card.getPlayerID() == this.getPlayerID())
                         {
                             this.options.add(card.getCommand());
+                            gameBoardPlayer.notify();
                         }
                     }
-                    gameBoardPlayer.notify();
+
                 }
             }
         }
