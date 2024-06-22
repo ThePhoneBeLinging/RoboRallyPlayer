@@ -122,6 +122,11 @@ public class GameController
 
 
         board.setHasSubmittedCards(true);
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         board.setPhase(Phase.ACTIVATION);
         board.setTurnID(1);
     }
