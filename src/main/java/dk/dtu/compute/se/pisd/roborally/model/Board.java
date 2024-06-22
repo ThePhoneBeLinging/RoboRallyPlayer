@@ -204,7 +204,7 @@ public class Board extends Subject
     {
         if (this.turnID != turnID)
         {
-            if (turnID == Player.NO_REGISTERS * this.getPlayersNumber() + 1)
+            if (turnID == Player.NO_REGISTERS * this.getPlayersNumber())
             {
                 turnID = 0;
             }
