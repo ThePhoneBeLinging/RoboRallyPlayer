@@ -72,7 +72,7 @@ public class JoinedLobbyView extends VBox
         mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
         riskyCrossing = createButton("Images/riskyCrossing.PNG");
         riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
-        chopShopChallengeVoid = createButton("Images/dizzyHighway.PNG");
+        chopShopChallengeVoid = createButton("Images/chopShopChallengeVoid.PNG");
         chopShopChallengeVoid.setOnAction(e -> changeBoard("chopShopChallengeVoid", chopShopChallengeVoid));
         mapSelection = new HBox();
         mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, chopShopChallengeVoid);
