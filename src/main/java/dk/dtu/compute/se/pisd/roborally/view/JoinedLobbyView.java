@@ -42,7 +42,7 @@ public class JoinedLobbyView extends VBox
     Button chopShopChallenge;
     Button mallfunctionMayhem;
     Button riskyCrossing;
-    Button undertow;
+    Button chopShopChallengeVoid;
     HBox mapSelection;
 
 
@@ -72,10 +72,10 @@ public class JoinedLobbyView extends VBox
         mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
         riskyCrossing = createButton("Images/riskyCrossing.PNG");
         riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
-        undertow = createButton("Images/dizzyHighway.PNG");
-        undertow.setOnAction(e -> changeBoard("undertow", undertow));
+        chopShopChallengeVoid = createButton("Images/dizzyHighway.PNG");
+        chopShopChallengeVoid.setOnAction(e -> changeBoard("chopShopChallengeVoid", chopShopChallengeVoid));
         mapSelection = new HBox();
-        mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, undertow);
+        mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, chopShopChallengeVoid);
         mapSelection.setSpacing(10);
         mapSelection.setAlignment(Pos.CENTER);
         this.getChildren().addAll(startButton, mapSelection);
@@ -117,14 +117,14 @@ public class JoinedLobbyView extends VBox
         {
             listOfPlayers.add(player.getPlayerID());
         }
-            for(Button button: Arrays.asList(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, undertow))
+            for(Button button: Arrays.asList(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, chopShopChallengeVoid))
             {
                 button.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
             }
             switch (serverBoard.getBoard().getBoardname()){
                 case("dizzyHighway"):
                     dizzyHighWay.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
-                    for(Button button: Arrays.asList(chopShopChallenge, mallfunctionMayhem, riskyCrossing, undertow))
+                    for(Button button: Arrays.asList(chopShopChallenge, mallfunctionMayhem, riskyCrossing, chopShopChallengeVoid))
                     {
                         button.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
                     }
@@ -138,8 +138,8 @@ public class JoinedLobbyView extends VBox
                 case("riskyCrossing"):
                     riskyCrossing.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
                     break;
-                case("undertow"):
-                    undertow.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
+                case("chopShopChallengeVoid"):
+                    chopShopChallengeVoid.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
                     break;
                 default:
                     return;
