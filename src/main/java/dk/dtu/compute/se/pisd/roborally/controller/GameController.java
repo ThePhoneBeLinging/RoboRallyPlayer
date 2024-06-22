@@ -24,8 +24,6 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.BoardElement;
-import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
 import dk.dtu.compute.se.pisd.roborally.view.UpgradeShopView;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +32,6 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Ekkart Kindler, ekki@dtu.dk
@@ -54,7 +51,6 @@ public class GameController
     {
         this.board = board;
     }
-
 
 
     /**
@@ -122,11 +118,6 @@ public class GameController
 
 
         board.setHasSubmittedCards(true);
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         board.setPhase(Phase.ACTIVATION);
         board.setTurnID(1);
     }
