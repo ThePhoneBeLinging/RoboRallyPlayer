@@ -104,7 +104,7 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
     {
         String urlToSend =
                 "http://localhost:8080/set/boards/upgradeCards/addToPlayer?gameID=" + player.board.getGameID() +
-                        "&playerID=" + player.getPlayerID() + "&upgradeCardName=" + upgradeCard.getName() + "&price=" + upgradeCard.getPrice();
+                        "&playerID=" + player.getPlayerID() + "&turnID="+ player.board.getTurnID()+ "&upgradeCardName=" + upgradeCard.getName() + "&price=" + upgradeCard.getPrice();
 
         new Thread(() -> {
             try
