@@ -94,7 +94,7 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         alert.setTitle("Upgrade Purchased");
         alert.initOwner(this.getDialogPane().getScene().getWindow());
         alert.setHeaderText("You have successfully purchased the " + upgradeCard.getName() + " upgrade.");
-        alert.setContentText("You now have " + player.getEnergyCubes() + " Energy Cubes left.");
+        alert.setContentText("You now have " + (player.getEnergyCubes() - upgradeCard.getPrice()) + " Energy Cube(s) left.");
         alert.showAndWait();
     }
 
