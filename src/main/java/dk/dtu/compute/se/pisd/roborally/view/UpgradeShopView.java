@@ -76,8 +76,10 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
                 UpgradeCard selectedUpgrade = upgradeListView.getSelectionModel().getSelectedItem();
                 if (selectedUpgrade != null && player.getEnergyCubes() >= selectedUpgrade.getPrice())
                 {
-                    showUpgradePurchasedAlert(player, selectedUpgrade);
                     sendUpgradePurchase(player, selectedUpgrade);
+                    player.addUpgradeCard(selectedUpgrade);
+                    player.setEnergyCubes(player.getEnergyCubes() - selectedUpgrade.getPrice());
+                    showUpgradePurchasedAlert(player, selectedUpgrade);
                 }
                 else
                 {
@@ -107,21 +109,11 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         new Thread(() -> {
             try
             {
-                ResponseEntity<UpgradeCard> response = restTemplate.exchange(urlToSend, HttpMethod.GET, null,
-                        new ParameterizedTypeReference<UpgradeCard>()
+                ResponseEntity<Boolean> response = restTemplate.exchange(urlToSend, HttpMethod.GET, null,
+                        new ParameterizedTypeReference<Boolean>()
                 {
                 });
 
-                UpgradeCard returnedUpgradeCard = response.getBody();
-
-                if (returnedUpgradeCard != null)
-                {
-                    System.out.println("Purchased Upgrade Card " + returnedUpgradeCard.getName());
-                }
-                else
-                {
-                    System.out.println("Failed to buy");
-                }
             }
             catch (Exception e)
             {
