@@ -77,8 +77,6 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
                 if (selectedUpgrade != null && player.getEnergyCubes() >= selectedUpgrade.getPrice())
                 {
                     sendUpgradePurchase(player, selectedUpgrade);
-                    player.addUpgradeCard(selectedUpgrade);
-                    player.setEnergyCubes(player.getEnergyCubes() - selectedUpgrade.getPrice());
                     showUpgradePurchasedAlert(player, selectedUpgrade);
                 }
                 else
@@ -104,7 +102,7 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
     {
         String urlToSend =
                 "http://localhost:8080/set/boards/upgradeCards/addToPlayer?gameID=" + player.board.getGameID() +
-                        "&playerID=" + player.getPlayerID() + "&turnID="+ player.board.getTurnID()+ "&upgradeCardName=" + upgradeCard.getName() + "&price=" + upgradeCard.getPrice();
+                        "&playerID=" + player.getPlayerID() + "&turnID="+ player.board.getTurnID()+ "&upgradeCardName=" + upgradeCard.getName();
 
         new Thread(() -> {
             try
