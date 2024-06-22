@@ -103,7 +103,7 @@ public class JoinedLobbyView extends VBox
 
     private void updateLobbyState()
     {
-        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&TurnID=0" + "&playerID"
+        String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&turnID=0" + "&playerID"
             + "=" + lobby.getPlayerID();
         try
         {
