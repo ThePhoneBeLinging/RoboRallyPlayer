@@ -42,8 +42,8 @@ public class Player extends Subject
     private final CardField[] program;
     private final ArrayList<UpgradeCard> upgradeCards = new ArrayList<>();
     private final CardField[] cards;
+    private final String name;
     private int lastVisitedCheckPoint = 0;
-    private String name;
     private Space space;
     private Heading heading = SOUTH;
     private Long playerID;
@@ -94,22 +94,6 @@ public class Player extends Subject
         return name;
     }
 
-    /**
-     * @param name the name of the player
-     * @author Elias
-     */
-    public void setName(String name)
-    {
-        if (name != null && !name.equals(this.name))
-        {
-            this.name = name;
-            notifyChange();
-            if (space != null)
-            {
-                space.playerChanged();
-            }
-        }
-    }
 
     public void addUpgradeCard(@NotNull UpgradeCard upgradeCard)
     {
@@ -158,21 +142,7 @@ public class Player extends Subject
     public void setPlayerID(Long playerID)
     {
         this.playerID = playerID;
-        if (this.playerID == 1L)
-        {
-        }
     }
-
-
-    /**
-     * @return void
-     * @author Emil
-     */
-    public void pickUpEnergyCube()
-    {
-        energyCubes++;
-    }
-
 
     public int getEnergyCubes()
     {
