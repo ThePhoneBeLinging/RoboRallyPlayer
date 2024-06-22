@@ -141,7 +141,7 @@ public class Board extends Subject
     {
         String gameID = "gameID=" + this.getGameID();
         String playerID = "&playerID=" + this.getPlayerID();
-        String turnID = "&TurnID=" + this.getTurnID();
+        String turnID = "&turnID=" + this.getTurnID();
         this.URL = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
     }
 
