@@ -72,10 +72,10 @@ public class JoinedLobbyView extends VBox
         mallfunctionMayhem.setOnAction(e -> changeBoard("mallfunctionMayhem", mallfunctionMayhem));
         riskyCrossing = createButton("Images/riskyCrossing.PNG");
         riskyCrossing.setOnAction(e -> changeBoard("riskyCrossing", riskyCrossing));
-        chopShopChallengeVoid = createButton("Images/chopShopChallengeVoid.PNG");
-        chopShopChallengeVoid.setOnAction(e -> changeBoard("chopShopChallengeVoid", chopShopChallengeVoid));
+
+
         mapSelection = new HBox();
-        mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, chopShopChallengeVoid);
+        mapSelection.getChildren().addAll(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing);
         mapSelection.setSpacing(10);
         mapSelection.setAlignment(Pos.CENTER);
         this.getChildren().addAll(startButton, mapSelection);
@@ -117,7 +117,7 @@ public class JoinedLobbyView extends VBox
         {
             listOfPlayers.add(player.getPlayerID());
         }
-            for(Button button: Arrays.asList(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing, chopShopChallengeVoid))
+            for(Button button: Arrays.asList(dizzyHighWay, chopShopChallenge, mallfunctionMayhem, riskyCrossing))
             {
                 button.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
             }
@@ -137,9 +137,6 @@ public class JoinedLobbyView extends VBox
                     break;
                 case("riskyCrossing"):
                     riskyCrossing.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
-                    break;
-                case("chopShopChallengeVoid"):
-                    chopShopChallengeVoid.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
                     break;
                 default:
                     return;
