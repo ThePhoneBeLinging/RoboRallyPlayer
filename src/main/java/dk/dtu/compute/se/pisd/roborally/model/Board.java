@@ -283,6 +283,10 @@ public class Board extends Subject
         }
 
         this.upgradeCards.clear();
+        for (Player player : this.players)
+        {
+            player.getUpgradeCards().clear();
+        }
         for (dk.dtu.compute.se.pisd.roborally.APITypes.UpgradeCard upgradeCard : serverBoard.getUpgradeCards())
         {
             UpgradeCard upgrade = new UpgradeCard(upgradeCard.getCardName(), upgradeCard.getPrice());
