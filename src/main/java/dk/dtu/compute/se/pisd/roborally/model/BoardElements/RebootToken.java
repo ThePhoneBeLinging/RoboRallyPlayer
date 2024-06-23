@@ -19,7 +19,4 @@ public class RebootToken extends BoardElement
         setImage(new Image("file:src/main/resources/images/respawn.png"));
     }
 
-    public void reboot(Player player)
-    {
-    }
 }
