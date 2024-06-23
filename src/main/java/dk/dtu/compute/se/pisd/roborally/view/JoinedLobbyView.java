@@ -162,7 +162,6 @@ public class JoinedLobbyView extends VBox
         if(listOfPlayers.get(0) != lobby.getPlayerID())
         {
             lobbyContent.appendText("Only the host can start the game\n");
-            return;
         }else {
             String lobbyUrl = "http://localhost:8080/lobby/startGame?gameID=" + this.lobby.getGameID();
 
@@ -189,7 +188,6 @@ public class JoinedLobbyView extends VBox
         if(listOfPlayers.get(0) != lobby.getPlayerID())
         {
             lobbyContent.appendText("Only the host can change the board\n");
-            return;
         }else {
             String urlToSendTo = "http://localhost:8080/lobby/changeBoard?gameID=" + this.lobby.getGameID() + "&boardName"
                     + "=" + boardName;

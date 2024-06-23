@@ -11,8 +11,8 @@ public class SoundController {
     private static SoundController instance;
     private Clip clip;
     private boolean isStopped = false; // new flag
-    private Random random = new Random();
-    private int currentSoundIndex= random.nextInt(5);
+    private final Random random = new Random();
+    private final int currentSoundIndex= random.nextInt(5);
     private final BlockingQueue<URL> queue = new ArrayBlockingQueue<URL>(1);
 
     private SoundController() {
