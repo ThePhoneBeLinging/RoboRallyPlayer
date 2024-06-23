@@ -242,7 +242,10 @@ public class Board extends Subject
                 gameBoardPlayer.setHeading(Heading.valueOf(player.getHeading()));
                 gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
 
-                gameBoardPlayer.setPlayerID(player.getPlayerID());
+                if(player.hasWon) {
+                    System.out.println("Dean phar won");
+                }
+
                 if (this.getPhase() == PLAYER_INTERACTION)
                 {
                     for (Card card : serverBoard.getCards())
