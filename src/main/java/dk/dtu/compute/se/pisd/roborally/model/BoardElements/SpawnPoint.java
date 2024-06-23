@@ -18,6 +18,5 @@ public class SpawnPoint extends NullBoardElement {
     public SpawnPoint(Space space) {
         super(space);
         space.board.addBoardElement(Board.NOT_ACTIVATE_ABLE_INDEX, this);
-        setImage(new Image("file:src/main/resources/images/spawnPoint.png"));
     }
 }
