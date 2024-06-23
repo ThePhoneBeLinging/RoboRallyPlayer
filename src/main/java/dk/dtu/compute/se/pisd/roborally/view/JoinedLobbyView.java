@@ -112,6 +112,9 @@ public class JoinedLobbyView extends VBox
         });
         CompleteGame serverBoard = response.getBody();
         this.listOfPlayers.clear();
+        if (serverBoard.getBoard().getBoardname() != null) {
+            this.boardName = serverBoard.getBoard().getBoardname();
+        }
         for (dk.dtu.compute.se.pisd.roborally.APITypes.Player.Player player : serverBoard.getPlayerList())
         {
             listOfPlayers.add(player.getPlayerID());
