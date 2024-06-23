@@ -22,16 +22,22 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,15 +56,17 @@ public class BoardView extends VBox implements ViewObserver
     RestTemplate restTemplate = new RestTemplate();
     TextArea lobbyContent;
     private Board board;
+    private AppController appController;
 
 
     /**
      * @param gameController
      * @author Elias
      */
-    public BoardView(@NotNull GameController gameController)
+    public BoardView(@NotNull GameController gameController, @NotNull AppController appController)
     {
         board = gameController.board;
+        this.appController = appController;
 
         mainBoardPane = new GridPane();
         playersView = new PlayersView(gameController);
@@ -95,6 +103,24 @@ public class BoardView extends VBox implements ViewObserver
         {
             Phase phase = board.getPhase();
             statusLabel.setText(board.getStatusMessage());
+
+            if(board.getWinningPlayer() != null) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                board.keepUpdatingBoard = false;
+                alert.setTitle("Game Over");
+                alert.setHeaderText(null);
+                alert.setContentText("Player " + board.getWinningPlayer() + " has won!");
+                alert.initOwner(appController.getRoboRally().getStage());
+                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
+
+                Platform.runLater(() -> {
+                    alert.showAndWait().ifPresent(response -> {
+                        if(response == ButtonType.OK) {
+                            appController.joinGame();
+                        }
+                    });
+                });
+            }
         }
     }
 

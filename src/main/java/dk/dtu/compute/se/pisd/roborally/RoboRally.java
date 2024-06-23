@@ -164,7 +164,7 @@ public class RoboRally extends Application
      * @param gameController the controller for the game
      * @author Create the board view
      */
-    public void createBoardView(GameController gameController)
+    public void createBoardView(GameController gameController, AppController appController)
     {
         // if present, remove old BoardView
         boardRoot.getChildren().clear();
@@ -172,7 +172,7 @@ public class RoboRally extends Application
         if (gameController != null)
         {
             // create and add view for new board
-            BoardView boardView = new BoardView(gameController);
+            BoardView boardView = new BoardView(gameController, appController);
             boardRoot.setCenter(boardView);
         }
     }

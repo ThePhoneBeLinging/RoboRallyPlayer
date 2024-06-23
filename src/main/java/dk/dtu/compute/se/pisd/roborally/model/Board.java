@@ -26,6 +26,11 @@ import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.APITypes.Player.Card;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.BoardElement;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
+import dk.dtu.compute.se.pisd.roborally.view.LobbyView;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -71,6 +76,7 @@ public class Board extends Subject
     private int turnID;
     private Long playerID;
     private Long gameID;
+    private Long winningPlayer;
 
     private String URL;
     private boolean hasSubmittedCards = false;
@@ -243,7 +249,8 @@ public class Board extends Subject
                 gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
 
                 if(player.hasWon) {
-                    System.out.println("Dean phar won");
+                    winningPlayer = player.getPlayerID();
+                    this.notifyChange();
                 }
 
                 if (this.getPhase() == PLAYER_INTERACTION)
@@ -325,6 +332,10 @@ public class Board extends Subject
             }
         }
         notifyChange();
+    }
+
+    public Long getWinningPlayer() {
+        return this.winningPlayer;
     }
 
     /**

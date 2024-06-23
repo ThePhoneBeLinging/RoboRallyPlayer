@@ -66,7 +66,7 @@ public class AppController implements Observer
     public void startGameFromBoard(GameController gameController)
     {
         this.gameController = gameController;
-        roboRally.createBoardView(gameController);
+        roboRally.createBoardView(gameController, this);
     }
 
     public void joinGame()
@@ -128,7 +128,7 @@ public class AppController implements Observer
             // here we save the game (without asking the user).
             saveGame();
             gameController = null;
-            roboRally.createBoardView(null);
+            roboRally.createBoardView(null, this);
             roboRally.createMainMenuView(this);
             return true;
         }
