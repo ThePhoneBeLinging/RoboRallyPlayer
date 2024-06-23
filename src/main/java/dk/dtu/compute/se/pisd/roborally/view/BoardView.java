@@ -104,7 +104,7 @@ public class BoardView extends VBox implements ViewObserver
             Phase phase = board.getPhase();
             statusLabel.setText(board.getStatusMessage());
 
-            if(board.getWinningPlayer() != null) {
+            if (board.getWinningPlayer() != null) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 board.keepUpdatingBoard = false;
                 alert.setTitle("Game Over");
@@ -113,13 +113,8 @@ public class BoardView extends VBox implements ViewObserver
                 alert.initOwner(appController.getRoboRally().getStage());
                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
 
-                Platform.runLater(() -> {
-                    alert.showAndWait().ifPresent(response -> {
-                        if(response == ButtonType.OK) {
-                            appController.joinGame();
-                        }
-                    });
-                });
+                alert.showAndWait();
+                appController.joinGame();
             }
         }
     }
