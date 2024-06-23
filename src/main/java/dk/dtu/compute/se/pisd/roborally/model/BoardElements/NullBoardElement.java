@@ -23,10 +23,5 @@ public class NullBoardElement extends BoardElement
         super(heading, true, space);
     }
 
-    /**
-     * @param heading
-     * @return
-     * @author Elias
-     */
 
 }

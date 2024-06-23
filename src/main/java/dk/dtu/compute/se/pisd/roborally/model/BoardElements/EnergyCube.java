@@ -21,8 +21,5 @@ public class EnergyCube extends NullBoardElement
         setImage(new Image("file:src/main/resources/images/energyCube.png"));
     }
 
-    /**
-     * @author Elias & Emil
-     */
 
 }
