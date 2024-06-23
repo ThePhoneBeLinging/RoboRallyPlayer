@@ -27,17 +27,13 @@ import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.client.RestTemplate;
 
@@ -53,10 +49,11 @@ public class BoardView extends VBox implements ViewObserver
     private final SpaceView[][] spaces;
     private final PlayersView playersView;
     private final Label statusLabel;
+    private final Board board;
+    private final AppController appController;
     RestTemplate restTemplate = new RestTemplate();
     TextArea lobbyContent;
-    private Board board;
-    private AppController appController;
+    private boolean hasRecievedAlert = false;
 
 
     /**
@@ -104,26 +101,20 @@ public class BoardView extends VBox implements ViewObserver
             Phase phase = board.getPhase();
             statusLabel.setText(board.getStatusMessage());
 
-            if(board.getWinningPlayer() != null) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            if (board.getWinningPlayer() != null && !this.hasRecievedAlert)
+            {
+                hasRecievedAlert = true;
                 board.keepUpdatingBoard = false;
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Game Over");
+                alert.initOwner(appController.getRoboRally().getStage());
                 alert.setHeaderText(null);
                 alert.setContentText("Player " + board.getWinningPlayer() + " has won!");
-                alert.initOwner(appController.getRoboRally().getStage());
-                alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
-
-                Platform.runLater(() -> {
-                    alert.showAndWait().ifPresent(response -> {
-                        if(response == ButtonType.OK) {
-                            appController.joinGame();
-                        }
-                    });
-                });
+                alert.showAndWait();
+                appController.joinGame();
             }
         }
     }
-
 
 
     // XXX this handler and its uses should eventually be deleted! This is just to help test the
