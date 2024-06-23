@@ -26,11 +26,6 @@ import dk.dtu.compute.se.pisd.roborally.APITypes.CompleteGame;
 import dk.dtu.compute.se.pisd.roborally.APITypes.Player.Card;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.BoardElement;
 import dk.dtu.compute.se.pisd.roborally.model.BoardElements.Checkpoint;
-import dk.dtu.compute.se.pisd.roborally.view.LobbyView;
-import javafx.animation.PauseTransition;
-import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -248,7 +243,8 @@ public class Board extends Subject
                 gameBoardPlayer.setHeading(Heading.valueOf(player.getHeading()));
                 gameBoardPlayer.setEnergyCubes(player.getEnergyCubes());
 
-                if(player.hasWon) {
+                if (player.hasWon)
+                {
                     winningPlayer = player.getPlayerID();
                     this.notifyChange();
                 }
@@ -291,14 +287,13 @@ public class Board extends Subject
         {
             UpgradeCard upgrade = new UpgradeCard(upgradeCard.getCardName(), upgradeCard.getPrice());
             this.upgradeCards.add(upgrade);
-            if(upgradeCard.getPlayerID() != null && upgradeCard.getPlayerID().equals(this.getPlayerID()))
+            if (upgradeCard.getPlayerID() != null && upgradeCard.getPlayerID().equals(this.getPlayerID()))
             {
                 for (int i = 0; i < this.getPlayersNumber(); i++)
                 {
-                    if (Objects.equals(this.getPlayerID(), this.getPlayer(i).getPlayerID())&& !this.getPlayer(i).checkIfOwnsUpgradeCard(upgrade.getName()))
+                    if (Objects.equals(this.getPlayerID(), this.getPlayer(i).getPlayerID()) && !this.getPlayer(i).checkIfOwnsUpgradeCard(upgrade.getName()))
                     {
                         this.getPlayer(i).addUpgradeCard(upgrade);
-                        System.out.println("Dean");
                     }
                 }
             }
@@ -343,10 +338,6 @@ public class Board extends Subject
             }
         }
         notifyChange();
-    }
-
-    public Long getWinningPlayer() {
-        return this.winningPlayer;
     }
 
     /**
@@ -440,6 +431,11 @@ public class Board extends Subject
     public void setPlayerID(Long playerID)
     {
         this.playerID = playerID;
+    }
+
+    public Long getWinningPlayer()
+    {
+        return this.winningPlayer;
     }
 
     public boolean isHasSubmittedCards()
