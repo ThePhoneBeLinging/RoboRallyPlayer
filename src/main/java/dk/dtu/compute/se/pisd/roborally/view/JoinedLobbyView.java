@@ -42,7 +42,6 @@ public class JoinedLobbyView extends VBox
     Button chopShopChallenge;
     Button mallfunctionMayhem;
     Button riskyCrossing;
-    Button chopShopChallengeVoid;
     HBox mapSelection;
 
 
@@ -124,7 +123,7 @@ public class JoinedLobbyView extends VBox
             switch (serverBoard.getBoard().getBoardname()){
                 case("dizzyHighway"):
                     dizzyHighWay.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, null, new BorderWidths(3))));
-                    for(Button button: Arrays.asList(chopShopChallenge, mallfunctionMayhem, riskyCrossing, chopShopChallengeVoid))
+                    for(Button button: Arrays.asList(chopShopChallenge, mallfunctionMayhem, riskyCrossing))
                     {
                         button.setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.NONE, null, new BorderWidths(3))));
                     }
