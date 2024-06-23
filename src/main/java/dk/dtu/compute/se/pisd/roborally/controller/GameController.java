@@ -78,6 +78,10 @@ public class GameController
 
     public void submitCards(Player player)
     {
+        if(!board.getPhase().equals(Phase.PROGRAMMING))
+        {
+            return;
+        }
         PlayerRegisters registers = new PlayerRegisters();
         ArrayList<Integer> selectedCardsNumbers = new ArrayList<>();
         for (int i = 0; i < Player.NO_REGISTERS; i++)
