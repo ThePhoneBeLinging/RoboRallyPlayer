@@ -11,6 +11,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A dialog for the player to purchase upgrades from the upgrade shop.
  * The player can select an upgrade from a list of available upgrades and purchase it if they have enough energy cubes.
@@ -34,7 +37,15 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
 
         upgradeListView = new ListView<>();
         upgradeListView.getItems().clear();
-        upgradeListView.getItems().addAll(player.board.getUpgradeCards());
+        List<UpgradeCard> availableUpgrades = new ArrayList<>();
+        for (UpgradeCard upgradeCard : player.board.getUpgradeCards())
+        {
+            if (upgradeCard.getPlayerID() == null)
+            {
+                availableUpgrades.add(upgradeCard);
+            }
+        }
+        upgradeListView.getItems().addAll(availableUpgrades);
 
         upgradeListView.setCellFactory(lv -> new ListCell<>()
         {

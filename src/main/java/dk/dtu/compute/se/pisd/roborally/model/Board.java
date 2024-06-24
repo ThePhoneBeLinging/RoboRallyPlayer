@@ -291,6 +291,7 @@ public class Board extends Subject
         {
             UpgradeCard upgrade = new UpgradeCard(upgradeCard.getCardName(), upgradeCard.getPrice());
             this.upgradeCards.add(upgrade);
+            upgrade.setPlayerID(upgradeCard.getPlayerID());
             if (upgradeCard.getPlayerID() != null && upgradeCard.getPlayerID().equals(this.getPlayerID()))
             {
                 for (int i = 0; i < this.getPlayersNumber(); i++)

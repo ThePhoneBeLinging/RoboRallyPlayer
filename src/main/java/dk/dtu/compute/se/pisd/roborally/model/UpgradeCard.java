@@ -7,6 +7,7 @@ public class UpgradeCard extends Subject
 
     private final String name;
     private final int price;
+    private Long playerID;
 
     /**
      * @param name
@@ -36,5 +37,15 @@ public class UpgradeCard extends Subject
     public int getPrice()
     {
         return this.price;
+    }
+
+    public Long getPlayerID()
+    {
+        return playerID;
+    }
+
+    public void setPlayerID(Long playerID)
+    {
+        this.playerID = playerID;
     }
 }
