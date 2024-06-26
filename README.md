@@ -8,7 +8,6 @@ Before you begin, ensure you have met the following requirements:
 
 - You have installed a recent version of Java (Java 21 is used during development, so it is recommended).
 - You have installed Maven.
-- You have installed a recent version of JavaFX.
 - You have a machine running either one of these OS: Windows/Linux/MacOS.
 
 ## Running RoboRally
