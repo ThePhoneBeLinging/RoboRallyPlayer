@@ -32,9 +32,9 @@ public class MainMenuView extends VBox
         Label newGameLabel = createLabel("file:src/main/resources/Images/roborally.png", "RoboRally");
         this.getChildren().add(newGameLabel);
 
-        Button joinGameButton = createButton("file:src/main/resources/Images/joinGame.png", "Join Game");
-        this.getChildren().add(joinGameButton);
-        joinGameButton.setOnAction(e -> appController.joinGame());
+        Button playButton = createButton("file:src/main/resources/Images/play.png", "Play");
+        this.getChildren().add(playButton);
+        playButton.setOnAction(e -> appController.joinGame());
 
         Button exitGameButton = createButton("file:src/main/resources/Images/exitGame.png", "Exit Game");
         this.getChildren().add(exitGameButton);
