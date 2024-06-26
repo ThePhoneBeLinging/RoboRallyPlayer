@@ -157,7 +157,6 @@ public class RoboRally extends Application
             mainMenu.setAlignment(Pos.CENTER);
             boardRoot.setCenter(mainMenu);
         }
-        sc.stopSound();
     }
 
     /**
