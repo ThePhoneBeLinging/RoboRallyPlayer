@@ -154,6 +154,10 @@ public class PlayerView extends Tab implements ViewObserver
     }
 
 
+    /**
+     * Updates the list of the players upgrade cards
+     * @author Emil
+     */
     private void updateUpgradeCardsLabel()
     {
         StringBuilder upgrades = new StringBuilder("Active Upgrade Cards:\n");
@@ -165,11 +169,20 @@ public class PlayerView extends Tab implements ViewObserver
         upgradeCardsLabel.setText(upgrades.toString());
     }
 
+    /**
+     * Updates the amount of energy cubes the player has
+     * @author Emil
+     */
     private void updateEnergyCubesLabel()
     {
         energyCubesLabel.setText("Energy Cubes: " + player.getEnergyCubes());
     }
 
+    /**
+     * Updates the view of the player
+     * @param subject
+     * @author Elias
+     */
     @Override
     public void updateView(Subject subject)
     {
@@ -187,12 +200,22 @@ public class PlayerView extends Tab implements ViewObserver
         updateUpgradeCardsLabel();
     }
 
+    /**
+     * Updates the view of the player
+     * @param subject
+     * @author Elias
+     */
     @Override
     public void update(Subject subject)
     {
         ViewObserver.super.update(subject);
     }
 
+    /**
+     * Sends the choice of the player to the server
+     * @param choice the choice of the player
+     * @author Frederik
+     */
     private void sendInteractiveChoice(int choice)
     {
         new Thread(() -> {

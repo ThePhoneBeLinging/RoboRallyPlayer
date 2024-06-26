@@ -55,6 +55,13 @@ public class MainMenuView extends VBox
 
     }
 
+    /**
+     * creates a label with an image
+     * @param imagePath
+     * @param tooltipText
+     * @return label
+     * @author Elias
+     */
     private Label createLabel(String imagePath, String tooltipText)
     {
         Label label = new Label();
@@ -67,6 +74,13 @@ public class MainMenuView extends VBox
         return label;
     }
 
+    /**
+     * creates a button with an image
+     * @param imagePath
+     * @param tooltipText
+     * @return button
+     * @author Adel & Mustafa
+     */
     private Button createButton(String imagePath, String tooltipText)
     {
         Button button = new Button();
