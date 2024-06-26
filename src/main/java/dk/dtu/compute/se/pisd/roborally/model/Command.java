@@ -69,21 +69,4 @@ public enum Command
         this.options = Collections.unmodifiableList(Arrays.asList(options));
     }
 
-    /**
-     * @return boolean as of whether the command has more than one option
-     * @author Frederik
-     */
-    public boolean isInteractive()
-    {
-        return !options.isEmpty();
-    }
-
-    /**
-     * @return list of all the command-options the player must choose between.
-     * @author Frederik
-     */
-    public List<Command> getOptions()
-    {
-        return options;
-    }
 }

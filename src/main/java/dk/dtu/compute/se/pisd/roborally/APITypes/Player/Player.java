@@ -6,6 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * This class represents a player in the game.
+ * The player also has an ID that is unique.
+ * The player is an entity and is stored in the database.
+ *
+ * @Author Elias
+ */
 @Entity
 @Getter
 @Setter

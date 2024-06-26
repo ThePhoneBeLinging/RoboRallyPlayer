@@ -26,6 +26,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class is responsible for the view of the lobby that the player has joined.
+ * It displays the players that are in the lobby, the map that is selected and the option to start the game.
+ * It also allows the host to change the map and the host to start the game.
+ * It also allows the player to leave the lobby.
+ * @Author Emil, Elias, Mustafa & Adel
+ */
 public class JoinedLobbyView extends VBox
 {
     private final ScheduledExecutorService executor;
@@ -100,6 +107,10 @@ public class JoinedLobbyView extends VBox
         return button;
     }
 
+    /**
+     * Sends a request to the server to update the lobby state.
+     * @Author Emil & Adel
+     */
     private void updateLobbyState()
     {
         String URL = "http://localhost:8080/get/boards/single?gameID=" + lobby.getGameID() + "&turnID=0" + "&playerID"
@@ -156,6 +167,10 @@ public class JoinedLobbyView extends VBox
         }
     }
 
+    /**
+     * Sends a request to the server to start the game.
+     * @Author Mustafa, Emil & Adel
+     */
     private void startGame()
     {
         Collections.sort(listOfPlayers);
@@ -182,6 +197,12 @@ public class JoinedLobbyView extends VBox
         }
     }
 
+    /**
+     * Sends a request to the server to change the board.
+     * @param boardName The name of the board to change to.
+     * @param button The button that was clicked.
+     * @Author Emil & Adel
+     */
     private void changeBoard(String boardName, Button button)
     {
         Collections.sort(listOfPlayers);

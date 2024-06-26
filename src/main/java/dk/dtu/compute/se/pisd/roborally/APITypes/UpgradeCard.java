@@ -6,6 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * This class represents an upgrade card that a player can buy in the game.
+ * The upgrade card has a name and a price.
+ * The playerID is null if the card is not bought.
+ * If a player buys the card, the playerID will be set to the player that bought the card.
+ * @Author Mustafa
+ */
 @Entity
 @Getter
 @Setter

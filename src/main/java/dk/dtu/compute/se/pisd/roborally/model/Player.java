@@ -74,11 +74,6 @@ public class Player extends Subject
         }
     }
 
-    public int getLastVisitedCheckPoint()
-    {
-        return lastVisitedCheckPoint;
-    }
-
     public void setLastVisitedCheckPoint(int lastVisitedCheckPoint)
     {
         this.lastVisitedCheckPoint = lastVisitedCheckPoint;

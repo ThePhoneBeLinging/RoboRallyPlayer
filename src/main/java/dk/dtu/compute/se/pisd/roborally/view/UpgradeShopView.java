@@ -99,6 +99,13 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         });
     }
 
+    /**
+     * Shows an alert to the player that they have successfully purchased an upgrade.
+     *
+     * @param player       the player who purchased the upgrade
+     * @param upgradeCard  the upgrade card that was purchased
+     * @Author Mustafa & Adel
+     */
     private void showUpgradePurchasedAlert(Player player, UpgradeCard upgradeCard)
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -109,6 +116,13 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         alert.showAndWait();
     }
 
+    /**
+     * Sends a request to the server to add the upgrade card to the player's upgrade cards.
+     *
+     * @param player       the player who purchased the upgrade
+     * @param upgradeCard  the upgrade card that was purchased
+     * @Author Mustafa & Adel
+     */
     private void sendUpgradePurchase(Player player, UpgradeCard upgradeCard)
     {
         String urlToSend =
@@ -131,6 +145,11 @@ public class UpgradeShopView extends Dialog<UpgradeCard>
         }).start();
     }
 
+    /**
+     * Shows an alert to the player that they do not have enough energy cubes to purchase the upgrade.
+     *
+     * @Author Mustafa & Adel
+     */
     private void showNotEnoughEnergyCubesAlert()
     {
         Alert alert = new Alert(Alert.AlertType.ERROR);

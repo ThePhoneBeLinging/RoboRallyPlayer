@@ -10,6 +10,11 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * This class represents a complete game.
+ * The complete game is used to send all the information between the server and the client.
+ * @Author Elias
+ */
 @Getter
 @Setter
 @NoArgsConstructor

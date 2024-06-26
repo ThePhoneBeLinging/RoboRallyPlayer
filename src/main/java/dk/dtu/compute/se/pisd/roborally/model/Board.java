@@ -136,8 +136,6 @@ public class Board extends Subject
     /**
      * @author Elias
      */
-
-
     private void updateURL()
     {
         String gameID = "gameID=" + this.getGameID();
@@ -146,6 +144,10 @@ public class Board extends Subject
         this.URL = "http://localhost:8080/get/boards/single?" + gameID + turnID + playerID;
     }
 
+    /**
+     * sends a get request to the server to get the current game board
+     * @Author Elias
+     */
     public void updateGameBoard()
     {
 
@@ -201,6 +203,12 @@ public class Board extends Subject
         return turnID;
     }
 
+    /**
+     * sets the turnID of the board and if the turnID is equal to the number of players * the number of registers + 1
+     * it sets the turnID to 0 and sets hasSubmittedCards to false
+     * @param turnID
+     * @Author Elias
+     */
     public void setTurnID(int turnID)
     {
         if (this.turnID != turnID)
@@ -217,6 +225,11 @@ public class Board extends Subject
         }
     }
 
+    /**
+     * converts a server board to a game board
+     * @param serverBoard the board to be converted to the game board
+     * @Author Elias, Emil, Frederik, Mustafa & Adel
+     */
     public void fromServerBoardToGameBoard(CompleteGame serverBoard)
     {
         if (serverBoard == null)

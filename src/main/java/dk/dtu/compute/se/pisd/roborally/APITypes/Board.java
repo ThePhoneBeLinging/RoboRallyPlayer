@@ -9,6 +9,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * This class represents a board in the game.
+ * TurnID is the ID of the turn that the board is in.
+ * @Author Elias
+ */
 @Entity
 @Getter
 @Setter

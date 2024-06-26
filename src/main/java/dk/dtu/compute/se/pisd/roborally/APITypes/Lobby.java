@@ -5,6 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * This class represents a lobby.
+ * The lobby is used to store the information about the players that are in the lobby.
+ * @Author Elias
+ */
 @Getter
 @Setter
 @NoArgsConstructor

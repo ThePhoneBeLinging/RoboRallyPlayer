@@ -15,7 +15,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
-
+/**
+ * The view where you can find and create lobbies
+ * @author Elias, Emil, Mustafa & Adel
+ */
 public class LobbyView extends VBox
 {
 
@@ -27,8 +30,6 @@ public class LobbyView extends VBox
     RestTemplate restTemplate = new RestTemplate();
     String url = "http://localhost:8080/lobby/getAll";
     private Lobby joinedLobby;
-
-    //List response = restTemplate.getForObject(url, List.class);
 
     public LobbyView(AppController appController)
     {
@@ -54,6 +55,11 @@ public class LobbyView extends VBox
         fetchLobbies();
     }
 
+    /**
+     * @param lobbyID
+     * @return the size of the lobby
+     * @author Mustafa
+     */
     private int getLobbySize(Long lobbyID) {
         String url = "http://localhost:8080/lobby/size?gameID=" + lobbyID;
         try {
@@ -66,6 +72,10 @@ public class LobbyView extends VBox
         }
     }
 
+    /**
+     * Fetches all lobbies from the server
+     * @author Mustafa & Elias
+     */
     private void fetchLobbies()
     {
         new Thread(() -> {
@@ -87,6 +97,10 @@ public class LobbyView extends VBox
         }).start();
     }
 
+    /**
+     * Creates a new lobby
+     * @author Emil
+     */
     private void createLobby() {
         String lobbyUrl = "http://localhost:8080/lobby/create";
 
@@ -110,6 +124,11 @@ public class LobbyView extends VBox
         joinLobbyView();
     }
 
+    /**
+     * Populates the VBox with lobbies
+     * @param lobbies the lobbies to populate the VBox with
+     * @author Elias
+     */
     private void populateVBox(List<Long> lobbies)
     {
         lobbyList.getChildren().clear();
@@ -125,6 +144,11 @@ public class LobbyView extends VBox
         }
     }
 
+    /**
+     * Joins a lobby
+     * @param lobbyID the lobby to join
+     * @author Mustafa & Elias
+     */
     private void joinLobbies(Long lobbyID)
     {
         String lobbyUrl = "http://localhost:8080/lobby/join?gameID=" + lobbyID;
@@ -154,6 +178,11 @@ public class LobbyView extends VBox
         joinLobbyView();
     }
 
+    /**
+     * Joins the lobby view
+     * @throws RuntimeException
+     * @autor Elias
+     */
     public void joinLobbyView()
     {
         while (this.joinedLobby == null)

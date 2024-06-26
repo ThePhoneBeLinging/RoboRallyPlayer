@@ -75,7 +75,14 @@ public class GameController
         }
     }
 
-
+    /**
+     * Submits the cards of the player to the server
+     * and sets the phase to ACTIVATION
+     * and the turnID to 1
+     * @param player
+     * @return true if cardField is not null and cardField is not locked, false otherwise
+     * @Author Elias & Frederik
+     */
     public void submitCards(Player player)
     {
         if(!board.getPhase().equals(Phase.PROGRAMMING))
@@ -131,6 +138,11 @@ public class GameController
         this.roboRally = roboRally;
     }
 
+    /**
+     * Opens the upgrade shop for the player
+     * @param player
+     * @Author Mustafa & Elias
+     */
     public void openShop(Player player)
     {
         Stage primStage = roboRally.getStage();

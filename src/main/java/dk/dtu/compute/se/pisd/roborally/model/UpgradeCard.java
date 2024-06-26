@@ -2,6 +2,11 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
+/**
+ * This class is used to store the upgrade cards
+ * It contains the name and price of the card
+ * @Author Mads
+ */
 public class UpgradeCard extends Subject
 {
 
