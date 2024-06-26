@@ -116,7 +116,7 @@ public class LoadBoard
                         }
                         case Board.ENERGY_SPACE_INDEX:
                         {
-                            new EnergyCube(space);
+                            //new EnergyCube(space);
                             break;
                         }
                         case Board.CHECKPOINTS_INDEX:
