@@ -32,11 +32,6 @@ public class MainMenuView extends VBox
         Label newGameLabel = createLabel("file:src/main/resources/Images/roborally.png", "RoboRally");
         this.getChildren().add(newGameLabel);
 
-
-        Button loadGameButton = createButton("file:src/main/resources/Images/loadGame.png", "Load Game");
-        this.getChildren().add(loadGameButton);
-        loadGameButton.setOnAction(e -> appController.loadGame());
-
         Button joinGameButton = createButton("file:src/main/resources/Images/joinGame.png", "Join Game");
         this.getChildren().add(joinGameButton);
         joinGameButton.setOnAction(e -> appController.joinGame());
@@ -50,13 +45,13 @@ public class MainMenuView extends VBox
         this.setHeight(800);
         this.setPrefHeight(600);
         VBox.setVgrow(newGameLabel, Priority.ALWAYS);
-        VBox.setVgrow(loadGameButton, Priority.ALWAYS);
         VBox.setVgrow(exitGameButton, Priority.ALWAYS);
 
     }
 
     /**
      * creates a label with an image
+     *
      * @param imagePath
      * @param tooltipText
      * @return label
@@ -76,6 +71,7 @@ public class MainMenuView extends VBox
 
     /**
      * creates a button with an image
+     *
      * @param imagePath
      * @param tooltipText
      * @return button

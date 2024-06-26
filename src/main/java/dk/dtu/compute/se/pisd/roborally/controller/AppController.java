@@ -27,7 +27,6 @@ import dk.dtu.compute.se.pisd.roborally.APITypes.Lobby;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.view.JoinedLobbyView;
 import dk.dtu.compute.se.pisd.roborally.view.LobbyView;
-import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -50,17 +49,6 @@ public class AppController implements Observer
     public AppController(@NotNull RoboRally roboRally)
     {
         this.roboRally = roboRally;
-    }
-
-    /**
-     * @author Elias
-     */
-    public void loadGame()
-    {
-        // XXX needs to be implemented eventually
-        // for now, we just create a new game
-        //this.gameController = LoadSaveGameState.loadGameState("default");
-        //roboRally.createBoardView(gameController);
     }
 
     public void startGameFromBoard(GameController gameController)
@@ -165,7 +153,8 @@ public class AppController implements Observer
         // XXX do nothing for now
     }
 
-    public RoboRally getRoboRally() {
+    public RoboRally getRoboRally()
+    {
         return this.roboRally;
     }
 }

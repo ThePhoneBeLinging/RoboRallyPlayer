@@ -41,7 +41,6 @@ public class RoboRallyMenuBar extends MenuBar
     private final Menu controlMenu;
     private final Menu soundMenu;
     private final MenuItem saveGame;
-    private final MenuItem loadGame;
     private final MenuItem stopGame;
     private final MenuItem exitApp;
     private final MenuItem soundOn;
@@ -90,14 +89,6 @@ public class RoboRallyMenuBar extends MenuBar
         saveGame.setOnAction(e -> this.appController.saveGame());
         controlMenu.getItems().add(saveGame);
 
-        loadGame = new MenuItem();
-        ImageView loadGameView = new ImageView(new Image("file:src/main/resources/Images/loadGamet.png"));
-        loadGameView.setFitWidth(width);
-        loadGameView.setFitHeight(height);
-        loadGame.setGraphic(loadGameView);
-        loadGame.setOnAction(e -> this.appController.loadGame());
-        controlMenu.getItems().add(loadGame);
-
         exitApp = new MenuItem();
         ImageView exitAppView = new ImageView(new Image("file:src/main/resources/Images/exitAppt.png"));
         exitAppView.setFitWidth(width);
@@ -120,13 +111,11 @@ public class RoboRallyMenuBar extends MenuBar
         {
             stopGame.setVisible(true);
             saveGame.setVisible(true);
-            loadGame.setVisible(false);
         }
         else
         {
             stopGame.setVisible(false);
             saveGame.setVisible(false);
-            loadGame.setVisible(true);
         }
     }
 
